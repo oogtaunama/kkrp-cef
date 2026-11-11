@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kota Kecilku Roleplay - Inventory CEF System</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+    <!-- Common & Inventory Stylesheets -->
+    <link rel="stylesheet" href="../common/common.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Transparent Game Viewport Backdrop -->
+    <div class="inventory-backdrop" id="backdrop"></div>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Main Inventory Wrapper -->
+    <main class="inventory-root" id="inventoryRoot">
+        
+        <!-- ============================================================ -->
+        <!-- KOLOM KIRI: STATUS ANATOMI TUBUH & INFORMASI PRIBADI          -->
+        <!-- ============================================================ -->
+        <section class="panel panel-left glass-card">
+            
+            <header class="panel-header">
+                <div class="header-left">
+                    <div class="icon-wrap-orange">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="panel-title">Kondisi Tubuh</h2>
+                        <span class="panel-subtitle">ANATOMY DIAGNOSTIC</span>
+                    </div>
+                </div>
+                <div class="status-pill status-healthy" id="overallBodyStatus">OPTIMAL</div>
+            </header>
+
+            <!-- Hologram Wireframe Body Container -->
+            <div class="body-diagnostic-container">
+                <div class="body-canvas-wrap">
+                    
+                    <!-- Callout Label: Head -->
+                    <div class="body-callout callout-head" id="calloutHead">
+                        <span class="callout-name">Head</span>
+                        <div class="callout-line"></div>
+                        <div class="callout-dot"></div>
+                        <span class="callout-val" id="valHead">100%</span>
+                    </div>
+
+                    <!-- Callout Label: Left Arm -->
+                    <div class="body-callout callout-larm" id="calloutLArm">
+                        <span class="callout-name">Left Arm</span>
+                        <div class="callout-line"></div>
+                        <div class="callout-dot"></div>
+                        <span class="callout-val" id="valLArm">100%</span>
+                    </div>
+
+                    <!-- Callout Label: Right Arm -->
+                    <div class="body-callout callout-rarm" id="calloutRArm">
+                        <div class="callout-dot"></div>
+                        <div class="callout-line"></div>
+                        <span class="callout-name">Right Arm</span>
+                        <span class="callout-val" id="valRArm">100%</span>
+                    </div>
+
+                    <!-- Callout Label: Torso -->
+                    <div class="body-callout callout-torso" id="calloutTorso">
+                        <div class="callout-dot"></div>
+                        <div class="callout-line"></div>
+                        <span class="callout-name">Torso</span>
+                        <span class="callout-val" id="valTorso">100%</span>
+                    </div>
+
+                    <!-- Callout Label: Left Leg -->
+                    <div class="body-callout callout-lleg" id="calloutLLeg">
+                        <span class="callout-name">Left Leg</span>
+                        <div class="callout-line"></div>
+                        <div class="callout-dot"></div>
+                        <span class="callout-val" id="valLLeg">100%</span>
+                    </div>
+
+                    <!-- Callout Label: Right Leg -->
+                    <div class="body-callout callout-rleg" id="calloutRLeg">
+                        <div class="callout-dot"></div>
+                        <div class="callout-line"></div>
+                        <span class="callout-name">Right Leg</span>
+                        <span class="callout-val" id="valRLeg">100%</span>
+                    </div>
+
+                    <!-- SVG Hologram Silhouette -->
+                    <svg class="hologram-silhouette" viewBox="0 0 200 360" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="orangeGlowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#ff9d00" stop-opacity="0.8" />
+                                <stop offset="50%" stop-color="#ff6600" stop-opacity="0.6" />
+                                <stop offset="100%" stop-color="#e65100" stop-opacity="0.4" />
+                            </linearGradient>
+                            <linearGradient id="bodyInnerGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" stop-color="#ff7b00" stop-opacity="0.25" />
+                                <stop offset="100%" stop-color="#ff5100" stop-opacity="0.05" />
+                            </linearGradient>
+                            <filter id="neonOrange" x="-20%" y="-20%" width="140%" height="140%">
+                                <feGaussianBlur stdDeviation="3" result="blur" />
+                                <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                            </filter>
+                        </defs>
+
+                        <!-- Hologram Background Grid Lines -->
+                        <g class="hologram-grid-bg" opacity="0.25" stroke="#ff8800" stroke-width="0.75" stroke-dasharray="2,4">
+                            <line x1="20" y1="50" x2="180" y2="50" />
+                            <line x1="15" y1="120" x2="185" y2="120" />
+                            <line x1="10" y1="190" x2="190" y2="190" />
+                            <line x1="20" y1="260" x2="180" y2="260" />
+                            <line x1="100" y1="20" x2="100" y2="340" />
+                        </g>
+
+                        <!-- Head -->
+                        <path id="partHead" class="body-part" d="M100 24 C89 24, 82 33, 82 46 C82 60, 88 70, 100 70 C112 70, 118 60, 118 46 C118 33, 111 24, 100 24 Z" 
+                              fill="url(#bodyInnerGrad)" stroke="#ff7b00" stroke-width="1.8" filter="url(#neonOrange)"/>
+                        
+                        <!-- Neck & Shoulders & Torso -->
+                        <path id="partTorso" class="body-part" d="M93 70 L107 70 L112 80 L136 88 L142 100 L134 116 L124 165 L118 195 L82 195 L76 165 L66 116 L58 100 L64 88 L88 80 Z" 
+                              fill="url(#bodyInnerGrad)" stroke="#ff7b00" stroke-width="1.8"/>
+
+                        <!-- Left Arm -->
+                        <path id="partLArm" class="body-part" d="M136 88 L152 102 L158 142 L163 182 L165 210 L157 214 L150 186 L144 146 L134 116 Z" 
+                              fill="url(#bodyInnerGrad)" stroke="#ff7b00" stroke-width="1.5"/>
+
+                        <!-- Right Arm -->
+                        <path id="partRArm" class="body-part" d="M64 88 L48 102 L42 142 L37 182 L35 210 L43 214 L50 186 L56 146 L66 116 Z" 
+                              fill="url(#bodyInnerGrad)" stroke="#ff7b00" stroke-width="1.5"/>
+
+                        <!-- Left Leg -->
+                        <path id="partLLeg" class="body-part" d="M101 195 L118 195 L124 245 L121 285 L124 330 L113 335 L108 288 L103 246 L101 195 Z" 
+                              fill="url(#bodyInnerGrad)" stroke="#ff7b00" stroke-width="1.6"/>
+
+                        <!-- Right Leg -->
+                        <path id="partRLeg" class="body-part" d="M99 195 L82 195 L76 245 L79 285 L76 330 L87 335 L92 288 L97 246 L99 195 Z" 
+                              fill="url(#bodyInnerGrad)" stroke="#ff7b00" stroke-width="1.6"/>
+
+                        <!-- Interactive Nodes / Anchor circles -->
+                        <circle cx="100" cy="46" r="3.5" fill="#ffaa00" />
+                        <circle cx="100" cy="130" r="3.5" fill="#ffaa00" />
+                        <circle cx="156" cy="150" r="3" fill="#ffaa00" />
+                        <circle cx="44" cy="150" r="3" fill="#ffaa00" />
+                        <circle cx="115" cy="265" r="3" fill="#ffaa00" />
+                        <circle cx="85" cy="265" r="3" fill="#ffaa00" />
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Kartu Informasi Pribadi (Personal Information) -->
+            <div class="personal-info-card">
+                <div class="info-card-header">
+                    <div class="orange-accent-bar"></div>
+                    <span class="info-title-text">Personal Information</span>
+                </div>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">Personal Vehicle</span>
+                        <span class="info-value text-ellipsis" id="infoVehicle">N/A</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Citizen ID</span>
+                        <span class="info-value orange-highlight" id="infoCitizenId">KKRP-00000</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Phone Number</span>
+                        <span class="info-value" id="infoPhone">555-0100</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Home Location</span>
+                        <span class="info-value text-ellipsis" id="infoHome">Kota Los Santos</span>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+
+        <!-- ============================================================ -->
+        <!-- KOLOM TENGAH: INVENTORY PEMAIN & HOTBAR (1-5)               -->
+        <!-- ============================================================ -->
+        <section class="panel panel-center glass-card">
+            
+            <header class="panel-header">
+                <div class="header-left">
+                    <div class="icon-wrap-orange">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="title-with-badge">
+                            <h2 class="panel-title" id="playerInvTitle">Player Inventory</h2>
+                            <span class="badge-tag" id="playerUcpBadge">UCP</span>
+                        </div>
+                        <span class="panel-subtitle" id="playerSubLabel">KANTUNG UTAMA</span>
+                    </div>
+                </div>
+
+                <!-- Live Capacity & Weight Progress -->
+                <div class="capacity-block">
+                    <div class="capacity-text">
+                        <span class="weight-curr" id="playerWeightVal">0.00</span>
+                        <span class="weight-div">/</span>
+                        <span class="weight-max" id="playerWeightMax">50.00 KG</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill orange-glow" id="playerWeightBar" style="width: 0%;"></div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Search Bar Filter -->
+            <div class="filter-bar">
+                <div class="search-input-wrap">
+                    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <input type="text" id="playerSearchInput" placeholder="Cari item di kantung..." autocomplete="off">
+                    <button class="btn-clear-search" id="btnClearPlayerSearch" style="display: none;">✕</button>
+                </div>
+                <div class="slot-count-indicator">
+                    <span id="playerFilledSlots">0</span>/<span id="playerTotalSlots">20</span> Slot
+                </div>
+            </div>
+
+            <!-- HOTBAR ROW (Slot 1-5 dengan Quick Keys [1] .. [5]) -->
+            <div class="hotbar-section">
+                <div class="section-tag-row">
+                    <span class="section-tag-name">Hotbar Shortcut (Tombol Cepat 1 - 5)</span>
+                    <span class="section-tag-hint">Tekan angka 1-5 di keyboard untuk menggunakan</span>
+                </div>
+                <div class="grid-slots grid-hotbar" id="hotbarSlotsContainer">
+                    <!-- Dynamic Slot 1 - 5 Injected Here -->
+                </div>
+            </div>
+
+            <!-- MAIN INVENTORY GRID (Slot 6-20) -->
+            <div class="main-inventory-section">
+                <div class="section-tag-row">
+                    <span class="section-tag-name">Penyimpanan Kantung</span>
+                    <span class="section-tag-hint">Klik item untuk membuka menu aksi</span>
+                </div>
+                <div class="grid-slots grid-main" id="playerSlotsContainer">
+                    <!-- Dynamic Slot 6 - 20 Injected Here -->
+                </div>
+            </div>
+
+            <!-- SECONDARY EXTENSION (Ransel / Backpack) -->
+            <div class="backpack-section" id="backpackSection" style="display: none;">
+                <div class="section-tag-row backpack-header">
+                    <div class="bp-left">
+                        <svg class="mini-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 10a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V10z"></path>
+                            <path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"></path>
+                        </svg>
+                        <span class="section-tag-name">Ransel / Backpack Tambahan</span>
+                    </div>
+                    <div class="bp-right">
+                        <span id="backpackWeightLabel">0.00 / 30.00 KG</span>
+                    </div>
+                </div>
+                <div class="grid-slots grid-backpack" id="backpackSlotsContainer">
+                    <!-- Dynamic Backpack Slots -->
+                </div>
+            </div>
+
+        </section>
+
+
+        <!-- ============================================================ -->
+        <!-- KOLOM KANAN: KOTAK SEKUNDER (DROP / SHOP / TRUNK / BRANKAS)  -->
+        <!-- ============================================================ -->
+        <section class="panel panel-right glass-card">
+            
+            <header class="panel-header">
+                <div class="header-left">
+                    <div class="icon-wrap-orange" id="rightContainerIcon">
+                        <!-- Default icon: Drop / Ground -->
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                            <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="title-with-badge">
+                            <h2 class="panel-title" id="rightContainerTitle">Ground (Sekitar)</h2>
+                            <span class="badge-tag mode-tag" id="rightContainerModeTag">SEKITAR</span>
+                        </div>
+                        <span class="panel-subtitle" id="rightContainerSubtitle">ITEM DI TANAH TERDEKAT</span>
+                    </div>
+                </div>
+
+                <!-- Capacity & Weight Progress for Container -->
+                <div class="capacity-block" id="rightCapacityBlock">
+                    <div class="capacity-text">
+                        <span class="weight-curr" id="rightWeightVal">0.00</span>
+                        <span class="weight-div">/</span>
+                        <span class="weight-max" id="rightWeightMax">100.00 KG</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill orange-glow" id="rightWeightBar" style="width: 0%;"></div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Container Type Tabs (Pilihan Mode: Sekitar, Bagasi, Toko, Brankas) -->
+            <div class="container-tabs" id="containerTabs">
+                <button class="tab-btn active" data-mode="ground" id="tabGround">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7z"></path>
+                        <circle cx="12" cy="9" r="2.5"></circle>
+                    </svg>
+                    Sekitar (Drop)
+                </button>
+                <button class="tab-btn" data-mode="trunk" id="tabTrunk">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"></path>
+                        <circle cx="7" cy="17" r="2"></circle>
+                        <circle cx="17" cy="17" r="2"></circle>
+                    </svg>
+                    Bagasi (Trunk)
+                </button>
+                <button class="tab-btn" data-mode="shop" id="tabShop">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="9" cy="21" r="1"></circle>
+                        <circle cx="20" cy="21" r="1"></circle>
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                    </svg>
+                    Toko (Shop)
+                </button>
+                <button class="tab-btn" data-mode="safe" id="tabSafe">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <line x1="12" y1="9" x2="12" y2="12"></line>
+                    </svg>
+                    Brankas
+                </button>
+            </div>
+
+            <!-- Search Bar Filter for Right Container -->
+            <div class="filter-bar">
+                <div class="search-input-wrap">
+                    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <input type="text" id="rightSearchInput" placeholder="Cari item di kontainer..." autocomplete="off">
+                    <button class="btn-clear-search" id="btnClearRightSearch" style="display: none;">✕</button>
+                </div>
+                <div class="slot-count-indicator">
+                    <span id="rightFilledSlots">0</span>/<span id="rightTotalSlots">20</span> Slot
+                </div>
+            </div>
+
+            <!-- RIGHT CONTAINER MAIN GRID (20 Slots) -->
+            <div class="right-slots-wrapper">
+                <div class="grid-slots grid-right" id="rightSlotsContainer">
+                    <!-- Dynamic Right Container Slots Injected Here -->
+                </div>
+            </div>
+
+            <!-- FOOTER BAR FOR RIGHT CONTAINER -->
+            <footer class="right-footer-bar">
+                <div class="footer-note" id="rightFooterNote">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="16" x2="12" y2="12"></line>
+                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                    </svg>
+                    <span>Klik item atau seret untuk memindahkan</span>
+                </div>
+                <div class="footer-actions">
+                    <button class="btn-secondary-orange" id="btnTakeAll">Ambil Semua</button>
+                </div>
+            </footer>
+
+        </section>
+
+    </main>
+
+
+    <!-- ============================================================ -->
+    <!-- FLOATING ITEM ACTION POPUP / CONTEXT MODAL                    -->
+    <!-- (Mirip persis seperti referensi: Fries, 0.25KG, Gunakan/Beri) -->
+    <!-- ============================================================ -->
+    <div class="item-context-popup" id="itemContextPopup" style="display: none;">
+        <div class="popup-header">
+            <div class="popup-item-info">
+                <h3 class="popup-item-name" id="ctxItemName">Item Name</h3>
+                <div class="popup-item-meta">
+                    <span class="meta-tag" id="ctxItemCategory">Makanan</span>
+                    <span class="meta-sep">•</span>
+                    <span class="meta-tag orange-tag" id="ctxItemWeight">0.25 KG</span>
+                    <span class="meta-sep">•</span>
+                    <span class="meta-tag" id="ctxItemQuality">100%</span>
+                </div>
+            </div>
+            <button class="popup-close-btn" id="ctxBtnClose">✕</button>
+        </div>
+
+        <!-- Stepper Jumlah / Amount Slider -->
+        <div class="popup-amount-section">
+            <label class="amount-label" for="ctxAmountInput">Jumlah:</label>
+            <div class="amount-controls">
+                <button class="btn-step" id="ctxBtnMinus">-</button>
+                <input type="number" id="ctxAmountInput" min="1" max="999" value="1">
+                <button class="btn-step" id="ctxBtnPlus">+</button>
+                <button class="btn-amount-quick" id="ctxBtnMax">Max</button>
+            </div>
+        </div>
+
+        <!-- Action Buttons Grid -->
+        <div class="popup-actions-grid" id="ctxActionsGrid">
+            <!-- Tombol Gunakan -->
+            <button class="btn-action btn-use orange-btn" id="ctxBtnUse">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                </svg>
+                <span>Gunakan (Use)</span>
+            </button>
+
+            <!-- Tombol Beri (Give) -->
+            <button class="btn-action btn-give" id="ctxBtnGive">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+                <span>Beri (Give)</span>
+            </button>
+
+            <!-- Tombol Pindah / Transfer ke Kontainer Kanan -->
+            <button class="btn-action btn-transfer" id="ctxBtnTransfer">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+                <span id="ctxTransferLabel">Pindah ke Bagasi</span>
+            </button>
+
+            <!-- Tombol Buang (Drop) -->
+            <button class="btn-action btn-drop" id="ctxBtnDrop">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                </svg>
+                <span>Buang (Drop)</span>
+            </button>
+        </div>
+    </div>
+
+
+    <!-- ============================================================ -->
+    <!-- MODAL POPUP: BERI ITEM KE PEMAIN TERDEKAT                    -->
+    <!-- ============================================================ -->
+    <div class="modal-overlay" id="giveModal" style="display: none;">
+        <div class="modal-box glass-card orange-border">
+            <header class="modal-header">
+                <h3>Beri Item ke Pemain Lain</h3>
+                <button class="modal-close-btn" id="btnGiveModalClose">✕</button>
+            </header>
+            <div class="modal-body">
+                <p class="modal-item-selected" id="giveModalItemInfo">Memberikan: <strong>Fries</strong></p>
+                <div class="form-group">
+                    <label for="giveTargetSelect">Pilih Pemain Terdekat:</label>
+                    <select id="giveTargetSelect" class="styled-select">
+                        <option value="-1">-- Memuat Pemain Terdekat... --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="giveAmountInput">Jumlah Item:</label>
+                    <input type="number" id="giveAmountInput" class="styled-input" min="1" value="1">
+                </div>
+            </div>
+            <footer class="modal-footer">
+                <button class="btn-secondary" id="btnCancelGive">Batal</button>
+                <button class="btn-primary-orange" id="btnConfirmGive">Kirim Item</button>
+            </footer>
+        </div>
+    </div>
+
+
+    <!-- ============================================================ -->
+    <!-- BOTTOM HOTKEY HINT BAR                                        -->
+    <!-- ============================================================ -->
+    <div class="inventory-bottom-hints">
+        <div class="hint-item"><span class="kbd">ESC</span> atau <span class="kbd">TAB</span> Tutup Inventory</div>
+        <div class="hint-item"><span class="kbd">1</span> - <span class="kbd">5</span> Gunakan Hotbar</div>
+        <div class="hint-item"><span class="kbd">DRAG & DROP</span> Pindah Antar Kantung & Kontainer</div>
+        <div class="hint-item server-badge">KOTA KECILKU ROLEPLAY 2026</div>
+    </div>
+
+
+    <!-- CEF Bridge Script & Core Controller -->
+    <script src="../common/cef-bridge.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
