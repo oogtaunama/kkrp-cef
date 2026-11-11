@@ -1,9 +1,32 @@
 /**
- * HUD Controller - In-Game Status & Speedometer
+ * HUD Controller - FiveM Style Circular HBE HUD
  * Kota Kecilku Roleplay
  */
 
-function parseStatusData(arg1, arg2, arg3, arg4) {
+const CIRCUMFERENCE = 100.53; // 2 * PI * 16
+
+function setRingProgress(ringId, value, itemId = null, criticalThreshold = null) {
+    const el = document.getElementById(ringId);
+    if (!el) return;
+    
+    const num = Number(value);
+    const clamped = isNaN(num) ? 0 : Math.max(0, Math.min(100, num));
+    const offset = CIRCUMFERENCE - (CIRCUMFERENCE * (clamped / 100));
+    el.style.strokeDashoffset = offset;
+
+    if (itemId && criticalThreshold !== null) {
+        const itemEl = document.getElementById(itemId);
+        if (itemEl) {
+            if (clamped <= criticalThreshold) {
+                itemEl.classList.add('critical');
+            } else {
+                itemEl.classList.remove('critical');
+            }
+        }
+    }
+}
+
+function parseStatusData(arg1, arg2, arg3, arg4, arg5, arg6) {
     if (typeof arg1 === 'object' && arg1 !== null) {
         return arg1;
     }
@@ -16,7 +39,9 @@ function parseStatusData(arg1, arg2, arg3, arg4) {
         health: Number(arg1),
         armor: Number(arg2),
         hunger: Number(arg3),
-        thirst: Number(arg4)
+        thirst: Number(arg4),
+        stress: Number(arg5),
+        sleepy: Number(arg6)
     };
 }
 
@@ -38,46 +63,42 @@ function parseVehicleData(arg1, arg2, arg3, arg4) {
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-    console.log('[CEF HUD] In-Game HUD Ready.');
+    console.log('[CEF HUD] Circular HBE HUD Initialized.');
 
-    // Listener update status player dari Pawn (Darah, Armor, Lapar, Haus)
+    // Nilai Default Awal saat HUD pertama kali dimuat
+    setRingProgress('ringHealth', 100);
+    setRingProgress('ringArmor', 100);
+    setRingProgress('ringFood', 100);
+    setRingProgress('ringWater', 100);
+    setRingProgress('ringStress', 0);
+    setRingProgress('ringSleep', 100);
+
+    // Listener update status player dari Pawn
+    // Mendukung 6 Status: Darah, Armor, Makan, Minum, Stress, Ngantuk
     CefBridge.on('server:updatePlayerStatus', (...args) => {
         const data = parseStatusData(...args);
-        
-        if (data.health !== undefined && !isNaN(data.health)) {
-            const h = Math.max(0, Math.min(100, Math.round(data.health)));
-            const elBar = document.getElementById('barHealth');
-            const elVal = document.getElementById('valHealth');
-            if (elBar) elBar.style.width = `${h}%`;
-            if (elVal) elVal.innerText = h;
-        }
 
-        if (data.armor !== undefined && !isNaN(data.armor)) {
-            const a = Math.max(0, Math.min(100, Math.round(data.armor)));
-            const elBar = document.getElementById('barArmor');
-            const elVal = document.getElementById('valArmor');
-            if (elBar) elBar.style.width = `${a}%`;
-            if (elVal) elVal.innerText = a;
+        if (data.health !== undefined) {
+            setRingProgress('ringHealth', data.health, 'itemHealth', 25);
         }
-
-        if (data.hunger !== undefined && !isNaN(data.hunger)) {
-            const hu = Math.max(0, Math.min(100, Math.round(data.hunger)));
-            const elBar = document.getElementById('barHunger');
-            const elVal = document.getElementById('valHunger');
-            if (elBar) elBar.style.width = `${hu}%`;
-            if (elVal) elVal.innerText = `${hu}%`;
+        if (data.armor !== undefined) {
+            setRingProgress('ringArmor', data.armor, 'itemArmor');
         }
-
-        if (data.thirst !== undefined && !isNaN(data.thirst)) {
-            const th = Math.max(0, Math.min(100, Math.round(data.thirst)));
-            const elBar = document.getElementById('barThirst');
-            const elVal = document.getElementById('valThirst');
-            if (elBar) elBar.style.width = `${th}%`;
-            if (elVal) elVal.innerText = `${th}%`;
+        if (data.hunger !== undefined || data.food !== undefined) {
+            setRingProgress('ringFood', data.hunger ?? data.food, 'itemFood', 20);
+        }
+        if (data.thirst !== undefined || data.water !== undefined) {
+            setRingProgress('ringWater', data.thirst ?? data.water, 'itemWater', 20);
+        }
+        if (data.stress !== undefined) {
+            setRingProgress('ringStress', data.stress, 'itemStress');
+        }
+        if (data.sleepy !== undefined || data.sleep !== undefined) {
+            setRingProgress('ringSleep', data.sleepy ?? data.sleep, 'itemSleep', 20);
         }
     });
 
-    // Listener speedometer kendaraan dari Pawn
+    // Listener speedometer kendaraan
     CefBridge.on('server:updateVehicleStatus', (...args) => {
         const data = parseVehicleData(...args);
         const speedo = document.getElementById('speedoHud');
