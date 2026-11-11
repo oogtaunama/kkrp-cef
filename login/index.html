@@ -77,10 +77,10 @@
 
                 <!-- Action Buttons -->
                 <div class="form-actions">
-                    <button type="button" class="btn btn-outline" id="btnQuit" onclick="AuthApp.handleQuit()">
+                    <button type="button" class="btn btn-outline" id="btnQuit" onclick="event.preventDefault(); AuthApp.handleQuit();">
                         Keluar
                     </button>
-                    <button type="submit" class="btn btn-primary" id="btnLoginSubmit">
+                    <button type="submit" class="btn btn-primary" id="btnLoginSubmit" onclick="event.preventDefault(); AuthApp.handleLogin();">
                         <span class="btn-text-content">Masuk Kota</span>
                         <div class="btn-spinner"></div>
                     </button>
