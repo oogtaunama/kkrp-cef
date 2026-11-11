@@ -6,7 +6,6 @@
  */
 
 const AuthApp = {
-    // State Aplikasi
     state: {
         loggedUcp: '',
         isLoading: false
@@ -18,7 +17,11 @@ const AuthApp = {
     init() {
         console.log('[AuthApp] Inisialisasi modul Login CEF.');
 
+        // 1. Minta CEF focus & cursor aktif segera
+        CefBridge.setFocus(true);
+
         this.bindBridgeListeners();
+        this.bindUiEvents();
 
         // Mode Browser Dev: isi mock UCP name jika di luar game
         if (!CefBridge.isAvailable()) {
@@ -33,6 +36,44 @@ const AuthApp = {
     },
 
     /**
+     * Pasang event listener langsung pada elemen tombol UI
+     */
+    bindUiEvents() {
+        const btnLogin = document.getElementById('btnLoginSubmit');
+        if (btnLogin) {
+            // Tangani click dan pointerdown agar responsif seketika
+            btnLogin.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                this.handleLogin();
+            });
+        }
+
+        const btnQuit = document.getElementById('btnQuit');
+        if (btnQuit) {
+            btnQuit.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                this.handleQuit();
+            });
+        }
+
+        const formLogin = document.getElementById('formLogin');
+        if (formLogin) {
+            formLogin.addEventListener('submit', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                this.handleLogin();
+            });
+        }
+
+        // Ketika user klik di sembarang area form, pastikan focus CEF tetap aktif
+        document.addEventListener('click', () => {
+            CefBridge.setFocus(true);
+        });
+    },
+
+    /**
      * Daftarkan listener event dari server (Pawn -> JS)
      */
     bindBridgeListeners() {
@@ -40,6 +81,7 @@ const AuthApp = {
         CefBridge.on('setLoginData', (ucpName) => {
             console.log('[AuthApp] Menerima data UCP dari Pawn:', ucpName);
             this.setUcpName(ucpName);
+            CefBridge.setFocus(true);
         });
 
         // 2. Respon Gagal Login dari Server
@@ -117,9 +159,10 @@ const AuthApp = {
      * Action: Tombol Keluar dari Game
      */
     handleQuit() {
-        console.log('[AuthApp] Tombol keluar ditekan, meminta kick dari game...');
+        console.log('[AuthApp] Tombol keluar ditekan, keluar dari game...');
         CefBridge.emit('cef_onPlayerLoginQuit');
         CefBridge.emit('client:onQuitGame');
+        CefBridge.exitGame();
     },
 
     /**

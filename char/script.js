@@ -10,13 +10,18 @@ const CharApp = {
         ucpName: '',
         selectedGender: 'Male',
         targetSlot: 0,
-        isLoading: false
+        isLoading: false,
+        pendingDelete: null
     },
 
     init() {
         console.log('[CharApp] Inisialisasi Modul Character Selector & Creator.');
 
+        // 1. Minta CEF focus & cursor aktif
+        CefBridge.setFocus(true);
+
         this.bindBridgeEvents();
+        this.bindStaticEvents();
 
         // Mode Dev Preview di luar game
         if (!CefBridge.isAvailable()) {
@@ -29,6 +34,39 @@ const CharApp = {
             characters: ['Xyper_William'],
             maxChars: 3,
             ucp: 'oogtaunama'
+        });
+    },
+
+    bindStaticEvents() {
+        const form = document.getElementById('formCreateChar');
+        if (form) {
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                this.submitCreateCharacter();
+            });
+        }
+
+        const btnSubmit = document.getElementById('btnSubmitChar');
+        if (btnSubmit) {
+            btnSubmit.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                this.submitCreateCharacter();
+            });
+        }
+
+        const btnBack = document.querySelector('.create-actions .btn-outline');
+        if (btnBack) {
+            btnBack.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                this.switchView('selector');
+            });
+        }
+
+        document.addEventListener('click', () => {
+            CefBridge.setFocus(true);
         });
     },
 
@@ -45,6 +83,7 @@ const CharApp = {
                 }
             }
             this.renderCharacterList(data);
+            CefBridge.setFocus(true);
         });
 
         // 2. Menerima respon error dari server
@@ -72,7 +111,7 @@ const CharApp = {
         this.state.maxChars = maxChars;
         this.state.ucpName = ucp;
 
-        // Update Counter Label (cth: "1 / 3 characters")
+        // Update Counter Label
         const charCountLabel = document.getElementById('charCountLabel');
         if (charCountLabel) {
             charCountLabel.innerText = `${characters.length} / ${maxChars} characters`;
@@ -87,12 +126,11 @@ const CharApp = {
             const card = document.createElement('div');
 
             if (charName && charName.trim() !== '') {
-                // KARTU TERISI KARAKTER (Sesuai Referensi ref_char_select.jpg)
+                // KARTU TERISI KARAKTER
                 card.className = 'char-card filled-card';
                 card.innerHTML = `
                     <div class="card-top">
                         <div class="card-emblem">
-                            <!-- Stylized Emblem Icon -->
                             <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="2">
                                 <rect x="3" y="3" width="7" height="7"></rect>
                                 <rect x="14" y="3" width="7" height="7"></rect>
@@ -106,16 +144,36 @@ const CharApp = {
                         </div>
                     </div>
                     <div class="card-actions">
-                        <button type="button" class="btn btn-primary" onclick="CharApp.selectCharacter(${i}, '${charName}')">
+                        <button type="button" class="btn btn-primary btn-spawn" data-slot="${i}" data-name="${charName}">
                             Spawn
                         </button>
-                        <button type="button" class="btn btn-danger-outline" onclick="CharApp.deleteCharacter(${i}, '${charName}')">
+                        <button type="button" class="btn btn-danger-outline btn-delete" data-slot="${i}" data-name="${charName}">
                             Hapus
                         </button>
                     </div>
                 `;
+
+                // Pasang event listener langsung pada tombol Spawn & Hapus
+                const btnSpawn = card.querySelector('.btn-spawn');
+                if (btnSpawn) {
+                    btnSpawn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        this.selectCharacter(i, charName);
+                    });
+                }
+
+                const btnDelete = card.querySelector('.btn-delete');
+                if (btnDelete) {
+                    btnDelete.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        this.deleteCharacter(i, charName);
+                    });
+                }
+
             } else {
-                // KARTU SLOT KOSONG / CREATE NEW (Dengan motif "+" persis referensi)
+                // KARTU SLOT KOSONG / CREATE NEW
                 card.className = 'char-card empty-card';
                 card.innerHTML = `
                     <div class="card-top">
@@ -133,11 +191,20 @@ const CharApp = {
                         </div>
                     </div>
                     <div class="card-actions">
-                        <button type="button" class="btn btn-outline" onclick="CharApp.openCreateChar(${i})">
+                        <button type="button" class="btn btn-outline btn-select" data-slot="${i}">
                             Select
                         </button>
                     </div>
                 `;
+
+                const btnSelect = card.querySelector('.btn-select');
+                if (btnSelect) {
+                    btnSelect.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        this.openCreateChar(i);
+                    });
+                }
             }
 
             grid.appendChild(card);
@@ -154,13 +221,24 @@ const CharApp = {
     },
 
     /**
-     * Hapus Karakter dengan konfirmasi
+     * Hapus Karakter (Tanpa window.confirm yang dapat mem-freeze CEF OSR)
      */
     deleteCharacter(slotIndex, charName) {
-        const confirmed = confirm(`Apakah Anda yakin ingin menghapus karakter "${charName.replace('_', ' ')}"? Tindakan ini tidak dapat dibatalkan.`);
-        if (confirmed) {
-            console.log(`[CharApp] Menghapus karakter: ${charName}`);
+        if (this.state.pendingDelete === charName) {
+            // Klik kedua kalinya -> konfirmasi hapus!
+            this.state.pendingDelete = null;
+            console.log(`[CharApp] Mengonfirmasi hapus karakter: ${charName}`);
+            this.showToast(`Menghapus karakter ${charName.replace('_', ' ')}...`, 'warning');
             CefBridge.emit('cef_onPlayerDeleteChar', slotIndex, charName);
+        } else {
+            // Klik pertama -> minta konfirmasi via toast
+            this.state.pendingDelete = charName;
+            this.showToast(`Klik HAPUS sekali lagi untuk konfirmasi penghapusan ${charName.replace('_', ' ')}!`, 'error', 5000);
+            setTimeout(() => {
+                if (this.state.pendingDelete === charName) {
+                    this.state.pendingDelete = null;
+                }
+            }, 5000);
         }
     },
 
@@ -188,6 +266,7 @@ const CharApp = {
             if (viewCreate) viewCreate.style.display = 'none';
             if (viewSelector) viewSelector.style.display = 'flex';
         }
+        CefBridge.setFocus(true);
     },
 
     /**
