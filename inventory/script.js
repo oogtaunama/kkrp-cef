@@ -288,12 +288,12 @@
                 valLLeg: document.getElementById('valLLeg'),
                 valRLeg: document.getElementById('valRLeg'),
                 overallBodyStatus: document.getElementById('overallBodyStatus'),
-                infoVehicle: document.getElementById('infoVehicle'),
                 infoCitizenId: document.getElementById('infoCitizenId'),
                 infoPhone: document.getElementById('infoPhone'),
-                infoHome: document.getElementById('infoHome'),
 
                 // Panel Tengah: Player Inventory
+                btnCloseInventory: document.getElementById('btnCloseInventory'),
+                btnBottomClose: document.getElementById('btnBottomClose'),
                 playerWeightVal: document.getElementById('playerWeightVal'),
                 playerWeightMax: document.getElementById('playerWeightMax'),
                 playerWeightBar: document.getElementById('playerWeightBar'),
@@ -316,7 +316,6 @@
                 rightFilledSlots: document.getElementById('rightFilledSlots'),
                 rightTotalSlots: document.getElementById('rightTotalSlots'),
                 rightSlotsContainer: document.getElementById('rightSlotsContainer'),
-                containerTabs: document.getElementById('containerTabs'),
                 btnTakeAll: document.getElementById('btnTakeAll'),
 
                 // Context Popup
@@ -355,18 +354,37 @@
         // Event Listeners (Mouse, Keyboard, Tabs, Drag)
         // =====================================================================
         bindEvents() {
+            // Click Close Buttons (Header ✕, Bottom Bar, Backdrop)
+            if (this.dom.btnCloseInventory) {
+                this.dom.btnCloseInventory.addEventListener('click', () => this.closeInventory());
+            }
+            if (this.dom.btnBottomClose) {
+                this.dom.btnBottomClose.addEventListener('click', () => this.closeInventory());
+            }
+            if (this.dom.backdrop) {
+                this.dom.backdrop.addEventListener('click', (e) => {
+                    if (e.target === this.dom.backdrop) {
+                        this.closeInventory();
+                    }
+                });
+            }
+
             // Keyboard Shortcuts: ESC / TAB / I untuk menutup
             window.addEventListener('keydown', (e) => {
                 const key = e.key;
+                const code = e.code;
+                const keyCode = e.keyCode || e.which;
 
                 // Tutup inventory jika ESC, TAB, atau I ditekan
-                if (key === 'Escape' || key === 'Tab' || key.toLowerCase() === 'i') {
-                    if (this.dom.giveModal.style.display !== 'none') {
+                if (key === 'Escape' || code === 'Escape' || keyCode === 27 ||
+                    key === 'Tab' || code === 'Tab' || keyCode === 9 ||
+                    key === 'i' || key === 'I' || code === 'KeyI' || keyCode === 73) {
+                    if (this.dom.giveModal && this.dom.giveModal.style.display !== 'none') {
                         this.closeGiveModal();
                         e.preventDefault();
                         return;
                     }
-                    if (this.dom.itemContextPopup.style.display !== 'none') {
+                    if (this.dom.itemContextPopup && this.dom.itemContextPopup.style.display !== 'none') {
                         this.closeContextMenu();
                         e.preventDefault();
                         return;
@@ -382,7 +400,7 @@
                     this.useHotbarSlot(slotIndex);
                     e.preventDefault();
                 }
-            });
+            }, true);
 
             // Klik di luar context menu untuk menutup popup
             document.addEventListener('click', (e) => {
@@ -419,16 +437,6 @@
                 this.rightSearchQuery = '';
                 this.dom.btnClearRightSearch.style.display = 'none';
                 this.renderRightSlots();
-            });
-
-            // Mode Tabs Kontainer Kanan (Sekitar, Bagasi, Toko, Brankas)
-            const tabButtons = this.dom.containerTabs.querySelectorAll('.tab-btn');
-            tabButtons.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const mode = btn.dataset.mode;
-                    this.switchRightContainerMode(mode);
-                    SoundFx.play('click');
-                });
             });
 
             // Context Menu Actions
@@ -486,7 +494,7 @@
         setupCefBridge() {
             if (!window.CefBridge) return;
 
-            // 1. Terima update inventaris lengkap dari Pawn
+            // 1. Terima update inventaris lengkap dari Pawn (backward compatible)
             window.CefBridge.on('server:openInventory', (data) => {
                 try {
                     const parsed = typeof data === 'string' ? JSON.parse(data) : data;
@@ -494,7 +502,10 @@
                     if (parsed.body) this.body = { ...this.body, ...parsed.body };
                     if (parsed.rightContainer) this.rightContainer = { ...this.rightContainer, ...parsed.rightContainer };
                     if (parsed.nearbyPlayers) this.nearbyPlayers = parsed.nearbyPlayers;
-                    
+
+                    const root = document.getElementById('inventoryRoot');
+                    if (root) root.style.display = 'grid';
+
                     this.renderAll();
                     window.CefBridge.setFocus(true);
                 } catch (e) {
@@ -502,24 +513,73 @@
                 }
             });
 
-            // 2. Terima update sebagian item pemain
-            window.CefBridge.on('server:updatePlayerInventory', (data) => {
+            // 2. Terima update terpisah item pemain (aman dari pemotongan buffer)
+            window.CefBridge.on('server:updatePlayerInventory', (slotsData, weight, maxWeight, citizenId, phone, name) => {
                 try {
-                    const parsed = typeof data === 'string' ? JSON.parse(data) : data;
-                    if (parsed.slots) this.player.slots = parsed.slots;
-                    if (parsed.weight !== undefined) this.player.weight = parsed.weight;
-                    if (parsed.maxWeight !== undefined) this.player.maxWeight = parsed.maxWeight;
-                    this.renderPlayerSlots();
+                    let slots = slotsData;
+                    if (typeof slotsData === 'string') {
+                        slots = JSON.parse(slotsData);
+                    }
+                    if (Array.isArray(slots)) {
+                        this.player.slots = slots;
+                    }
+                    if (weight !== undefined) this.player.weight = parseFloat(weight) || 0;
+                    if (maxWeight !== undefined) this.player.maxWeight = parseFloat(maxWeight) || 50;
+                    if (citizenId !== undefined) this.player.citizenId = citizenId;
+                    if (phone !== undefined) this.player.phone = phone;
+                    if (name !== undefined) this.player.name = name;
+
+                    const root = document.getElementById('inventoryRoot');
+                    if (root) root.style.display = 'grid';
+
                     this.renderPlayerStats();
+                    this.renderPlayerSlots();
+                    window.CefBridge.setFocus(true);
                 } catch (e) {
-                    console.error('[CEF BRIDGE] Gagal update player inventory:', e);
+                    console.error('[CEF BRIDGE] Gagal parse server:updatePlayerInventory:', e);
                 }
             });
 
-            // 3. Terima update kontainer sekunder (drop/trunk/shop)
-            window.CefBridge.on('server:updateRightContainer', (data) => {
+            // 3. Terima update kontainer sekunder (ground / trunk)
+            window.CefBridge.on('server:updateRightContainer', (mode, title, subtitle, weight, maxWeight, slotsData) => {
                 try {
-                    const parsed = typeof data === 'string' ? JSON.parse(data) : data;
+                    let slots = slotsData;
+                    if (typeof slotsData === 'string') {
+                        slots = JSON.parse(slotsData);
+                    }
+                    this.rightContainer.mode = mode || 'ground';
+                    this.rightContainer.title = title || 'Ground (Sekitar)';
+                    this.rightContainer.subtitle = subtitle || 'ITEM DI TANAH TERDEKAT';
+                    this.rightContainer.weight = parseFloat(weight) || 0;
+                    this.rightContainer.maxWeight = parseFloat(maxWeight) || 100;
+                    if (Array.isArray(slots)) {
+                        this.rightContainer.slots = slots;
+                    }
+
+                    this.renderRightContainerHeader();
+                    this.renderRightSlots();
+                } catch (e) {
+                    console.error('[CEF BRIDGE] Gagal parse server:updateRightContainer:', e);
+                }
+            });
+
+            // 4. Update status kesehatan tubuh
+            window.CefBridge.on('server:updateBodyStatus', (hp, armor) => {
+                const health = Math.round(parseFloat(hp) || 100);
+                this.body.head = health;
+                this.body.torso = health;
+                this.body.lArm = health;
+                this.body.rArm = health;
+                this.body.lLeg = health;
+                this.body.rLeg = health;
+                this.renderBodyStatus();
+            });
+
+            // 5. Tutup inventaris dari server
+            window.CefBridge.on('server:closeInventory', () => {
+                this.closeInventory(false);
+            });
+        },
                     this.rightContainer = { ...this.rightContainer, ...parsed };
                     this.renderRightContainerHeader();
                     this.renderRightSlots();
@@ -844,17 +904,15 @@
             // Live Capacity
             const curr = parseFloat(this.player.weight || 0).toFixed(2);
             const max = parseFloat(this.player.maxWeight || 50).toFixed(2);
-            this.dom.playerWeightVal.textContent = curr;
-            this.dom.playerWeightMax.textContent = `${max} KG`;
+            if (this.dom.playerWeightVal) this.dom.playerWeightVal.textContent = curr;
+            if (this.dom.playerWeightMax) this.dom.playerWeightMax.textContent = `${max} KG`;
 
             const pct = Math.min(100, Math.max(0, (curr / max) * 100));
-            this.dom.playerWeightBar.style.width = `${pct}%`;
+            if (this.dom.playerWeightBar) this.dom.playerWeightBar.style.width = `${pct}%`;
 
-            // Personal Information
-            this.dom.infoVehicle.textContent = this.player.vehicle || 'Tidak Ada';
-            this.dom.infoCitizenId.textContent = this.player.citizenId || 'N/A';
-            this.dom.infoPhone.textContent = this.player.phone || 'N/A';
-            this.dom.infoHome.textContent = this.player.home || 'Tidak Ada';
+            // Personal Information (Hanya ID Karakter dan No. HP)
+            if (this.dom.infoCitizenId) this.dom.infoCitizenId.textContent = this.player.citizenId || 'N/A';
+            if (this.dom.infoPhone) this.dom.infoPhone.textContent = this.player.phone || 'N/A';
         },
 
         renderBodyStatus() {
@@ -1457,11 +1515,17 @@
          */
         closeInventory(notifyServer = true) {
             SoundFx.play('click');
+            const root = document.getElementById('inventoryRoot');
+            if (root) root.style.display = 'none';
+
             if (notifyServer && window.CefBridge && window.CefBridge.isAvailable()) {
                 window.CefBridge.emit('cef_onInventoryClose');
                 window.CefBridge.setFocus(false);
             } else {
                 this.showToast('Inventory Ditutup. (Tekan I untuk buka kembali)', 'toast-success');
+                setTimeout(() => {
+                    if (root) root.style.display = 'grid';
+                }, 1500);
             }
         },
 

@@ -163,22 +163,14 @@
                     <div class="orange-accent-bar"></div>
                     <span class="info-title-text">Personal Information</span>
                 </div>
-                <div class="info-grid">
+                <div class="info-grid info-grid-2">
                     <div class="info-item">
-                        <span class="info-label">Personal Vehicle</span>
-                        <span class="info-value text-ellipsis" id="infoVehicle">N/A</span>
+                        <span class="info-label">ID Karakter</span>
+                        <span class="info-value orange-highlight" id="infoCitizenId">0</span>
                     </div>
                     <div class="info-item">
-                        <span class="info-label">Citizen ID</span>
-                        <span class="info-value orange-highlight" id="infoCitizenId">KKRP-00000</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">Phone Number</span>
-                        <span class="info-value" id="infoPhone">555-0100</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">Home Location</span>
-                        <span class="info-value text-ellipsis" id="infoHome">Kota Los Santos</span>
+                        <span class="info-label">No. HP</span>
+                        <span class="info-value" id="infoPhone">N/A</span>
                     </div>
                 </div>
             </div>
@@ -200,24 +192,32 @@
                         </svg>
                     </div>
                     <div>
-                        <div class="title-with-badge">
-                            <h2 class="panel-title" id="playerInvTitle">Player Inventory</h2>
-                            <span class="badge-tag" id="playerUcpBadge">UCP</span>
-                        </div>
+                        <h2 class="panel-title" id="playerInvTitle">Player Inventory</h2>
                         <span class="panel-subtitle" id="playerSubLabel">KANTUNG UTAMA</span>
                     </div>
                 </div>
 
-                <!-- Live Capacity & Weight Progress -->
-                <div class="capacity-block">
-                    <div class="capacity-text">
-                        <span class="weight-curr" id="playerWeightVal">0.00</span>
-                        <span class="weight-div">/</span>
-                        <span class="weight-max" id="playerWeightMax">50.00 KG</span>
+                <div class="header-right-actions">
+                    <!-- Live Capacity & Weight Progress -->
+                    <div class="capacity-block">
+                        <div class="capacity-text">
+                            <span class="weight-curr" id="playerWeightVal">0.00</span>
+                            <span class="weight-div">/</span>
+                            <span class="weight-max" id="playerWeightMax">50.00 KG</span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill orange-glow" id="playerWeightBar" style="width: 0%;"></div>
+                        </div>
                     </div>
-                    <div class="progress-bar-bg">
-                        <div class="progress-bar-fill orange-glow" id="playerWeightBar" style="width: 0%;"></div>
-                    </div>
+
+                    <!-- Tombol Tutup Inventory (Clickable & Prominent) -->
+                    <button class="btn-close-inv" id="btnCloseInventory" title="Tutup Inventory (ESC / TAB)">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                        <span>TUTUP</span>
+                    </button>
                 </div>
             </header>
 
@@ -316,41 +316,6 @@
                     </div>
                 </div>
             </header>
-
-            <!-- Container Type Tabs (Pilihan Mode: Sekitar, Bagasi, Toko, Brankas) -->
-            <div class="container-tabs" id="containerTabs">
-                <button class="tab-btn active" data-mode="ground" id="tabGround">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7z"></path>
-                        <circle cx="12" cy="9" r="2.5"></circle>
-                    </svg>
-                    Sekitar (Drop)
-                </button>
-                <button class="tab-btn" data-mode="trunk" id="tabTrunk">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"></path>
-                        <circle cx="7" cy="17" r="2"></circle>
-                        <circle cx="17" cy="17" r="2"></circle>
-                    </svg>
-                    Bagasi (Trunk)
-                </button>
-                <button class="tab-btn" data-mode="shop" id="tabShop">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="9" cy="21" r="1"></circle>
-                        <circle cx="20" cy="21" r="1"></circle>
-                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                    </svg>
-                    Toko (Shop)
-                </button>
-                <button class="tab-btn" data-mode="safe" id="tabSafe">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="3" y="3" width="18" height="18" rx="2"></rect>
-                        <circle cx="12" cy="12" r="3"></circle>
-                        <line x1="12" y1="9" x2="12" y2="12"></line>
-                    </svg>
-                    Brankas
-                </button>
-            </div>
 
             <!-- Search Bar Filter for Right Container -->
             <div class="filter-bar">
@@ -500,9 +465,9 @@
     <!-- BOTTOM HOTKEY HINT BAR                                        -->
     <!-- ============================================================ -->
     <div class="inventory-bottom-hints">
-        <div class="hint-item"><span class="kbd">ESC</span> atau <span class="kbd">TAB</span> Tutup Inventory</div>
+        <button class="hint-close-btn" id="btnBottomClose"><span class="kbd">ESC</span> Tutup Inventory</button>
         <div class="hint-item"><span class="kbd">1</span> - <span class="kbd">5</span> Gunakan Hotbar</div>
-        <div class="hint-item"><span class="kbd">DRAG & DROP</span> Pindah Antar Kantung & Kontainer</div>
+        <div class="hint-item"><span class="kbd">DRAG & DROP</span> Pindah Item</div>
         <div class="hint-item server-badge">KOTA KECILKU ROLEPLAY 2026</div>
     </div>
 
