@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kota Kecilku Roleplay - Circular HBE HUD</title>
-    <!-- Common & Module Stylesheets -->
+    <title>Kota Kecilku - NoPixel 4.0 Inspired QB HUD</title>
+    <!-- Common & HUD Stylesheet -->
     <link rel="stylesheet" href="../common/common.css">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -12,124 +12,217 @@
     <div class="hud-container">
         
         <!-- ============================================================ -->
-        <!-- BOTTOM CENTER CIRCULAR HBE HUD (FiveM Style Reference)       -->
-        <!-- Darah, Armor, Makan, Minum, Stress, Ngantuk                 -->
+        <!-- SPEEDOMETER (NoPixel 4.0 Style - Tampil saat di kendaraan)    -->
         <!-- ============================================================ -->
-        <div class="bottom-center-hud" id="mainHbeHud">
-            
-            <!-- 1. HEALTH / DARAH -->
-            <div class="hud-circle-item health" id="itemHealth">
-                <div class="circle-wrapper">
-                    <svg class="circle-svg" viewBox="0 0 36 36">
-                        <circle class="circle-bg" cx="18" cy="18" r="16"></circle>
-                        <circle class="circle-progress" id="ringHealth" cx="18" cy="18" r="16"></circle>
-                    </svg>
-                    <!-- Heart Icon -->
-                    <svg class="circle-icon" viewBox="0 0 24 24">
-                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" fill="#ff4757" stroke="none"/>
-                    </svg>
-                </div>
-                <span class="hud-label">HEALTH</span>
-            </div>
+        <div class="speedo-wrapper" id="speedoHud" style="display: none;">
+            <div class="speedo-inner glass-card">
+                
+                <!-- Baris Atas: Seatbelt / Engine Warning & Fuel Icon -->
+                <div class="speedo-top-row">
+                    <div class="veh-status-icons">
+                        <!-- Seatbelt / Rocket Icon -->
+                        <div class="status-badge active-seatbelt" id="badgeBelt" title="Seatbelt">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                                <path d="M10 2a2 2 0 0 0-2 2v2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-3V4a2 2 0 0 0-2-2h-4zm0 2h4v2h-4V4zM5 8h14v10H5V8zm7 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6zm0 2a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                            </svg>
+                        </div>
+                        <!-- Engine Check Icon -->
+                        <div class="status-badge" id="badgeEngine" title="Engine">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                                <path d="M7 4V2H4v2H2v6h2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4h2v-6h-2V4h-3V2h-3v2H7zm0 2h10v12H6V6h1zm3 3v2h4V9h-4zm0 4v2h4v-2h-4z"/>
+                            </svg>
+                        </div>
+                    </div>
 
-            <!-- 2. ARMOR / ROMPI -->
-            <div class="hud-circle-item armor" id="itemArmor">
-                <div class="circle-wrapper">
-                    <svg class="circle-svg" viewBox="0 0 36 36">
-                        <circle class="circle-bg" cx="18" cy="18" r="16"></circle>
-                        <circle class="circle-progress" id="ringArmor" cx="18" cy="18" r="16"></circle>
-                    </svg>
-                    <!-- Shield Icon -->
-                    <svg class="circle-icon" viewBox="0 0 24 24">
-                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill="#1e90ff" stroke="none"/>
-                    </svg>
-                </div>
-                <span class="hud-label">ARMOR</span>
-            </div>
+                    <div class="speed-unit-wrap">
+                        <span class="unit-label">KPH</span>
+                    </div>
 
-            <!-- 3. FOOD / MAKAN -->
-            <div class="hud-circle-item food" id="itemFood">
-                <div class="circle-wrapper">
-                    <svg class="circle-svg" viewBox="0 0 36 36">
-                        <circle class="circle-bg" cx="18" cy="18" r="16"></circle>
-                        <circle class="circle-progress" id="ringFood" cx="18" cy="18" r="16"></circle>
-                    </svg>
-                    <!-- Burger / Food Icon -->
-                    <svg class="circle-icon" viewBox="0 0 24 24" fill="none" stroke="#ffa502" stroke-width="2">
-                        <path d="M3 11c0-3.3 3.6-6 9-6s9 2.7 9 6H3z"/>
-                        <path d="M4 14h16"/>
-                        <path d="M5 17h14c0 2.2-2.7 4-7 4s-7-1.8-7-4z"/>
-                    </svg>
+                    <div class="fuel-icon-wrap" id="fuelBadge" title="Fuel">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M19 4h-1V3c0-.55-.45-1-1-1H7c-.55 0-1 .45-1 1v1H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zM7 4h10v4H7V4zm12 16H5V10h14v10zm-7-7c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                        </svg>
+                    </div>
                 </div>
-                <span class="hud-label">FOOD</span>
-            </div>
 
-            <!-- 4. WATER / MINUM -->
-            <div class="hud-circle-item water" id="itemWater">
-                <div class="circle-wrapper">
-                    <svg class="circle-svg" viewBox="0 0 36 36">
-                        <circle class="circle-bg" cx="18" cy="18" r="16"></circle>
-                        <circle class="circle-progress" id="ringWater" cx="18" cy="18" r="16"></circle>
-                    </svg>
-                    <!-- Water Droplet Icon -->
-                    <svg class="circle-icon" viewBox="0 0 24 24">
-                        <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" fill="#00d2d3" stroke="none"/>
-                    </svg>
+                <!-- Baris Tengah: Gear Box, Speed Display & Vertical Fuel Bar -->
+                <div class="speedo-mid-row">
+                    <!-- Gear Box -->
+                    <div class="gear-box" id="gearBox">
+                        <span class="gear-val" id="gearVal">1</span>
+                        <div class="gear-cog">
+                            <svg viewBox="0 0 24 24" width="11" height="11" fill="currentColor">
+                                <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.49.49 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54A.484.484 0 0 0 13.9 2h-3.8a.49.49 0 0 0-.48.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 0 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.8c.24 0 .44-.17.48-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Digital Speed Number (3 Digit 000 Format) -->
+                    <div class="speed-display">
+                        <span class="speed-val" id="speedVal">000</span>
+                    </div>
+
+                    <!-- Vertical Fuel Gauge Bar -->
+                    <div class="fuel-track" title="Fuel Level">
+                        <div class="fuel-fill" id="fuelFill" style="height: 100%;"></div>
+                    </div>
                 </div>
-                <span class="hud-label">WATER</span>
-            </div>
 
-            <!-- 5. STRESS -->
-            <div class="hud-circle-item stress" id="itemStress">
-                <div class="circle-wrapper">
-                    <svg class="circle-svg" viewBox="0 0 36 36">
-                        <circle class="circle-bg" cx="18" cy="18" r="16"></circle>
-                        <circle class="circle-progress" id="ringStress" cx="18" cy="18" r="16"></circle>
-                    </svg>
-                    <!-- Brain / Pulse Icon -->
-                    <svg class="circle-icon" viewBox="0 0 24 24" fill="none" stroke="#e056fd" stroke-width="2">
-                        <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-2.04z"/>
-                        <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-2.04z"/>
-                    </svg>
+                <!-- Baris Bawah: Segmented RPM / Speed Ticks -->
+                <div class="rpm-ticks-wrap" id="rpmBar">
+                    <div class="tick" data-i="0"></div>
+                    <div class="tick" data-i="1"></div>
+                    <div class="tick" data-i="2"></div>
+                    <div class="tick" data-i="3"></div>
+                    <div class="tick" data-i="4"></div>
+                    <div class="tick" data-i="5"></div>
+                    <div class="tick" data-i="6"></div>
+                    <div class="tick" data-i="7"></div>
+                    <div class="tick" data-i="8"></div>
+                    <div class="tick" data-i="9"></div>
+                    <div class="tick" data-i="10"></div>
+                    <div class="tick" data-i="11"></div>
+                    <div class="tick" data-i="12"></div>
+                    <div class="tick" data-i="13"></div>
+                    <div class="tick" data-i="14"></div>
+                    <div class="tick" data-i="15"></div>
                 </div>
-                <span class="hud-label">STRESS</span>
-            </div>
 
-            <!-- 6. SLEEPY / NGANTUK -->
-            <div class="hud-circle-item sleep" id="itemSleep">
-                <div class="circle-wrapper">
-                    <svg class="circle-svg" viewBox="0 0 36 36">
-                        <circle class="circle-bg" cx="18" cy="18" r="16"></circle>
-                        <circle class="circle-progress" id="ringSleep" cx="18" cy="18" r="16"></circle>
-                    </svg>
-                    <!-- Moon Icon -->
-                    <svg class="circle-icon" viewBox="0 0 24 24">
-                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" fill="#f1c40f" stroke="none"/>
-                    </svg>
-                </div>
-                <span class="hud-label">SLEEP</span>
             </div>
-
         </div>
 
         <!-- ============================================================ -->
-        <!-- SPEEDOMETER (FiveM Style Above Bottom HUD)                    -->
+        <!-- HEXAGONAL STATUS HUD (HBE) - NoPixel 4.0 Inspired             -->
+        <!-- Voice, Health, Armor, Food, Water, Stress, Sleep             -->
         <!-- ============================================================ -->
-        <div class="speedo-hud glass-panel" id="speedoHud" style="display: none;">
-            <div class="speedo-main">
-                <span class="speed-num" id="speedVal">0</span>
-                <span class="speed-unit">KM/H</span>
-            </div>
-            <div class="speedo-meta">
-                <div class="meta-item">
-                    <span class="label">FUEL</span>
-                    <span class="val fuel" id="fuelVal">100%</span>
+        <div class="nopixel-hbe-wrap" id="hbeHud">
+            
+            <!-- 1. VOICE / MIC -->
+            <div class="hex-item voice active" id="hexVoice">
+                <div class="hex-shape">
+                    <svg class="hex-svg" viewBox="0 0 40 44">
+                        <polygon class="hex-bg" points="20,2 38,12 38,32 20,42 2,32 2,12" />
+                        <clipPath id="clipVoice">
+                            <rect id="rectVoice" x="0" y="0" width="40" height="44" />
+                        </clipPath>
+                        <polygon class="hex-fill" points="20,2 38,12 38,32 20,42 2,32 2,12" clip-path="url(#clipVoice)" />
+                        <polygon class="hex-border" points="20,2 38,12 38,32 20,42 2,32 2,12" />
+                    </svg>
+                    <!-- Mic Icon -->
+                    <svg class="hex-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/>
+                    </svg>
                 </div>
-                <div class="meta-item">
-                    <span class="label">GEAR</span>
-                    <span class="val gear" id="gearVal">D</span>
+            </div>
+
+            <!-- 2. HEALTH / DARAH -->
+            <div class="hex-item health" id="hexHealth">
+                <div class="hex-shape">
+                    <svg class="hex-svg" viewBox="0 0 40 44">
+                        <polygon class="hex-bg" points="20,2 38,12 38,32 20,42 2,32 2,12" />
+                        <clipPath id="clipHealth">
+                            <rect id="rectHealth" x="0" y="0" width="40" height="44" />
+                        </clipPath>
+                        <polygon class="hex-fill" points="20,2 38,12 38,32 20,42 2,32 2,12" clip-path="url(#clipHealth)" />
+                        <polygon class="hex-border" points="20,2 38,12 38,32 20,42 2,32 2,12" />
+                    </svg>
+                    <!-- Heart Icon -->
+                    <svg class="hex-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    </svg>
                 </div>
             </div>
+
+            <!-- 3. ARMOR / ROMPI -->
+            <div class="hex-item armor" id="hexArmor">
+                <div class="hex-shape">
+                    <svg class="hex-svg" viewBox="0 0 40 44">
+                        <polygon class="hex-bg" points="20,2 38,12 38,32 20,42 2,32 2,12" />
+                        <clipPath id="clipArmor">
+                            <rect id="rectArmor" x="0" y="0" width="40" height="44" />
+                        </clipPath>
+                        <polygon class="hex-fill" points="20,2 38,12 38,32 20,42 2,32 2,12" clip-path="url(#clipArmor)" />
+                        <polygon class="hex-border" points="20,2 38,12 38,32 20,42 2,32 2,12" />
+                    </svg>
+                    <!-- Shield Icon -->
+                    <svg class="hex-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- 4. FOOD / MAKAN -->
+            <div class="hex-item food" id="hexFood">
+                <div class="hex-shape">
+                    <svg class="hex-svg" viewBox="0 0 40 44">
+                        <polygon class="hex-bg" points="20,2 38,12 38,32 20,42 2,32 2,12" />
+                        <clipPath id="clipFood">
+                            <rect id="rectFood" x="0" y="0" width="40" height="44" />
+                        </clipPath>
+                        <polygon class="hex-fill" points="20,2 38,12 38,32 20,42 2,32 2,12" clip-path="url(#clipFood)" />
+                        <polygon class="hex-border" points="20,2 38,12 38,32 20,42 2,32 2,12" />
+                    </svg>
+                    <!-- Burger / Food Icon -->
+                    <svg class="hex-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M21.9 12.2C21.4 6.8 17.2 4 12 4S2.6 6.8 2.1 12.2c-.1.8.6 1.8 1.5 1.8h16.8c.9 0 1.6-1 1.5-1.8zM4.1 12c.5-4.1 3.7-6 7.9-6s7.4 1.9 7.9 6H4.1zM3 16h18v2H3zm2 3h14c1.1 0 2-.9 2-2H3c0 1.1.9 2 2 2z"/>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- 5. WATER / MINUM -->
+            <div class="hex-item water" id="hexWater">
+                <div class="hex-shape">
+                    <svg class="hex-svg" viewBox="0 0 40 44">
+                        <polygon class="hex-bg" points="20,2 38,12 38,32 20,42 2,32 2,12" />
+                        <clipPath id="clipWater">
+                            <rect id="rectWater" x="0" y="0" width="40" height="44" />
+                        </clipPath>
+                        <polygon class="hex-fill" points="20,2 38,12 38,32 20,42 2,32 2,12" clip-path="url(#clipWater)" />
+                        <polygon class="hex-border" points="20,2 38,12 38,32 20,42 2,32 2,12" />
+                    </svg>
+                    <!-- Water Droplet Icon -->
+                    <svg class="hex-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- 6. STRESS -->
+            <div class="hex-item stress" id="hexStress">
+                <div class="hex-shape">
+                    <svg class="hex-svg" viewBox="0 0 40 44">
+                        <polygon class="hex-bg" points="20,2 38,12 38,32 20,42 2,32 2,12" />
+                        <clipPath id="clipStress">
+                            <rect id="rectStress" x="0" y="44" width="40" height="44" />
+                        </clipPath>
+                        <polygon class="hex-fill" points="20,2 38,12 38,32 20,42 2,32 2,12" clip-path="url(#clipStress)" />
+                        <polygon class="hex-border" points="20,2 38,12 38,32 20,42 2,32 2,12" />
+                    </svg>
+                    <!-- Brain / Lightning Icon -->
+                    <svg class="hex-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M7 2v11h3v9l7-12h-4l4-8z"/>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- 7. SLEEP / NGANTUK -->
+            <div class="hex-item sleep" id="hexSleep">
+                <div class="hex-shape">
+                    <svg class="hex-svg" viewBox="0 0 40 44">
+                        <polygon class="hex-bg" points="20,2 38,12 38,32 20,42 2,32 2,12" />
+                        <clipPath id="clipSleep">
+                            <rect id="rectSleep" x="0" y="0" width="40" height="44" />
+                        </clipPath>
+                        <polygon class="hex-fill" points="20,2 38,12 38,32 20,42 2,32 2,12" clip-path="url(#clipSleep)" />
+                        <polygon class="hex-border" points="20,2 38,12 38,32 20,42 2,32 2,12" />
+                    </svg>
+                    <!-- Moon / Sleep Icon -->
+                    <svg class="hex-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12.3 2a10 10 0 0 0-.19 20 10 10 0 0 0 8.7-5.11 1 1 0 0 0-1.1-1.44 8 8 0 1 1-8.85-12.35 1 1 0 0 0 1.44-1.1z"/>
+                    </svg>
+                </div>
+            </div>
+
         </div>
 
     </div>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kota Kecilku Roleplay - Character Management</title>
+    <!-- Common & Module Stylesheets -->
+    <link rel="stylesheet" href="../common/common.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Overlay Backdrop -->
+    <div class="viewport-backdrop"></div>
+
+    <!-- Alert / Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <main class="char-main-container">
+        
+        <!-- ============================================================ -->
+        <!-- VIEW 1: CHARACTER SELECTOR (NoPixel FiveM Inspired)          -->
+        <!-- ============================================================ -->
+        <section class="selector-view" id="viewSelector">
+            
+            <!-- Header Section -->
+            <div class="selector-header">
+                <h1 class="selector-title">Character Selector</h1>
+                <p class="selector-subtitle">
+                    <span class="server-brand">KOTA KECILKU</span> • <span id="charCountLabel">1 / 3 characters</span>
+                </p>
+                <div class="header-divider"></div>
+            </div>
+
+            <!-- Horizontal Cards Row (Slots 1, 2, 3) -->
+            <div class="cards-grid" id="cardsGrid">
+                <!-- Slot cards will be dynamically injected by script.js -->
+            </div>
+
+        </section>
+
+
+        <!-- ============================================================ -->
+        <!-- VIEW 2: CREATE IDENTITY (FiveM Create Identity Inspired)     -->
+        <!-- ============================================================ -->
+        <section class="create-view" id="viewCreate" style="display: none;">
+            <div class="create-card glass-panel">
+                
+                <header class="create-header">
+                    <h2 class="create-title">Create Identity</h2>
+                    <p class="create-subtitle">KOTA KECILKU ROLEPLAY</p>
+                </header>
+
+                <form id="formCreateChar" class="create-form" autocomplete="off" onsubmit="event.preventDefault(); CharApp.submitCreateCharacter();">
+                    
+                    <!-- First Name & Last Name (Side by Side) -->
+                    <div class="form-row">
+                        <div class="input-group">
+                            <label for="charFirstName">Nama Depan</label>
+                            <input type="text" id="charFirstName" class="form-input" placeholder="e.g. Raditya" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="charLastName">Nama Belakang</label>
+                            <input type="text" id="charLastName" class="form-input" placeholder="e.g. Pratama" required>
+                        </div>
+                    </div>
+
+                    <!-- Date of Birth & Origin -->
+                    <div class="form-row">
+                        <div class="input-group">
+                            <label for="charDob">Tanggal Lahir (hh/bb/tttt)</label>
+                            <input type="text" id="charDob" class="form-input" placeholder="25/08/2000" maxlength="10" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="charOrigin">Asal / Kota Kelahiran</label>
+                            <input type="text" id="charOrigin" class="form-input" placeholder="Indonesia" required>
+                        </div>
+                    </div>
+
+                    <!-- Height & Weight -->
+                    <div class="form-row">
+                        <div class="input-group">
+                            <label for="charHeight">Tinggi Badan (cm)</label>
+                            <input type="number" id="charHeight" class="form-input" placeholder="175" min="120" max="220" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="charWeight">Berat Badan (kg)</label>
+                            <input type="number" id="charWeight" class="form-input" placeholder="70" min="40" max="150" required>
+                        </div>
+                    </div>
+
+                    <!-- Gender Selector (Pills) -->
+                    <div class="gender-section">
+                        <label class="gender-label">Jenis Kelamin</label>
+                        <div class="gender-pills">
+                            <button type="button" class="gender-btn active" id="btnGenderMale" onclick="CharApp.setGender('Male')">
+                                <span class="gender-icon">♂</span> Laki-Laki
+                            </button>
+                            <button type="button" class="gender-btn" id="btnGenderFemale" onclick="CharApp.setGender('Female')">
+                                <span class="gender-icon">♀</span> Perempuan
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="create-actions">
+                        <button type="button" class="btn btn-outline" onclick="CharApp.switchView('selector')">
+                            Kembali
+                        </button>
+                        <button type="submit" class="btn btn-primary" id="btnSubmitChar">
+                            <span class="btn-text">Buat Karakter</span>
+                            <div class="btn-spinner"></div>
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Load CEF Bridge & Char Script -->
+    <script src="../common/cef-bridge.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

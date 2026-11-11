@@ -1,7 +1,35 @@
 /* ==========================================================================
-   FIVEM STYLE CIRCULAR HBE HUD (Bottom Center)
+   NOPIXEL 4.0 INSPIRED QB HUD & SPEEDOMETER
    Kota Kecilku Roleplay
+   Tema Warna: Oranye / Oranye Muda (#f97316, #fb923c, #ea580c)
    ========================================================================== */
+
+:root {
+    --primary-orange: #f97316;
+    --light-orange: #fb923c;
+    --dark-orange: #ea580c;
+    --glow-orange: rgba(249, 115, 22, 0.55);
+    --glow-light-orange: rgba(251, 146, 60, 0.45);
+    
+    --bg-dark-glass: rgba(12, 17, 29, 0.82);
+    --bg-card-glass: rgba(15, 23, 42, 0.78);
+    --border-glass: rgba(255, 255, 255, 0.12);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    user-select: none;
+}
+
+body {
+    background: transparent;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+}
 
 .hud-container {
     position: fixed;
@@ -9,218 +37,350 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    pointer-events: none; /* Klik tembus ke GTA SA */
-    overflow: hidden;
-}
-
-/* Kapsul Utama HUD Tengah Bawah */
-.bottom-center-hud {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 10px 18px;
-    background: rgba(10, 15, 26, 0.78);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 24px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-    animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-@keyframes slideUpFade {
-    from {
-        opacity: 0;
-        transform: translate(-50%, 20px);
-    }
-    to {
-        opacity: 1;
-        transform: translate(-50%, 0);
-    }
-}
-
-/* Masing-masing Lingkaran Status */
-.hud-circle-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 5px;
-}
-
-.circle-wrapper {
-    position: relative;
-    width: 44px;
-    height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.circle-svg {
-    width: 44px;
-    height: 44px;
-    transform: rotate(-90deg); /* Mulai dari jam 12 */
-}
-
-.circle-bg {
-    fill: rgba(15, 23, 42, 0.88);
-    stroke: rgba(255, 255, 255, 0.08);
-    stroke-width: 3.2;
-}
-
-.circle-progress {
-    fill: none;
-    stroke-width: 3.2;
-    stroke-linecap: round;
-    /* Circumference = 2 * PI * 16 ≈ 100.53 */
-    stroke-dasharray: 100.53;
-    stroke-dashoffset: 0;
-    transition: stroke-dashoffset 0.35s ease, stroke 0.3s ease;
-}
-
-/* Warna Ring Progress FiveM */
-.health .circle-progress {
-    stroke: #ff4757;
-    filter: drop-shadow(0 0 5px rgba(255, 71, 87, 0.6));
-}
-
-.armor .circle-progress {
-    stroke: #1e90ff;
-    filter: drop-shadow(0 0 5px rgba(30, 144, 255, 0.6));
-}
-
-.food .circle-progress {
-    stroke: #ffa502;
-    filter: drop-shadow(0 0 5px rgba(255, 165, 2, 0.6));
-}
-
-.water .circle-progress {
-    stroke: #00d2d3;
-    filter: drop-shadow(0 0 5px rgba(0, 210, 211, 0.6));
-}
-
-.stress .circle-progress {
-    stroke: #e056fd;
-    filter: drop-shadow(0 0 5px rgba(224, 86, 253, 0.6));
-}
-
-.sleep .circle-progress {
-    stroke: #f1c40f;
-    filter: drop-shadow(0 0 5px rgba(241, 196, 15, 0.6));
-}
-
-/* Icon di Dalam Lingkaran */
-.circle-icon {
-    position: absolute;
-    width: 17px;
-    height: 17px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    pointer-events: none;
-    transition: transform 0.2s ease;
-}
-
-/* Label Kecil di Bawah Lingkaran */
-.hud-label {
-    font-size: 8px;
-    font-weight: 700;
-    letter-spacing: 0.8px;
-    color: rgba(255, 255, 255, 0.75);
-    text-transform: uppercase;
-    font-family: 'Poppins', -apple-system, sans-serif;
-    padding: 2px 5px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 4px;
-}
-
-/* Warning Pulse saat Darah/Lapar/Haus Kritis */
-.hud-circle-item.critical .circle-wrapper {
-    animation: pulseCritical 1s infinite alternate;
-}
-
-@keyframes pulseCritical {
-    0% { transform: scale(1); filter: drop-shadow(0 0 2px rgba(239, 68, 68, 0.3)); }
-    100% { transform: scale(1.08); filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.9)); }
+    pointer-events: none; /* Klik tembus ke gameplay */
 }
 
 /* ==========================================================================
-   SPEEDOMETER (FiveM Style Floating Above Bottom HUD)
+   1. HEXAGONAL STATUS HUD (HBE) - NoPixel 4.0 Style (Kiri Bawah / Samping Map)
    ========================================================================== */
-.speedo-hud {
+.nopixel-hbe-wrap {
     position: absolute;
-    bottom: 95px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    padding: 10px 22px;
-    background: rgba(10, 15, 26, 0.82);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 20px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
-}
-
-.speedo-main {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.speed-num {
-    font-family: 'JetBrains Mono', monospace, sans-serif;
-    font-size: 30px;
-    font-weight: 800;
-    line-height: 1;
-    color: #ffffff;
-    letter-spacing: -1px;
-}
-
-.speed-unit {
-    font-size: 9px;
-    font-weight: 700;
-    color: #2dd4bf;
-    letter-spacing: 1px;
-}
-
-.speedo-meta {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    padding-left: 14px;
-    border-left: 1px solid rgba(255, 255, 255, 0.12);
-}
-
-.meta-item {
+    bottom: 24px;
+    left: 36px;
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 10.5px;
-    font-weight: 600;
+    padding: 6px 12px;
+    background: rgba(10, 15, 26, 0.75);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(249, 115, 22, 0.25);
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 15px rgba(249, 115, 22, 0.15);
+    transition: all 0.3s ease;
 }
 
-.meta-item .label {
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 9px;
-    letter-spacing: 0.5px;
+.hex-item {
+    position: relative;
+    width: 38px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease;
 }
 
-.meta-item .val {
-    font-family: 'JetBrains Mono', monospace;
-    font-weight: 700;
+.hex-shape {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.meta-item .val.fuel {
-    color: #ffa502;
+.hex-svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
 }
 
-.meta-item .val.gear {
-    color: #00d2d3;
+.hex-bg {
+    fill: rgba(15, 23, 42, 0.9);
+}
+
+.hex-fill {
+    transition: all 0.35s ease;
+}
+
+.hex-border {
+    fill: none;
+    stroke-width: 2.2;
+    stroke-linejoin: round;
+    transition: stroke 0.3s ease, filter 0.3s ease;
+}
+
+.hex-icon {
+    position: absolute;
+    width: 17px;
+    height: 17px;
+    color: #ffffff;
+    z-index: 2;
+    filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.8));
+    transition: all 0.2s ease;
+}
+
+/* Warna & Glow Masing-masing Hexagon */
+
+/* 1. Voice / Mic (Default Abu-abu / Oranye saat bicara) */
+.hex-item.voice .hex-fill {
+    fill: var(--light-orange);
+}
+.hex-item.voice .hex-border {
+    stroke: var(--primary-orange);
+    filter: drop-shadow(0 0 4px var(--glow-orange));
+}
+.hex-item.voice.talking {
+    animation: voicePulse 0.8s infinite alternate;
+}
+@keyframes voicePulse {
+    from { transform: scale(1); filter: brightness(1); }
+    to { transform: scale(1.1); filter: brightness(1.3) drop-shadow(0 0 8px var(--primary-orange)); }
+}
+
+/* 2. Health / Darah (Merah / Oranye Merah) */
+.hex-item.health .hex-fill {
+    fill: #ef4444;
+}
+.hex-item.health .hex-border {
+    stroke: #f87171;
+    filter: drop-shadow(0 0 5px rgba(239, 68, 68, 0.6));
+}
+
+/* 3. Armor / Rompi (Biru Elektrik / Steel) */
+.hex-item.armor .hex-fill {
+    fill: #3b82f6;
+}
+.hex-item.armor .hex-border {
+    stroke: #60a5fa;
+    filter: drop-shadow(0 0 5px rgba(59, 130, 246, 0.6));
+}
+
+/* 4. Food / Makan (Oranye Utama Khas NoPixel & Server) */
+.hex-item.food .hex-fill {
+    fill: var(--primary-orange);
+}
+.hex-item.food .hex-border {
+    stroke: var(--light-orange);
+    filter: drop-shadow(0 0 5px var(--glow-orange));
+}
+
+/* 5. Water / Minum (Cyan / Biru Laut) */
+.hex-item.water .hex-fill {
+    fill: #06b6d4;
+}
+.hex-item.water .hex-border {
+    stroke: #22d3ee;
+    filter: drop-shadow(0 0 5px rgba(6, 182, 212, 0.6));
+}
+
+/* 6. Stress (Ungu / Kuning Oranye) */
+.hex-item.stress .hex-fill {
+    fill: #a855f7;
+}
+.hex-item.stress .hex-border {
+    stroke: #c084fc;
+    filter: drop-shadow(0 0 5px rgba(168, 85, 247, 0.6));
+}
+
+/* 7. Sleep / Ngantuk (Kuning Oranye Muda) */
+.hex-item.sleep .hex-fill {
+    fill: #eab308;
+}
+.hex-item.sleep .hex-border {
+    stroke: #fde047;
+    filter: drop-shadow(0 0 5px rgba(234, 179, 8, 0.6));
+}
+
+/* Animasi Kritis saat Darah / Makan / Minum rendah */
+.hex-item.critical {
+    animation: criticalAlert 0.7s infinite alternate ease-in-out;
+}
+@keyframes criticalAlert {
+    from {
+        transform: scale(1);
+        filter: brightness(1);
+    }
+    to {
+        transform: scale(1.12);
+        filter: brightness(1.4) drop-shadow(0 0 10px #ef4444);
+    }
+}
+
+
+/* ==========================================================================
+   2. SPEEDOMETER (NoPixel 4.0 Inspired QB HUD)
+   ========================================================================== */
+.speedo-wrapper {
+    position: absolute;
+    bottom: 24px;
+    right: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    animation: slideInSpeedo 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideInSpeedo {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.speedo-inner {
+    background: rgba(10, 15, 26, 0.85);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(249, 115, 22, 0.3);
+    border-radius: 18px;
+    padding: 14px 18px;
+    min-width: 240px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(249, 115, 22, 0.15);
+}
+
+/* Baris Atas Speedometer */
+.speedo-top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.veh-status-icons {
+    display: flex;
+    gap: 8px;
+}
+
+.status-badge {
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.25s ease;
+}
+
+.status-badge.active-seatbelt {
+    background: rgba(249, 115, 22, 0.2);
+    color: var(--light-orange);
+    box-shadow: 0 0 8px var(--glow-orange);
+}
+
+.status-badge.warning {
+    background: rgba(239, 68, 68, 0.25);
+    color: #ef4444;
+    box-shadow: 0 0 8px rgba(239, 68, 68, 0.5);
+    animation: criticalAlert 0.8s infinite alternate;
+}
+
+.unit-label {
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 2.5px;
+    color: #94a3b8;
+}
+
+.fuel-icon-wrap {
+    color: var(--light-orange);
+    display: flex;
+    align-items: center;
+    filter: drop-shadow(0 0 4px var(--glow-orange));
+}
+
+/* Baris Tengah Speedometer */
+.speedo-mid-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 12px;
+}
+
+/* Kotak Gear NoPixel 4.0 */
+.gear-box {
+    width: 44px;
+    height: 52px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, rgba(234, 88, 12, 0.2) 0%, rgba(249, 115, 22, 0.35) 100%);
+    border: 1.5px solid var(--primary-orange);
+    box-shadow: 0 0 12px var(--glow-orange), inset 0 0 8px rgba(249, 115, 22, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.gear-val {
+    font-size: 24px;
+    font-weight: 900;
+    color: #ffffff;
+    line-height: 1;
+    text-shadow: 0 0 10px var(--glow-orange);
+}
+
+.gear-cog {
+    color: var(--light-orange);
+    margin-top: 2px;
+}
+
+/* Angka Kecepatan Digital Besar (Format 3 Digit 000) */
+.speed-display {
+    flex: 1;
+    text-align: center;
+}
+
+.speed-val {
+    font-size: 52px;
+    font-weight: 900;
+    letter-spacing: 3px;
+    color: #ffffff;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.4), 0 0 25px var(--glow-orange);
+}
+
+/* Jalur Indikator Bensin Vertikal */
+.fuel-track {
+    width: 8px;
+    height: 52px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.08);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.fuel-fill {
+    width: 100%;
+    background: linear-gradient(to top, var(--dark-orange), var(--light-orange));
+    box-shadow: 0 0 8px var(--glow-orange);
+    transition: height 0.4s ease;
+}
+
+/* Baris Bawah: Segmented RPM / Speed Ticks */
+.rpm-ticks-wrap {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    width: 100%;
+    padding: 2px 0;
+}
+
+.tick {
+    flex: 1;
+    height: 12px;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.1);
+    transition: all 0.15s ease;
+}
+
+/* Tick Aktif saat Kecepatan / RPM naik */
+.tick.active {
+    background: var(--light-orange);
+    box-shadow: 0 0 6px var(--glow-orange);
+}
+
+.tick.active-high {
+    background: #ef4444;
+    box-shadow: 0 0 8px rgba(239, 68, 68, 0.8);
 }
