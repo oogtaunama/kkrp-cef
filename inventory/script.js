@@ -183,6 +183,54 @@
     }
 
     /**
+     * Cari path gambar PNG untuk item (FiveM Style)
+     * Folder: img/items/<nama_item>.png
+     */
+    function getItemImage(itemName) {
+        if (!itemName) return 'img/items/default.png';
+        const clean = itemName.toLowerCase().trim()
+            .replace(/\s+/g, '_')
+            .replace(/[^a-z0-9_]/g, '');
+
+        // Pemetaan variasi nama item khusus roleplay
+        const customMap = {
+            'kentang': 'french_fries',
+            'french_fries': 'french_fries',
+            'fries': 'french_fries',
+            'air': 'air_mineral',
+            'water': 'air_mineral',
+            'mineral': 'air_mineral',
+            'kopi': 'brewed_coffee',
+            'coffee': 'brewed_coffee',
+            'bandage': 'perban',
+            'hoe': 'cangkul',
+            'wood': 'kayu',
+            'iron': 'besi',
+            'gold': 'emas',
+            'diamond': 'berlian',
+            'stone': 'batu',
+            'phone': 'smartphone',
+            'hp': 'smartphone',
+            'repairkit': 'toolkit',
+            'ammo': 'ammo_9x19mm',
+            'component': 'komponen',
+            'armor': 'kevlar_biru',
+            'kevlar': 'kevlar_biru',
+            'key': 'newbie_key',
+            'weed': 'daun_ganja',
+            'marijuana': 'daun_ganja',
+            'fish': 'ikan',
+            'meat': 'daging'
+        };
+
+        if (customMap[clean]) {
+            return `img/items/${customMap[clean]}.png`;
+        }
+
+        return `img/items/${clean}.png`;
+    }
+
+    /**
      * Klasifikasi kategori item
      */
     function getItemCategory(itemName) {
@@ -261,6 +309,9 @@
             this.bindEvents();
             this.setupCefBridge();
 
+            // Selalu siapkan struktur slot kosong terlebih dahulu agar grid slot langsung tampil
+            this.initEmptySlots();
+
             // Cek apakah berjalan di dalam Game atau Standalone Web Preview
             const isCef = window.CefBridge && window.CefBridge.isAvailable();
             if (!isCef) {
@@ -273,6 +324,21 @@
             }
 
             this.renderAll();
+        },
+
+        initEmptySlots() {
+            if (!this.player.slots || this.player.slots.length === 0) {
+                this.player.slots = Array.from({ length: this.MAX_PLAYER_SLOTS }, (_, i) => ({
+                    slotIndex: i,
+                    exists: false
+                }));
+            }
+            if (!this.rightContainer.slots || this.rightContainer.slots.length === 0) {
+                this.rightContainer.slots = Array.from({ length: this.MAX_RIGHT_SLOTS }, (_, i) => ({
+                    slotIndex: i,
+                    exists: false
+                }));
+            }
         },
 
         // =====================================================================
@@ -320,6 +386,7 @@
 
                 // Context Popup
                 itemContextPopup: document.getElementById('itemContextPopup'),
+                ctxItemImg: document.getElementById('ctxItemImg'),
                 ctxItemName: document.getElementById('ctxItemName'),
                 ctxItemCategory: document.getElementById('ctxItemCategory'),
                 ctxItemWeight: document.getElementById('ctxItemWeight'),
@@ -576,19 +643,6 @@
             });
 
             // 5. Tutup inventaris dari server
-            window.CefBridge.on('server:closeInventory', () => {
-                this.closeInventory(false);
-            });
-        },
-                    this.rightContainer = { ...this.rightContainer, ...parsed };
-                    this.renderRightContainerHeader();
-                    this.renderRightSlots();
-                } catch (e) {
-                    console.error('[CEF BRIDGE] Gagal update right container:', e);
-                }
-            });
-
-            // 4. Tutup inventaris dari instruksi server
             window.CefBridge.on('server:closeInventory', () => {
                 this.closeInventory(false);
             });
@@ -944,9 +998,9 @@
                 if (hasItem) filledCount++;
 
                 // Filter search
-                if (this.playerSearchQuery && hasItem) {
-                    const match = item.name.toLowerCase().includes(this.playerSearchQuery);
-                    if (!match) return; // Lewati jika tidak cocok dengan kata kunci
+                if (this.playerSearchQuery) {
+                    if (!hasItem) return;
+                    if (!item.name.toLowerCase().includes(this.playerSearchQuery)) return;
                 }
 
                 const slotEl = this.createSlotElement({
@@ -1008,9 +1062,9 @@
                 if (hasItem) filledCount++;
 
                 // Filter search
-                if (this.rightSearchQuery && hasItem) {
-                    const match = item.name.toLowerCase().includes(this.rightSearchQuery);
-                    if (!match) return;
+                if (this.rightSearchQuery) {
+                    if (!hasItem) return;
+                    if (!item.name.toLowerCase().includes(this.rightSearchQuery)) return;
                 }
 
                 const slotEl = this.createSlotElement({
@@ -1056,10 +1110,20 @@
                 qtyBadge.textContent = `x${item.quantity}`;
                 slot.appendChild(qtyBadge);
 
-                // Icon Item (SVG)
+                // Icon Item (FiveM PNG Image dengan fallback)
                 const iconWrap = document.createElement('div');
                 iconWrap.className = 'slot-icon-wrap';
-                iconWrap.innerHTML = getItemIcon(item.name);
+
+                const img = document.createElement('img');
+                img.className = 'slot-item-img';
+                img.alt = item.name;
+                img.src = getItemImage(item.name);
+                img.draggable = false;
+                img.onerror = function () {
+                    this.onerror = null;
+                    this.src = 'img/items/default.png';
+                };
+                iconWrap.appendChild(img);
                 slot.appendChild(iconWrap);
 
                 // Nama Item
@@ -1132,6 +1196,13 @@
             this.dom.ctxItemCategory.textContent = getItemCategory(item.name);
             this.dom.ctxItemWeight.textContent = `${(item.weight || 0.25).toFixed(2)} KG`;
             this.dom.ctxItemQuality.textContent = `${item.quality || 100}%`;
+            if (this.dom.ctxItemImg) {
+                this.dom.ctxItemImg.src = getItemImage(item.name);
+                this.dom.ctxItemImg.onerror = function () {
+                    this.onerror = null;
+                    this.src = 'img/items/default.png';
+                };
+            }
 
             // Reset amount stepper
             this.dom.ctxAmountInput.value = 1;
@@ -1547,10 +1618,18 @@
         }
     };
 
-    // Auto-boot saat DOM ready
-    window.addEventListener('DOMContentLoaded', () => {
-        InventoryApp.init();
-        window.InventoryApp = InventoryApp;
-    });
+    // Auto-boot saat DOM ready atau langsung jika document sudah ready
+    function startApp() {
+        if (!window.InventoryAppInitialized) {
+            window.InventoryAppInitialized = true;
+            InventoryApp.init();
+            window.InventoryApp = InventoryApp;
+        }
+    }
 
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', startApp);
+    } else {
+        startApp();
+    }
 })();
