@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kota Kecilku Roleplay - In-Game HUD</title>
+    <!-- Common & Module Stylesheets (Local/System Fonts) -->
+    <link rel="stylesheet" href="../common/common.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="hud-container">
+        <!-- Player Status Bars (Health, Armor, Hunger, Thirst) -->
+        <div class="status-hud glass-panel">
+            <!-- Health -->
+            <div class="status-item health">
+                <div class="icon">❤️</div>
+                <div class="bar-track">
+                    <div class="bar-fill" id="barHealth" style="width: 100%;"></div>
+                </div>
+                <span class="val" id="valHealth">100</span>
+            </div>
+
+            <!-- Armor -->
+            <div class="status-item armor">
+                <div class="icon">🛡️</div>
+                <div class="bar-track">
+                    <div class="bar-fill" id="barArmor" style="width: 100%;"></div>
+                </div>
+                <span class="val" id="valArmor">100</span>
+            </div>
+
+            <!-- Hunger -->
+            <div class="status-item hunger">
+                <div class="icon">🍔</div>
+                <div class="bar-track">
+                    <div class="bar-fill" id="barHunger" style="width: 85%;"></div>
+                </div>
+                <span class="val" id="valHunger">85%</span>
+            </div>
+
+            <!-- Thirst -->
+            <div class="status-item thirst">
+                <div class="icon">💧</div>
+                <div class="bar-track">
+                    <div class="bar-fill" id="barThirst" style="width: 70%;"></div>
+                </div>
+                <span class="val" id="valThirst">70%</span>
+            </div>
+        </div>
+
+        <!-- Vehicle Speedometer (Auto visible when driving) -->
+        <div class="speedo-hud glass-panel" id="speedoHud" style="display: none;">
+            <div class="speedo-main">
+                <span class="speed-num" id="speedVal">0</span>
+                <span class="speed-unit">KM/H</span>
+            </div>
+            <div class="speedo-meta">
+                <div class="meta-item">
+                    <span class="label">FUEL</span>
+                    <span class="val fuel" id="fuelVal">100%</span>
+                </div>
+                <div class="meta-item">
+                    <span class="label">GEAR</span>
+                    <span class="val gear" id="gearVal">D</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../common/cef-bridge.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

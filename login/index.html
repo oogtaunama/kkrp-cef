@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kota Kecilku Roleplay - Auth & Character Selection</title>
+    
+    <!-- Common & Module Stylesheets (Local/System Fonts for Instant Render) -->
+    <link rel="stylesheet" href="../common/common.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Background Overlay with Vignette (Subtle radial tint to preserve 3D world visibility) -->
+    <div class="viewport-backdrop"></div>
+
+    <!-- Alert / Toast Notification Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- MAIN APP CONTAINER -->
+    <main class="app-container">
+        
+        <!-- ============================================================ -->
+        <!-- VIEW 1: LOGIN SCREEN                                         -->
+        <!-- ============================================================ -->
+        <section class="auth-card glass-panel" id="viewLogin">
+            <header class="brand-header">
+                <div class="brand-icon-wrapper">
+                    <!-- Modern Shield / City Emblem SVG -->
+                    <svg class="brand-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                        <path d="M9 12l2 2 4-4"/>
+                    </svg>
+                </div>
+                <h1 class="brand-title">KOTA KECILKU</h1>
+                <p class="brand-tagline">ROLEPLAY INDONESIA • OPEN.MP</p>
+                <div class="brand-badge"><span>●</span> SERVER ONLINE</div>
+            </header>
+
+            <div class="card-divider"></div>
+
+            <!-- Login Form -->
+            <form id="formLogin" class="form-wrapper" autocomplete="off" onsubmit="event.preventDefault(); AuthApp.handleLogin();">
+                <!-- Username / UCP Input (Readonly / Terkunci dari Game) -->
+                <div class="form-group">
+                    <div class="label-row">
+                        <label for="loginUcp" class="form-label">Nama Akun / UCP</label>
+                        <span class="lock-badge">
+                            <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                            </svg>
+                            TERKUNCI
+                        </span>
+                    </div>
+                    <div class="input-wrapper read-only">
+                        <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        <input type="text" id="loginUcp" class="form-input" value="Loading UCP..." readonly tabindex="-1">
+                    </div>
+                </div>
+
+                <!-- Password Input -->
+                <div class="form-group">
+                    <div class="label-row">
+                        <label for="loginPass" class="form-label">Kata Sandi</label>
+                        <button type="button" class="btn-text" onclick="AuthApp.openModal('modalForgot')">Lupa Sandi?</button>
+                    </div>
+                    <div class="input-wrapper">
+                        <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                        <input type="password" id="loginPass" class="form-input" placeholder="Masukkan kata sandi..." required autofocus>
+                        <button type="button" class="btn-input-action" onclick="AuthApp.togglePasswordVisibility('loginPass', this)" title="Lihat Password">
+                            <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline" onclick="AuthApp.handleQuit()">
+                        Keluar
+                    </button>
+                    <button type="submit" class="btn btn-primary" id="btnLoginSubmit" onclick="AuthApp.handleLogin();">
+                        <span class="btn-text-content">Masuk Kota</span>
+                        <div class="btn-spinner"></div>
+                    </button>
+                </div>
+            </form>
+
+            <footer class="card-footer">
+                <p>Belum memiliki akun? <button type="button" class="btn-link" onclick="AuthApp.switchView('viewRegister')">Daftar Akun Baru</button></p>
+            </footer>
+        </section>
+
+
+        <!-- ============================================================ -->
+        <!-- VIEW 2: REGISTER SCREEN                                      -->
+        <!-- ============================================================ -->
+        <section class="auth-card auth-card-wide glass-panel" id="viewRegister" style="display: none;">
+            <header class="brand-header">
+                <div class="brand-icon-wrapper secondary-gradient">
+                    <svg class="brand-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="8.5" cy="7" r="4"></circle>
+                        <line x1="20" y1="8" x2="20" y2="14"></line>
+                        <line x1="23" y1="11" x2="17" y2="11"></line>
+                    </svg>
+                </div>
+                <h1 class="brand-title">REGISTRASI UCP</h1>
+                <p class="brand-tagline">BUAT AKUN BARU KOTA KECILKU RP</p>
+            </header>
+
+            <div class="card-divider"></div>
+
+            <form id="formRegister" class="form-wrapper" autocomplete="off" onsubmit="event.preventDefault(); AuthApp.handleRegister();">
+                <div class="form-grid">
+                    <!-- UCP Name -->
+                    <div class="form-group">
+                        <label for="regUcp" class="form-label">Nama Akun UCP</label>
+                        <div class="input-wrapper">
+                            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                            <input type="text" id="regUcp" class="form-input" placeholder="Contoh: Arya99" required>
+                        </div>
+                    </div>
+
+                    <!-- Tanggal Lahir (DOB) -->
+                    <div class="form-group">
+                        <label for="regDob" class="form-label">Tanggal Lahir (OOC / IC)</label>
+                        <div class="input-wrapper">
+                            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                            <input type="date" id="regDob" class="form-input date-input" required>
+                        </div>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="form-group">
+                        <label for="regPass" class="form-label">Kata Sandi</label>
+                        <div class="input-wrapper">
+                            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                            </svg>
+                            <input type="password" id="regPass" class="form-input" placeholder="Min. 6 Karakter" required minlength="6">
+                            <button type="button" class="btn-input-action" onclick="AuthApp.togglePasswordVisibility('regPass', this)">
+                                <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Confirm Password -->
+                    <div class="form-group">
+                        <label for="regConfirmPass" class="form-label">Konfirmasi Kata Sandi</label>
+                        <div class="input-wrapper">
+                            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                            </svg>
+                            <input type="password" id="regConfirmPass" class="form-input" placeholder="Ulangi kata sandi" required minlength="6">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gender Selection -->
+                <div class="form-group">
+                    <label class="form-label">Pilih Jenis Kelamin Karakter</label>
+                    <div class="gender-selector">
+                        <label class="gender-card active" data-gender="male" onclick="AuthApp.selectGender('male', this)">
+                            <input type="radio" name="regGender" value="male" checked hidden>
+                            <div class="gender-icon male">♂</div>
+                            <div class="gender-info">
+                                <span class="gender-title">Laki - Laki</span>
+                                <span class="gender-desc">Male Character</span>
+                            </div>
+                        </label>
+                        <label class="gender-card" data-gender="female" onclick="AuthApp.selectGender('female', this)">
+                            <input type="radio" name="regGender" value="female" hidden>
+                            <div class="gender-icon female">♀</div>
+                            <div class="gender-info">
+                                <span class="gender-title">Perempuan</span>
+                                <span class="gender-desc">Female Character</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Agreement Checkbox -->
+                <div class="form-options">
+                    <label class="custom-checkbox">
+                        <input type="checkbox" id="regAgreement" required>
+                        <span class="checkmark"></span>
+                        <span class="checkbox-label">Saya menyetujui seluruh aturan Server Rules & Roleplay Guideline.</span>
+                    </label>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline" onclick="AuthApp.switchView('viewLogin')">
+                        Kembali
+                    </button>
+                    <button type="submit" class="btn btn-secondary-solid" id="btnRegisterSubmit">
+                        <span class="btn-text-content">Buat Akun</span>
+                        <div class="btn-spinner"></div>
+                    </button>
+                </div>
+            </form>
+
+            <footer class="card-footer">
+                <p>Sudah punya akun? <button type="button" class="btn-link" onclick="AuthApp.switchView('viewLogin')">Masuk Sekarang</button></p>
+            </footer>
+        </section>
+
+
+        <!-- ============================================================ -->
+        <!-- VIEW 3: CHARACTER SELECTION / SPAWN SELECTOR                 -->
+        <!-- ============================================================ -->
+        <section class="char-selection-container" id="viewCharacters" style="display: none;">
+            <!-- Top Navbar -->
+            <header class="char-nav glass-panel">
+                <div class="nav-left">
+                    <div class="server-badge-logo">KKRP</div>
+                    <div class="nav-titles">
+                        <h2>PEMILIHAN KARAKTER</h2>
+                        <p>Pilih karakter yang ingin Anda mainkan di open.mp</p>
+                    </div>
+                </div>
+                <div class="nav-right">
+                    <div class="ucp-chip">
+                        <span class="chip-label">Akun UCP:</span>
+                        <strong class="chip-val" id="charViewUcpName">Arya_Pratama</strong>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline" onclick="AuthApp.handleSwitchAccount()">
+                        Ganti Akun
+                    </button>
+                </div>
+            </header>
+
+            <!-- Character Cards Grid -->
+            <div class="char-grid" id="charGrid">
+                <!-- Di-render dinamis oleh JavaScript -->
+            </div>
+
+            <!-- Footer Action Panel -->
+            <footer class="char-action-bar glass-panel">
+                <div class="char-summary-selected" id="charSelectedSummary">
+                    <div class="summary-indicator"></div>
+                    <div class="summary-text">
+                        <span class="summary-sub">Karakter Terpilih:</span>
+                        <h3 class="summary-name" id="summaryCharName">Pilih karakter di atas</h3>
+                    </div>
+                </div>
+
+                <div class="char-spawn-controls">
+                    <button type="button" class="btn btn-lg btn-primary" id="btnSpawnCharacter" disabled onclick="AuthApp.handleSpawnCharacter()">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                        </svg>
+                        <span>SPAWN / PLAY NOW</span>
+                    </button>
+                </div>
+            </footer>
+        </section>
+
+    </main>
+
+
+    <!-- ============================================================ -->
+    <!-- MODAL: FORGOT PASSWORD                                       -->
+    <!-- ============================================================ -->
+    <div class="modal-overlay" id="modalForgot" style="display: none;">
+        <div class="modal-card glass-panel">
+            <header class="modal-header">
+                <h3>Pemulihan Kata Sandi</h3>
+                <button type="button" class="btn-close-modal" onclick="AuthApp.closeModal('modalForgot')">✕</button>
+            </header>
+            <div class="modal-body">
+                <p class="modal-desc">
+                    Masukkan Nama UCP atau Email yang terdaftar. Instruksi reset kata sandi akan dikirim melalui bot Discord resmi server kami.
+                </p>
+                <form id="formForgot" onsubmit="event.preventDefault(); AuthApp.handleForgotPassword();">
+                    <div class="form-group">
+                        <label for="forgotIdentifier" class="form-label">Nama UCP / Email</label>
+                        <div class="input-wrapper">
+                            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                <polyline points="22,6 12,13 2,6"></polyline>
+                            </svg>
+                            <input type="text" id="forgotIdentifier" class="form-input" placeholder="Nama UCP atau email anda..." required>
+                        </div>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-outline" onclick="AuthApp.closeModal('modalForgot')">Batal</button>
+                        <button type="submit" class="btn btn-primary" id="btnForgotSubmit">Kirim Permintaan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Load CEF Bridge & Main Logic Scripts -->
+    <script src="../common/cef-bridge.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
