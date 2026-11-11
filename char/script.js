@@ -10,14 +10,13 @@ const CharApp = {
         ucpName: '',
         selectedGender: 'Male',
         targetSlot: 0,
-        isLoading: false,
-        pendingDelete: null
+        isLoading: false
     },
 
     init() {
         console.log('[CharApp] Inisialisasi Modul Character Selector & Creator.');
 
-        // 1. Minta CEF focus & cursor aktif
+        // Minta CEF focus & cursor aktif untuk pemilihan karakter
         CefBridge.setFocus(true);
 
         this.bindBridgeEvents();
@@ -64,10 +63,6 @@ const CharApp = {
                 this.switchView('selector');
             });
         }
-
-        document.addEventListener('click', () => {
-            CefBridge.setFocus(true);
-        });
     },
 
     bindBridgeEvents() {
@@ -90,12 +85,15 @@ const CharApp = {
         CefBridge.on('charError', (msg) => {
             this.setButtonLoading('btnSubmitChar', false);
             this.showToast(msg || 'Terjadi kesalahan pada karakter!', 'error');
+            CefBridge.setFocus(true);
         });
 
         // 3. Menerima konfirmasi sukses pembuatan karakter
         CefBridge.on('charCreateSuccess', (charName) => {
             this.setButtonLoading('btnSubmitChar', false);
             this.showToast(`Karakter ${charName} berhasil dibuat! Memasuki kota...`, 'success');
+            // Lepas kursor CEF saat karakter berhasil dibuat dan memasuki game
+            CefBridge.setFocus(false);
         });
     },
 
@@ -126,7 +124,7 @@ const CharApp = {
             const card = document.createElement('div');
 
             if (charName && charName.trim() !== '') {
-                // KARTU TERISI KARAKTER
+                // KARTU TERISI KARAKTER (HANYA TOMBOL SPAWN, TOMBOL HAPUS SUDAH DIHAPUS)
                 card.className = 'char-card filled-card';
                 card.innerHTML = `
                     <div class="card-top">
@@ -144,31 +142,19 @@ const CharApp = {
                         </div>
                     </div>
                     <div class="card-actions">
-                        <button type="button" class="btn btn-primary btn-spawn" data-slot="${i}" data-name="${charName}">
+                        <button type="button" class="btn btn-primary btn-spawn" data-slot="${i}" data-name="${charName}" style="width: 100%; flex: 1;">
                             Spawn
-                        </button>
-                        <button type="button" class="btn btn-danger-outline btn-delete" data-slot="${i}" data-name="${charName}">
-                            Hapus
                         </button>
                     </div>
                 `;
 
-                // Pasang event listener langsung pada tombol Spawn & Hapus
+                // Pasang event listener langsung pada tombol Spawn
                 const btnSpawn = card.querySelector('.btn-spawn');
                 if (btnSpawn) {
                     btnSpawn.addEventListener('click', (e) => {
                         e.preventDefault();
                         e.stopPropagation();
                         this.selectCharacter(i, charName);
-                    });
-                }
-
-                const btnDelete = card.querySelector('.btn-delete');
-                if (btnDelete) {
-                    btnDelete.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        this.deleteCharacter(i, charName);
                     });
                 }
 
@@ -191,7 +177,7 @@ const CharApp = {
                         </div>
                     </div>
                     <div class="card-actions">
-                        <button type="button" class="btn btn-outline btn-select" data-slot="${i}">
+                        <button type="button" class="btn btn-outline btn-select" data-slot="${i}" style="width: 100%; flex: 1;">
                             Select
                         </button>
                     </div>
@@ -217,29 +203,12 @@ const CharApp = {
     selectCharacter(slotIndex, charName) {
         console.log(`[CharApp] Memilih karakter slot ${slotIndex}: ${charName}`);
         this.showToast(`Memuat data karakter ${charName}...`, 'info');
-        CefBridge.emit('cef_onPlayerSelectChar', slotIndex, charName);
-    },
 
-    /**
-     * Hapus Karakter (Tanpa window.confirm yang dapat mem-freeze CEF OSR)
-     */
-    deleteCharacter(slotIndex, charName) {
-        if (this.state.pendingDelete === charName) {
-            // Klik kedua kalinya -> konfirmasi hapus!
-            this.state.pendingDelete = null;
-            console.log(`[CharApp] Mengonfirmasi hapus karakter: ${charName}`);
-            this.showToast(`Menghapus karakter ${charName.replace('_', ' ')}...`, 'warning');
-            CefBridge.emit('cef_onPlayerDeleteChar', slotIndex, charName);
-        } else {
-            // Klik pertama -> minta konfirmasi via toast
-            this.state.pendingDelete = charName;
-            this.showToast(`Klik HAPUS sekali lagi untuk konfirmasi penghapusan ${charName.replace('_', ' ')}!`, 'error', 5000);
-            setTimeout(() => {
-                if (this.state.pendingDelete === charName) {
-                    this.state.pendingDelete = null;
-                }
-            }, 5000);
-        }
+        // LEPAS FOKUS CEF SEGERA AGAR KURSOR HILANG SAAT SPAWN
+        CefBridge.setFocus(false);
+
+        // Kirim event ke Pawn
+        CefBridge.emit('cef_onPlayerSelectChar', slotIndex, charName);
     },
 
     /**

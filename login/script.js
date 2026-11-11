@@ -66,11 +66,6 @@ const AuthApp = {
                 this.handleLogin();
             });
         }
-
-        // Ketika user klik di sembarang area form, pastikan focus CEF tetap aktif
-        document.addEventListener('click', () => {
-            CefBridge.setFocus(true);
-        });
     },
 
     /**
@@ -99,12 +94,14 @@ const AuthApp = {
         CefBridge.on('loginSuccess', () => {
             this.setButtonLoading('btnLoginSubmit', false);
             this.showToast('Login Berhasil! Memasuki server...', 'success');
+            CefBridge.setFocus(false);
         });
 
         CefBridge.on('server:onLoginResponse', (data) => {
             this.setButtonLoading('btnLoginSubmit', false);
             if (data && data.success) {
                 this.showToast(data.message || 'Login berhasil!', 'success');
+                CefBridge.setFocus(false);
             } else {
                 this.showToast(data ? data.message : 'Kata sandi tidak sesuai!', 'error');
                 const passInput = document.getElementById('loginPass');

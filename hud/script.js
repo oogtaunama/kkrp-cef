@@ -109,6 +109,11 @@ function updateRpmTicks(speed, maxSpeed = 180) {
 window.addEventListener('DOMContentLoaded', () => {
     console.log('[CEF HUD] NoPixel 4.0 Inspired QB HUD Initialized.');
 
+    // HUD WAJIB UNFOCUSED AGAR KURSOR MOUSE HILANG SAAT GAMEPLAY
+    if (typeof CefBridge !== 'undefined') {
+        CefBridge.setFocus(false);
+    }
+
     // Default awal saat pertama kali load
     setHexProgress('rectVoice', 100);
     setHexProgress('rectHealth', 100);

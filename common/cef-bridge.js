@@ -40,8 +40,7 @@
 
         /**
          * Set input & mouse focus pada browser CEF
-         * Wajib true agar klik tombol & input keyboard diterima Chromium!
-         * @param {boolean} focused 
+         * @param {boolean} focused - true untuk menangkap kursor mouse & keyboard, false untuk mengembalikan kontrol ke game GTA
          */
         setFocus(focused = true) {
             try {
@@ -99,20 +98,9 @@
                 }
             });
 
-            // 2. Pasang auto-focus setiap mouse masuk atau diklik agar interaksi tidak hilang
-            window.addEventListener('mouseenter', () => {
-                this.setFocus(true);
-            });
-
-            window.addEventListener('mousedown', () => {
-                this.setFocus(true);
-            });
-
-            // 3. Logging status saat inisialisasi
+            // 2. Logging status saat inisialisasi
             if (this.isAvailable()) {
                 console.log('%c[CEF BRIDGE] Running inside Game Client Engine.%c', 'color: #10b981; font-weight: bold;', 'color: inherit;');
-                // Langsung minta focus saat bridge aktif
-                this.setFocus(true);
             } else {
                 console.warn('%c[CEF BRIDGE] Standalone Browser Mode (Mock Engine Active)%c', 'color: #f59e0b; font-weight: bold;', 'color: inherit;');
             }
