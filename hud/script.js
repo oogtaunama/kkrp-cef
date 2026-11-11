@@ -1,17 +1,18 @@
 /**
  * HUD Controller - NoPixel 4.0 Inspired QB HUD & Speedometer
  * Kota Kecilku Roleplay
+ * Reference: ref_hud_speedo.jpg
  */
 
-// Total tinggi SVG Hexagon
-const HEX_HEIGHT = 44;
+// Tinggi total SVG Hexagon (viewBox: 0 0 34 38)
+const HEX_HEIGHT = 38;
 
 /**
- * Update level isi Hexagon (mengatur clipPath rect SVG)
+ * Update level isi Hexagon (mengatur clipPath rect SVG dari bawah ke atas)
  * @param {string} rectId - ID elemen rect di dalam clipPath
  * @param {number} value - Nilai persentase (0 - 100)
- * @param {string} itemId - ID parent item untuk kelas status
- * @param {number|null} criticalThreshold - Batas nilai kritis untuk animasi peringatan
+ * @param {string} itemId - ID parent item untuk efek class critical
+ * @param {number|null} criticalThreshold - Batas nilai kritis
  */
 function setHexProgress(rectId, value, itemId = null, criticalThreshold = null) {
     const rect = document.getElementById(rectId);
@@ -37,6 +38,66 @@ function setHexProgress(rectId, value, itemId = null, criticalThreshold = null) 
             }
         }
     }
+}
+
+/**
+ * Update 3-digit digital speedometer (000 format dengan leading zeros redup)
+ * Sesuai referensi ref_hud_speedo.jpg
+ */
+function setSpeedDisplay(speed) {
+    const spd = Math.max(0, Math.round(Number(speed) || 0));
+    const spdStr = String(spd).padStart(3, '0');
+
+    const d1 = document.getElementById('d1');
+    const d2 = document.getElementById('d2');
+    const d3 = document.getElementById('d3');
+
+    if (!d1 || !d2 || !d3) return;
+
+    d1.innerText = spdStr[0];
+    d2.innerText = spdStr[1];
+    d3.innerText = spdStr[2];
+
+    if (spd < 10) {
+        d1.className = 'digit dim';
+        d2.className = 'digit dim';
+        d3.className = 'digit';
+    } else if (spd < 100) {
+        d1.className = 'digit dim';
+        d2.className = 'digit';
+        d3.className = 'digit';
+    } else {
+        d1.className = 'digit';
+        d2.className = 'digit';
+        d3.className = 'digit';
+    }
+}
+
+/**
+ * Update Horizontal Segmented RPM Ticks (16 Ticks)
+ * Normal: Cyan (#2dd4bf)
+ * Redline: Merah (#ef4444)
+ */
+function updateRpmTicks(speed, maxSpeed = 160) {
+    const ticks = document.querySelectorAll('.rpm-bar .rpm-tick');
+    if (!ticks.length) return;
+
+    const totalTicks = ticks.length;
+    const currentSpeed = Math.max(0, Number(speed) || 0);
+    const activeCount = Math.min(totalTicks, Math.round((currentSpeed / maxSpeed) * totalTicks));
+
+    ticks.forEach((tick, index) => {
+        if (index < activeCount) {
+            tick.classList.add('active');
+            if (index >= totalTicks - 3) {
+                tick.classList.add('redline');
+            } else {
+                tick.classList.remove('redline');
+            }
+        } else {
+            tick.classList.remove('active', 'redline');
+        }
+    });
 }
 
 /**
@@ -81,54 +142,34 @@ function parseVehicleData(arg1, arg2, arg3, arg4) {
     };
 }
 
-/**
- * Update RPM / Speedometer Ticks Bar (16 Segmen)
- */
-function updateRpmTicks(speed, maxSpeed = 180) {
-    const ticks = document.querySelectorAll('.rpm-ticks-wrap .tick');
-    if (!ticks.length) return;
-
-    const totalTicks = ticks.length;
-    const currentSpeed = Math.max(0, Number(speed) || 0);
-    const activeCount = Math.min(totalTicks, Math.round((currentSpeed / maxSpeed) * totalTicks));
-
-    ticks.forEach((tick, index) => {
-        if (index < activeCount) {
-            tick.classList.add('active');
-            if (index >= totalTicks - 3) {
-                tick.classList.add('active-high');
-            } else {
-                tick.classList.remove('active-high');
-            }
-        } else {
-            tick.classList.remove('active', 'active-high');
-        }
-    });
-}
-
 window.addEventListener('DOMContentLoaded', () => {
-    console.log('[CEF HUD] NoPixel 4.0 Inspired QB HUD Initialized.');
+    console.log('[CEF HUD] NoPixel 4.0 QB HUD Initialized.');
 
     // HUD WAJIB UNFOCUSED AGAR KURSOR MOUSE HILANG SAAT GAMEPLAY
     if (typeof CefBridge !== 'undefined') {
         CefBridge.setFocus(false);
     }
 
-    // Default awal saat pertama kali load
+    // Default status awal
     setHexProgress('rectVoice', 100);
     setHexProgress('rectHealth', 100);
     setHexProgress('rectArmor', 100);
     setHexProgress('rectFood', 100);
     setHexProgress('rectWater', 100);
-    setHexProgress('rectStress', 0);
-    setHexProgress('rectSleep', 100);
+    setSpeedDisplay(0);
+    updateRpmTicks(0);
 
-    // Listener update status player dari Pawn
+    // Kirim notifikasi ke Pawn bahwa HUD sudah siap menerima event
+    if (typeof CefBridge !== 'undefined') {
+        CefBridge.emit('client:onHudReady');
+    }
+
+    // Listener update status player dari server Pawn
     CefBridge.on('server:updatePlayerStatus', (...args) => {
         const data = parseStatusData(...args);
 
         if (data.health !== undefined) {
-            setHexProgress('rectHealth', data.health, 'hexHealth', 25);
+            setHexProgress('rectHealth', data.health, 'hexHealth', 20);
         }
         if (data.armor !== undefined) {
             setHexProgress('rectArmor', data.armor, 'hexArmor');
@@ -139,15 +180,9 @@ window.addEventListener('DOMContentLoaded', () => {
         if (data.thirst !== undefined || data.water !== undefined) {
             setHexProgress('rectWater', data.thirst ?? data.water, 'hexWater', 20);
         }
-        if (data.stress !== undefined) {
-            setHexProgress('rectStress', data.stress, 'hexStress');
-        }
-        if (data.sleepy !== undefined || data.sleep !== undefined) {
-            setHexProgress('rectSleep', data.sleepy ?? data.sleep, 'hexSleep', 20);
-        }
     });
 
-    // Listener speedometer kendaraan
+    // Listener speedometer kendaraan dari server Pawn
     CefBridge.on('server:updateVehicleStatus', (...args) => {
         const data = parseVehicleData(...args);
         const speedo = document.getElementById('speedoHud');
@@ -158,38 +193,25 @@ window.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        speedo.style.display = 'flex';
-        
-        // 1. Digital Speed (3 Digit e.g. "045", "120")
-        const elSpeed = document.getElementById('speedVal');
-        if (elSpeed) {
-            const spd = Math.max(0, Math.round(data.speed || 0));
-            elSpeed.innerText = String(spd).padStart(3, '0');
-        }
+        speedo.style.display = 'block';
 
-        // 2. Fuel Gauge Bar
+        // 1. Digital 3-Digit Speed
+        setSpeedDisplay(data.speed || 0);
+
+        // 2. Vertical Fuel Level Bar
         const elFuel = document.getElementById('fuelFill');
         if (elFuel) {
             const fuelPercent = Math.max(0, Math.min(100, Math.round(data.fuel || 0)));
             elFuel.style.height = `${fuelPercent}%`;
-            
-            const badgeEngine = document.getElementById('badgeEngine');
-            if (badgeEngine) {
-                if (fuelPercent <= 15) {
-                    badgeEngine.classList.add('warning');
-                } else {
-                    badgeEngine.classList.remove('warning');
-                }
-            }
         }
 
         // 3. Gear Box
         const elGear = document.getElementById('gearVal');
         if (elGear) {
-            elGear.innerText = data.gear || '1';
+            elGear.innerText = String(data.gear || '1');
         }
 
-        // 4. RPM Segmented Ticks Bar
+        // 4. Horizontal RPM Ticks
         updateRpmTicks(data.speed || 0);
     });
 

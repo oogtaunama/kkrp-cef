@@ -3,110 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kota Kecilku - NoPixel 4.0 Inspired QB HUD</title>
-    <!-- Common & HUD Stylesheet -->
+    <title>Kota Kecilku - NoPixel 4.0 QB HUD</title>
+    <!-- Common & HUD Stylesheets -->
     <link rel="stylesheet" href="../common/common.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="hud-container">
-        
-        <!-- ============================================================ -->
-        <!-- SPEEDOMETER (NoPixel 4.0 Style - Tampil saat di kendaraan)    -->
-        <!-- ============================================================ -->
-        <div class="speedo-wrapper" id="speedoHud" style="display: none;">
-            <div class="speedo-inner glass-card">
-                
-                <!-- Baris Atas: Seatbelt / Engine Warning & Fuel Icon -->
-                <div class="speedo-top-row">
-                    <div class="veh-status-icons">
-                        <!-- Seatbelt / Rocket Icon -->
-                        <div class="status-badge active-seatbelt" id="badgeBelt" title="Seatbelt">
-                            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
-                                <path d="M10 2a2 2 0 0 0-2 2v2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-3V4a2 2 0 0 0-2-2h-4zm0 2h4v2h-4V4zM5 8h14v10H5V8zm7 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6zm0 2a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
-                            </svg>
-                        </div>
-                        <!-- Engine Check Icon -->
-                        <div class="status-badge" id="badgeEngine" title="Engine">
-                            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
-                                <path d="M7 4V2H4v2H2v6h2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4h2v-6h-2V4h-3V2h-3v2H7zm0 2h10v12H6V6h1zm3 3v2h4V9h-4zm0 4v2h4v-2h-4z"/>
-                            </svg>
-                        </div>
-                    </div>
-
-                    <div class="speed-unit-wrap">
-                        <span class="unit-label">KPH</span>
-                    </div>
-
-                    <div class="fuel-icon-wrap" id="fuelBadge" title="Fuel">
-                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
-                            <path d="M19 4h-1V3c0-.55-.45-1-1-1H7c-.55 0-1 .45-1 1v1H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zM7 4h10v4H7V4zm12 16H5V10h14v10zm-7-7c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
-                        </svg>
-                    </div>
-                </div>
-
-                <!-- Baris Tengah: Gear Box, Speed Display & Vertical Fuel Bar -->
-                <div class="speedo-mid-row">
-                    <!-- Gear Box -->
-                    <div class="gear-box" id="gearBox">
-                        <span class="gear-val" id="gearVal">1</span>
-                        <div class="gear-cog">
-                            <svg viewBox="0 0 24 24" width="11" height="11" fill="currentColor">
-                                <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.49.49 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54A.484.484 0 0 0 13.9 2h-3.8a.49.49 0 0 0-.48.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 0 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.8c.24 0 .44-.17.48-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
-                            </svg>
-                        </div>
-                    </div>
-
-                    <!-- Digital Speed Number (3 Digit 000 Format) -->
-                    <div class="speed-display">
-                        <span class="speed-val" id="speedVal">000</span>
-                    </div>
-
-                    <!-- Vertical Fuel Gauge Bar -->
-                    <div class="fuel-track" title="Fuel Level">
-                        <div class="fuel-fill" id="fuelFill" style="height: 100%;"></div>
-                    </div>
-                </div>
-
-                <!-- Baris Bawah: Segmented RPM / Speed Ticks -->
-                <div class="rpm-ticks-wrap" id="rpmBar">
-                    <div class="tick" data-i="0"></div>
-                    <div class="tick" data-i="1"></div>
-                    <div class="tick" data-i="2"></div>
-                    <div class="tick" data-i="3"></div>
-                    <div class="tick" data-i="4"></div>
-                    <div class="tick" data-i="5"></div>
-                    <div class="tick" data-i="6"></div>
-                    <div class="tick" data-i="7"></div>
-                    <div class="tick" data-i="8"></div>
-                    <div class="tick" data-i="9"></div>
-                    <div class="tick" data-i="10"></div>
-                    <div class="tick" data-i="11"></div>
-                    <div class="tick" data-i="12"></div>
-                    <div class="tick" data-i="13"></div>
-                    <div class="tick" data-i="14"></div>
-                    <div class="tick" data-i="15"></div>
-                </div>
-
-            </div>
-        </div>
 
         <!-- ============================================================ -->
-        <!-- HEXAGONAL STATUS HUD (HBE) - NoPixel 4.0 Inspired             -->
-        <!-- Voice, Health, Armor, Food, Water, Stress, Sleep             -->
+        <!-- 1. HEXAGONAL STATUS HUD (HBE) - Tepat di BAWAH Minimap        -->
+        <!-- Voice, Health, Armor, Food, Water                            -->
         <!-- ============================================================ -->
         <div class="nopixel-hbe-wrap" id="hbeHud">
             
             <!-- 1. VOICE / MIC -->
-            <div class="hex-item voice active" id="hexVoice">
+            <div class="hex-item voice active" id="hexVoice" title="Voice">
                 <div class="hex-shape">
-                    <svg class="hex-svg" viewBox="0 0 40 44">
-                        <polygon class="hex-bg" points="20,2 38,12 38,32 20,42 2,32 2,12" />
+                    <svg class="hex-svg" viewBox="0 0 34 38">
+                        <polygon class="hex-bg" points="17,1 33,10 33,28 17,37 1,28 1,10" />
                         <clipPath id="clipVoice">
-                            <rect id="rectVoice" x="0" y="0" width="40" height="44" />
+                            <rect id="rectVoice" x="0" y="0" width="34" height="38" />
                         </clipPath>
-                        <polygon class="hex-fill" points="20,2 38,12 38,32 20,42 2,32 2,12" clip-path="url(#clipVoice)" />
-                        <polygon class="hex-border" points="20,2 38,12 38,32 20,42 2,32 2,12" />
+                        <polygon class="hex-fill" points="17,1 33,10 33,28 17,37 1,28 1,10" clip-path="url(#clipVoice)" />
+                        <polygon class="hex-border" points="17,1 33,10 33,28 17,37 1,28 1,10" />
                     </svg>
                     <!-- Mic Icon -->
                     <svg class="hex-icon" viewBox="0 0 24 24" fill="currentColor">
@@ -116,15 +36,15 @@
             </div>
 
             <!-- 2. HEALTH / DARAH -->
-            <div class="hex-item health" id="hexHealth">
+            <div class="hex-item health" id="hexHealth" title="Health">
                 <div class="hex-shape">
-                    <svg class="hex-svg" viewBox="0 0 40 44">
-                        <polygon class="hex-bg" points="20,2 38,12 38,32 20,42 2,32 2,12" />
+                    <svg class="hex-svg" viewBox="0 0 34 38">
+                        <polygon class="hex-bg" points="17,1 33,10 33,28 17,37 1,28 1,10" />
                         <clipPath id="clipHealth">
-                            <rect id="rectHealth" x="0" y="0" width="40" height="44" />
+                            <rect id="rectHealth" x="0" y="0" width="34" height="38" />
                         </clipPath>
-                        <polygon class="hex-fill" points="20,2 38,12 38,32 20,42 2,32 2,12" clip-path="url(#clipHealth)" />
-                        <polygon class="hex-border" points="20,2 38,12 38,32 20,42 2,32 2,12" />
+                        <polygon class="hex-fill" points="17,1 33,10 33,28 17,37 1,28 1,10" clip-path="url(#clipHealth)" />
+                        <polygon class="hex-border" points="17,1 33,10 33,28 17,37 1,28 1,10" />
                     </svg>
                     <!-- Heart Icon -->
                     <svg class="hex-icon" viewBox="0 0 24 24" fill="currentColor">
@@ -134,15 +54,15 @@
             </div>
 
             <!-- 3. ARMOR / ROMPI -->
-            <div class="hex-item armor" id="hexArmor">
+            <div class="hex-item armor" id="hexArmor" title="Armor">
                 <div class="hex-shape">
-                    <svg class="hex-svg" viewBox="0 0 40 44">
-                        <polygon class="hex-bg" points="20,2 38,12 38,32 20,42 2,32 2,12" />
+                    <svg class="hex-svg" viewBox="0 0 34 38">
+                        <polygon class="hex-bg" points="17,1 33,10 33,28 17,37 1,28 1,10" />
                         <clipPath id="clipArmor">
-                            <rect id="rectArmor" x="0" y="0" width="40" height="44" />
+                            <rect id="rectArmor" x="0" y="0" width="34" height="38" />
                         </clipPath>
-                        <polygon class="hex-fill" points="20,2 38,12 38,32 20,42 2,32 2,12" clip-path="url(#clipArmor)" />
-                        <polygon class="hex-border" points="20,2 38,12 38,32 20,42 2,32 2,12" />
+                        <polygon class="hex-fill" points="17,1 33,10 33,28 17,37 1,28 1,10" clip-path="url(#clipArmor)" />
+                        <polygon class="hex-border" points="17,1 33,10 33,28 17,37 1,28 1,10" />
                     </svg>
                     <!-- Shield Icon -->
                     <svg class="hex-icon" viewBox="0 0 24 24" fill="currentColor">
@@ -151,16 +71,16 @@
                 </div>
             </div>
 
-            <!-- 4. FOOD / MAKAN -->
-            <div class="hex-item food" id="hexFood">
+            <!-- 4. FOOD / MAKANAN -->
+            <div class="hex-item food" id="hexFood" title="Food">
                 <div class="hex-shape">
-                    <svg class="hex-svg" viewBox="0 0 40 44">
-                        <polygon class="hex-bg" points="20,2 38,12 38,32 20,42 2,32 2,12" />
+                    <svg class="hex-svg" viewBox="0 0 34 38">
+                        <polygon class="hex-bg" points="17,1 33,10 33,28 17,37 1,28 1,10" />
                         <clipPath id="clipFood">
-                            <rect id="rectFood" x="0" y="0" width="40" height="44" />
+                            <rect id="rectFood" x="0" y="0" width="34" height="38" />
                         </clipPath>
-                        <polygon class="hex-fill" points="20,2 38,12 38,32 20,42 2,32 2,12" clip-path="url(#clipFood)" />
-                        <polygon class="hex-border" points="20,2 38,12 38,32 20,42 2,32 2,12" />
+                        <polygon class="hex-fill" points="17,1 33,10 33,28 17,37 1,28 1,10" clip-path="url(#clipFood)" />
+                        <polygon class="hex-border" points="17,1 33,10 33,28 17,37 1,28 1,10" />
                     </svg>
                     <!-- Burger / Food Icon -->
                     <svg class="hex-icon" viewBox="0 0 24 24" fill="currentColor">
@@ -169,16 +89,16 @@
                 </div>
             </div>
 
-            <!-- 5. WATER / MINUM -->
-            <div class="hex-item water" id="hexWater">
+            <!-- 5. WATER / MINUMAN -->
+            <div class="hex-item water" id="hexWater" title="Water">
                 <div class="hex-shape">
-                    <svg class="hex-svg" viewBox="0 0 40 44">
-                        <polygon class="hex-bg" points="20,2 38,12 38,32 20,42 2,32 2,12" />
+                    <svg class="hex-svg" viewBox="0 0 34 38">
+                        <polygon class="hex-bg" points="17,1 33,10 33,28 17,37 1,28 1,10" />
                         <clipPath id="clipWater">
-                            <rect id="rectWater" x="0" y="0" width="40" height="44" />
+                            <rect id="rectWater" x="0" y="0" width="34" height="38" />
                         </clipPath>
-                        <polygon class="hex-fill" points="20,2 38,12 38,32 20,42 2,32 2,12" clip-path="url(#clipWater)" />
-                        <polygon class="hex-border" points="20,2 38,12 38,32 20,42 2,32 2,12" />
+                        <polygon class="hex-fill" points="17,1 33,10 33,28 17,37 1,28 1,10" clip-path="url(#clipWater)" />
+                        <polygon class="hex-border" points="17,1 33,10 33,28 17,37 1,28 1,10" />
                     </svg>
                     <!-- Water Droplet Icon -->
                     <svg class="hex-icon" viewBox="0 0 24 24" fill="currentColor">
@@ -187,42 +107,80 @@
                 </div>
             </div>
 
-            <!-- 6. STRESS -->
-            <div class="hex-item stress" id="hexStress">
-                <div class="hex-shape">
-                    <svg class="hex-svg" viewBox="0 0 40 44">
-                        <polygon class="hex-bg" points="20,2 38,12 38,32 20,42 2,32 2,12" />
-                        <clipPath id="clipStress">
-                            <rect id="rectStress" x="0" y="44" width="40" height="44" />
-                        </clipPath>
-                        <polygon class="hex-fill" points="20,2 38,12 38,32 20,42 2,32 2,12" clip-path="url(#clipStress)" />
-                        <polygon class="hex-border" points="20,2 38,12 38,32 20,42 2,32 2,12" />
-                    </svg>
-                    <!-- Brain / Lightning Icon -->
-                    <svg class="hex-icon" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M7 2v11h3v9l7-12h-4l4-8z"/>
-                    </svg>
-                </div>
-            </div>
+        </div>
 
-            <!-- 7. SLEEP / NGANTUK -->
-            <div class="hex-item sleep" id="hexSleep">
-                <div class="hex-shape">
-                    <svg class="hex-svg" viewBox="0 0 40 44">
-                        <polygon class="hex-bg" points="20,2 38,12 38,32 20,42 2,32 2,12" />
-                        <clipPath id="clipSleep">
-                            <rect id="rectSleep" x="0" y="0" width="40" height="44" />
-                        </clipPath>
-                        <polygon class="hex-fill" points="20,2 38,12 38,32 20,42 2,32 2,12" clip-path="url(#clipSleep)" />
-                        <polygon class="hex-border" points="20,2 38,12 38,32 20,42 2,32 2,12" />
-                    </svg>
-                    <!-- Moon / Sleep Icon -->
-                    <svg class="hex-icon" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12.3 2a10 10 0 0 0-.19 20 10 10 0 0 0 8.7-5.11 1 1 0 0 0-1.1-1.44 8 8 0 1 1-8.85-12.35 1 1 0 0 0 1.44-1.1z"/>
-                    </svg>
-                </div>
-            </div>
+        <!-- ============================================================ -->
+        <!-- 2. SPEEDOMETER (NoPixel 4.0 QB Style - Tepat di KANAN Map)    -->
+        <!-- Sesuai referensi ref_hud_speedo.jpg                          -->
+        <!-- ============================================================ -->
+        <div class="speedo-wrapper" id="speedoHud" style="display: none;">
+            <div class="speedo-card">
+                
+                <!-- Baris Atas: Seatbelt Icon (Kiri), KPH (Tengah), Fuel Icon (Kanan) -->
+                <div class="speedo-top">
+                    <!-- Seatbelt / Harness Icon -->
+                    <div class="seatbelt-badge active" id="badgeBelt" title="Seatbelt">
+                        <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                        </svg>
+                    </div>
 
+                    <div class="unit-text">KPH</div>
+
+                    <!-- Fuel Pump Icon -->
+                    <div class="fuel-badge" title="Fuel">
+                        <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor">
+                            <path d="M19.77 7.23l.01-.01-3.72-3.72L15 4.56l2.11 2.11c-.94.36-1.61 1.26-1.61 2.33a2.5 2.5 0 0 0 2.5 2.5c.36 0 .69-.08 1-.21v7.21c0 .55-.45 1-1 1s-1-.45-1-1V14c0-1.1-.9-2-2-2h-1V5c0-1.1-.9-2-2-2H6c-1.1 0-2 .9-2 2v16h10v-7.5h1.5v5c0 1.38 1.12 2.5 2.5 2.5s2.5-1.12 2.5-2.5V9c0-.69-.28-1.32-.73-1.77zM12 10H6V5h6v5zm6 0c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Baris Tengah: Gear Box (Kiri), 3-Digit Speed (Tengah), Vertical Fuel Gauge (Kanan) -->
+                <div class="speedo-mid">
+                    <!-- Kotak Gear Glowing Cyan -->
+                    <div class="gear-box" id="gearBox">
+                        <span class="gear-digit" id="gearVal">1</span>
+                        <div class="gear-icon">
+                            <svg viewBox="0 0 24 24" width="11" height="11" fill="currentColor">
+                                <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.49.49 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54A.484.484 0 0 0 13.9 2h-3.8a.49.49 0 0 0-.48.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 0 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.8c.24 0 .44-.17.48-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- 3-Digit Digital Speed (000 format) -->
+                    <div class="speed-nums" id="speedDisplay">
+                        <span class="digit dim" id="d1">0</span>
+                        <span class="digit dim" id="d2">0</span>
+                        <span class="digit" id="d3">0</span>
+                    </div>
+
+                    <!-- Vertical Fuel Level Bar -->
+                    <div class="fuel-track-vert" title="Fuel Level">
+                        <div class="fuel-fill-vert" id="fuelFill" style="height: 100%;"></div>
+                    </div>
+                </div>
+
+                <!-- Baris Bawah: Horizontal Segmented RPM Ticks (16 segmen) -->
+                <div class="rpm-bar" id="rpmBar">
+                    <span class="rpm-tick" data-i="0"></span>
+                    <span class="rpm-tick" data-i="1"></span>
+                    <span class="rpm-tick" data-i="2"></span>
+                    <span class="rpm-tick" data-i="3"></span>
+                    <span class="rpm-tick" data-i="4"></span>
+                    <span class="rpm-tick" data-i="5"></span>
+                    <span class="rpm-tick" data-i="6"></span>
+                    <span class="rpm-tick" data-i="7"></span>
+                    <span class="rpm-tick" data-i="8"></span>
+                    <span class="rpm-tick" data-i="9"></span>
+                    <span class="rpm-tick" data-i="10"></span>
+                    <span class="rpm-tick" data-i="11"></span>
+                    <span class="rpm-tick" data-i="12"></span>
+                    <span class="rpm-tick" data-i="13"></span>
+                    <span class="rpm-tick" data-i="14"></span>
+                    <span class="rpm-tick" data-i="15"></span>
+                </div>
+
+            </div>
         </div>
 
     </div>
