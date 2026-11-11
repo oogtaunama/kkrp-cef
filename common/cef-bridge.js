@@ -80,14 +80,22 @@
                 console.log(`%c[CEF TX]%c ${eventName}`, 'color: #10b981; font-weight: bold;', 'color: inherit;', args);
             }
 
-            const cefApi = this.getCefApi();
-            if (cefApi && typeof cefApi.emit === 'function') {
-                cefApi.emit(eventName, ...args);
-            } else {
-                // Fallback / Preview Mode di Browser Standalone
-                if (this.mockServerEnabled) {
-                    this._handleMockEmit(eventName, args);
+            try {
+                if (typeof window !== 'undefined' && window.cef && typeof window.cef.emit === 'function') {
+                    window.cef.emit(eventName, ...args);
+                    return;
                 }
+                if (typeof cef !== 'undefined' && cef && typeof cef.emit === 'function') {
+                    cef.emit(eventName, ...args);
+                    return;
+                }
+            } catch (e) {
+                console.error('[CEF BRIDGE] emit error:', e);
+            }
+
+            // Fallback / Preview Mode di Browser Standalone
+            if (this.mockServerEnabled) {
+                this._handleMockEmit(eventName, args);
             }
         }
 
