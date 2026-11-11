@@ -1,11 +1,12 @@
 /**
  * HUD Controller - NoPixel 4.0 Inspired QB HUD & Speedometer
  * Kota Kecilku Roleplay
+ * Status: Voice, Health, Armor, Food, Water, Stress, Sleep
  * Reference: ref_hud_speedo.jpg
  */
 
-// Tinggi total SVG Hexagon (viewBox: 0 0 34 38)
-const HEX_HEIGHT = 38;
+// Tinggi total SVG Hexagon (viewBox: 0 0 28 32)
+const HEX_HEIGHT = 32;
 
 /**
  * Update level isi Hexagon (mengatur clipPath rect SVG dari bawah ke atas)
@@ -13,8 +14,9 @@ const HEX_HEIGHT = 38;
  * @param {number} value - Nilai persentase (0 - 100)
  * @param {string} itemId - ID parent item untuk efek class critical
  * @param {number|null} criticalThreshold - Batas nilai kritis
+ * @param {boolean} invertCritical - Jika true, nilai >= criticalThreshold dianggap kritis (misal: stress)
  */
-function setHexProgress(rectId, value, itemId = null, criticalThreshold = null) {
+function setHexProgress(rectId, value, itemId = null, criticalThreshold = null, invertCritical = false) {
     const rect = document.getElementById(rectId);
     if (!rect) return;
 
@@ -31,7 +33,8 @@ function setHexProgress(rectId, value, itemId = null, criticalThreshold = null) 
     if (itemId && criticalThreshold !== null) {
         const itemEl = document.getElementById(itemId);
         if (itemEl) {
-            if (clamped <= criticalThreshold) {
+            const isCrit = invertCritical ? (clamped >= criticalThreshold) : (clamped <= criticalThreshold);
+            if (isCrit) {
                 itemEl.classList.add('critical');
             } else {
                 itemEl.classList.remove('critical');
@@ -150,12 +153,14 @@ window.addEventListener('DOMContentLoaded', () => {
         CefBridge.setFocus(false);
     }
 
-    // Default status awal
+    // Default status awal (7 Hexagons)
     setHexProgress('rectVoice', 100);
     setHexProgress('rectHealth', 100);
     setHexProgress('rectArmor', 100);
     setHexProgress('rectFood', 100);
     setHexProgress('rectWater', 100);
+    setHexProgress('rectStress', 0, 'hexStress', 60, true);
+    setHexProgress('rectSleep', 100, 'hexSleep', 20);
     setSpeedDisplay(0);
     updateRpmTicks(0);
 
@@ -168,17 +173,29 @@ window.addEventListener('DOMContentLoaded', () => {
     CefBridge.on('server:updatePlayerStatus', (...args) => {
         const data = parseStatusData(...args);
 
+        // 1. Health / Darah (Hijau)
         if (data.health !== undefined) {
             setHexProgress('rectHealth', data.health, 'hexHealth', 20);
         }
+        // 2. Armor / Rompi (Biru)
         if (data.armor !== undefined) {
             setHexProgress('rectArmor', data.armor, 'hexArmor');
         }
+        // 3. Hunger / Makan (Oranye)
         if (data.hunger !== undefined || data.food !== undefined) {
             setHexProgress('rectFood', data.hunger ?? data.food, 'hexFood', 20);
         }
+        // 4. Thirst / Minum (Cyan)
         if (data.thirst !== undefined || data.water !== undefined) {
             setHexProgress('rectWater', data.thirst ?? data.water, 'hexWater', 20);
+        }
+        // 5. Stress / Stres (Ungu, mengisi saat naik, kritis >= 60%)
+        if (data.stress !== undefined) {
+            setHexProgress('rectStress', data.stress, 'hexStress', 60, true);
+        }
+        // 6. Sleepy / Ngantuk (Kuning, berkurang saat lelah, kritis <= 20%)
+        if (data.sleepy !== undefined || data.sleep !== undefined) {
+            setHexProgress('rectSleep', data.sleepy ?? data.sleep, 'hexSleep', 20);
         }
     });
 

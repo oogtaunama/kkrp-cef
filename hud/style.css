@@ -1,6 +1,7 @@
 /* ==========================================================================
    NOPIXEL 4.0 INSPIRED QB HUD & SPEEDOMETER
    Kota Kecilku Roleplay
+   Status: Voice, Health, Armor, Food, Water, Stress, Sleep
    Reference: ref_hud_speedo.jpg
    ========================================================================== */
 
@@ -35,17 +36,17 @@ body {
 .nopixel-hbe-wrap {
     position: absolute;
     bottom: 8px;
-    left: 30px;
+    left: 18px;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 4px;
     z-index: 100;
 }
 
 .hex-item {
     position: relative;
-    width: 32px;
-    height: 36px;
+    width: 28px;
+    height: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -68,7 +69,7 @@ body {
 }
 
 .hex-bg {
-    fill: rgba(15, 23, 42, 0.85);
+    fill: rgba(15, 23, 42, 0.88);
 }
 
 .hex-fill {
@@ -77,18 +78,18 @@ body {
 
 .hex-border {
     fill: none;
-    stroke-width: 2.2;
+    stroke-width: 2;
     stroke-linejoin: round;
     transition: stroke 0.3s ease, filter 0.3s ease;
 }
 
 .hex-icon {
     position: absolute;
-    width: 16px;
-    height: 16px;
+    width: 14px;
+    height: 14px;
     color: #ffffff;
     z-index: 2;
-    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.8));
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.85));
 }
 
 /* Warna spesifik tiap Hexagon sesuai NoPixel 4.0 */
@@ -98,41 +99,55 @@ body {
 .hex-item.voice.talking .hex-fill { fill: #f97316; }
 .hex-item.voice.talking .hex-border {
     stroke: #fb923c;
-    filter: drop-shadow(0 0 5px rgba(249, 115, 22, 0.8));
+    filter: drop-shadow(0 0 5px rgba(249, 115, 22, 0.85));
 }
 
 /* 2. Health (Darah) - Hijau Neon */
 .hex-item.health .hex-fill { fill: #22c55e; }
 .hex-item.health .hex-border {
     stroke: #4ade80;
-    filter: drop-shadow(0 0 5px rgba(34, 197, 94, 0.7));
+    filter: drop-shadow(0 0 5px rgba(34, 197, 94, 0.75));
 }
 
 /* 3. Armor (Rompi) - Biru Neon */
 .hex-item.armor .hex-fill { fill: #3b82f6; }
 .hex-item.armor .hex-border {
     stroke: #60a5fa;
-    filter: drop-shadow(0 0 5px rgba(59, 130, 246, 0.7));
+    filter: drop-shadow(0 0 5px rgba(59, 130, 246, 0.75));
 }
 
 /* 4. Food (Makanan) - Oranye */
 .hex-item.food .hex-fill { fill: #f97316; }
 .hex-item.food .hex-border {
     stroke: #fb923c;
-    filter: drop-shadow(0 0 5px rgba(249, 115, 22, 0.7));
+    filter: drop-shadow(0 0 5px rgba(249, 115, 22, 0.75));
 }
 
 /* 5. Water (Minuman) - Cyan / Biru Laut */
 .hex-item.water .hex-fill { fill: #06b6d4; }
 .hex-item.water .hex-border {
     stroke: #22d3ee;
-    filter: drop-shadow(0 0 5px rgba(6, 182, 212, 0.7));
+    filter: drop-shadow(0 0 5px rgba(6, 182, 212, 0.75));
 }
 
-/* Critical warning pulse saat darah / lapar rendah */
+/* 6. Stress (Stres) - Ungu Neon */
+.hex-item.stress .hex-fill { fill: #a855f7; }
+.hex-item.stress .hex-border {
+    stroke: #c084fc;
+    filter: drop-shadow(0 0 5px rgba(168, 85, 247, 0.75));
+}
+
+/* 7. Sleep (Ngantuk) - Kuning / Amber */
+.hex-item.sleep .hex-fill { fill: #eab308; }
+.hex-item.sleep .hex-border {
+    stroke: #facc15;
+    filter: drop-shadow(0 0 5px rgba(234, 179, 8, 0.75));
+}
+
+/* Critical warning pulse saat status kritis */
 @keyframes criticalPulse {
     0% { transform: scale(1); filter: drop-shadow(0 0 2px #ef4444); }
-    50% { transform: scale(1.1); filter: drop-shadow(0 0 10px #ef4444); }
+    50% { transform: scale(1.1); filter: drop-shadow(0 0 8px #ef4444); }
     100% { transform: scale(1); filter: drop-shadow(0 0 2px #ef4444); }
 }
 
@@ -146,12 +161,12 @@ body {
 
 /* ==========================================================================
    2. SPEEDOMETER (NoPixel 4.0 Style - Tepat di KANAN Map)
-   Posisi: Sebelah kanan radar GTA SA (left: 205px; bottom: 12px)
+   Posisi: Sebelah kanan radar GTA SA (left: 246px; bottom: 10px)
    ========================================================================== */
 .speedo-wrapper {
     position: absolute;
-    bottom: 12px;
-    left: 205px;
+    bottom: 10px;
+    left: 246px;
     z-index: 100;
 }
 
@@ -161,8 +176,8 @@ body {
     -webkit-backdrop-filter: blur(8px);
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 10px;
-    padding: 8px 12px;
-    min-width: 175px;
+    padding: 7px 11px;
+    min-width: 170px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
 }
 
@@ -205,13 +220,13 @@ body {
     align-items: center;
     justify-content: space-between;
     gap: 10px;
-    margin: 4px 0 8px 0;
+    margin: 3px 0 7px 0;
 }
 
 /* Kotak Gear Glowing Cyan NoPixel 4.0 */
 .gear-box {
-    width: 32px;
-    height: 42px;
+    width: 30px;
+    height: 40px;
     border-radius: 6px;
     background: rgba(45, 212, 191, 0.18);
     border: 1.5px solid #2dd4bf;
@@ -223,7 +238,7 @@ body {
 }
 
 .gear-digit {
-    font-size: 20px;
+    font-size: 19px;
     font-weight: 900;
     color: #ffffff;
     line-height: 1;
@@ -242,7 +257,7 @@ body {
     flex: 1;
     text-align: center;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace;
-    font-size: 38px;
+    font-size: 36px;
     font-weight: 900;
     letter-spacing: 2px;
     line-height: 1;
@@ -265,7 +280,7 @@ body {
 /* Jalur Indikator Bensin Vertikal (Di bawah icon fuel pump) */
 .fuel-track-vert {
     width: 5px;
-    height: 38px;
+    height: 36px;
     border-radius: 3px;
     background: rgba(255, 255, 255, 0.12);
     display: flex;
@@ -291,7 +306,7 @@ body {
 
 .rpm-tick {
     flex: 1;
-    height: 14px;
+    height: 13px;
     border-radius: 2px;
     background: rgba(255, 255, 255, 0.12);
     transition: background 0.12s ease, box-shadow 0.12s ease;
