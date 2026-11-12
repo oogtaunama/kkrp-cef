@@ -1,0 +1,650 @@
+/* ==========================================================================
+   OXTARGET CEF SYSTEM - KOTA KECILKU ROLEPLAY (open.mp)
+   Theme: FiveM / NoPixel 4.0 Inspired (Orange & Light Orange Cyber Aesthetic)
+   ========================================================================== */
+
+:root {
+    /* OxTarget Orange & Light Orange Theme Palette */
+    --ox-orange-glow: rgba(255, 152, 0, 0.65);
+    --ox-orange-soft-glow: rgba(255, 183, 77, 0.25);
+    --ox-orange-primary: #ff9800;
+    --ox-orange-light: #ffa726;
+    --ox-orange-lighter: #ffb74d;
+    --ox-orange-amber: #f59e0b;
+    --ox-orange-deep: #ff6d00;
+    --ox-orange-gradient: linear-gradient(135deg, #ff9800 0%, #ff6d00 100%);
+    --ox-orange-gradient-soft: linear-gradient(135deg, rgba(255, 152, 0, 0.25) 0%, rgba(255, 183, 77, 0.12) 100%);
+    --ox-orange-hover-gradient: linear-gradient(90deg, rgba(255, 152, 0, 0.32) 0%, rgba(255, 183, 77, 0.12) 100%);
+
+    /* Backgrounds & Glassmorphism */
+    --ox-bg-card: rgba(13, 17, 24, 0.90);
+    --ox-bg-card-hover: rgba(20, 27, 38, 0.96);
+    --ox-bg-btn: rgba(18, 24, 34, 0.75);
+    --ox-bg-btn-hover: rgba(28, 36, 52, 0.88);
+    --ox-bg-badge: rgba(255, 152, 0, 0.14);
+
+    /* Borders */
+    --ox-border: rgba(255, 152, 0, 0.28);
+    --ox-border-light: rgba(255, 183, 77, 0.6);
+    --ox-border-subtle: rgba(255, 255, 255, 0.08);
+
+    /* Text */
+    --ox-text-main: #f8fafc;
+    --ox-text-muted: #94a3b8;
+    --ox-text-dark: #64748b;
+
+    /* Fonts */
+    --font-heading: 'Chakra Petch', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --font-mono: 'Rajdhani', monospace, sans-serif;
+}
+
+/* ==========================================================================
+   RESET & FULL VIEWPORT WRAPPER
+   ========================================================================== */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+html, body {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: transparent !important; /* CRITICAL: Tembus pandang ke dunia 3D game */
+    color: var(--ox-text-main);
+    font-family: var(--font-body);
+}
+
+.target-root {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none; /* Mouse hanya aktif saat berinteraksi dengan card */
+}
+
+/* Helper Class */
+.hidden {
+    display: none !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+
+/* ==========================================================================
+   1. RETICLE / THIRD-EYE (CENTER SCREEN TARGETING)
+   ========================================================================== */
+.reticle-wrapper {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.reticle-core {
+    position: relative;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Idle State Dot */
+.reticle-idle-dot {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #ffffff;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 18px var(--ox-orange-primary);
+    transition: all 0.25s ease;
+    animation: idleBreathe 2s infinite ease-in-out;
+}
+
+@keyframes idleBreathe {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.85;
+    }
+    50% {
+        transform: scale(1.35);
+        opacity: 1;
+        box-shadow: 0 0 14px rgba(255, 255, 255, 1), 0 0 24px var(--ox-orange-light);
+    }
+}
+
+/* Active Glowing Eye Icon */
+.reticle-eye-icon {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: var(--ox-orange-lighter);
+    opacity: 0;
+    transform: scale(0.4) rotate(-20deg);
+    transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    text-shadow: 0 0 12px var(--ox-orange-light), 0 0 24px var(--ox-orange-deep);
+}
+
+/* Outer Tech Rings */
+.reticle-outer-ring {
+    position: absolute;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 2px dashed rgba(255, 183, 77, 0.35);
+    transition: all 0.3s ease;
+    animation: ringSpin 12s linear infinite;
+}
+
+.reticle-pulse-ring {
+    position: absolute;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid transparent;
+    opacity: 0;
+    pointer-events: none;
+}
+
+@keyframes ringSpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Subtle Crosshair Axis Guides */
+.crosshair-axis {
+    position: absolute;
+    background: rgba(255, 183, 77, 0.2);
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+
+.axis-horizontal {
+    width: 24px;
+    height: 1px;
+}
+
+.axis-vertical {
+    width: 1px;
+    height: 24px;
+}
+
+/* ==========================================================================
+   ACTIVE RETICLE STATE (WHEN TARGET DETECTED / LOCKED)
+   ========================================================================== */
+.reticle-wrapper.target-active .reticle-core {
+    transform: scale(1.15);
+}
+
+.reticle-wrapper.target-active .reticle-idle-dot {
+    opacity: 0;
+    transform: scale(0);
+}
+
+.reticle-wrapper.target-active .reticle-eye-icon {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+}
+
+.reticle-wrapper.target-active .reticle-outer-ring {
+    width: 46px;
+    height: 46px;
+    border: 2px solid var(--ox-orange-light);
+    box-shadow: 0 0 16px var(--ox-orange-glow), inset 0 0 12px var(--ox-orange-soft-glow);
+    animation: ringSpin 4s linear infinite;
+}
+
+.reticle-wrapper.target-active .reticle-pulse-ring {
+    animation: radarPulse 1.8s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+}
+
+@keyframes radarPulse {
+    0% {
+        width: 36px;
+        height: 36px;
+        border: 2px solid var(--ox-orange-lighter);
+        opacity: 0.9;
+        transform: scale(1);
+    }
+    100% {
+        width: 76px;
+        height: 76px;
+        border: 1px solid var(--ox-orange-primary);
+        opacity: 0;
+        transform: scale(1.4);
+    }
+}
+
+.reticle-wrapper.target-active .crosshair-axis {
+    background: rgba(255, 183, 77, 0.5);
+    box-shadow: 0 0 8px var(--ox-orange-glow);
+}
+
+
+/* ==========================================================================
+   2. INTERACTION CONTEXT MENU CARD (FLOATING ADJACENT TO RETICLE)
+   ========================================================================== */
+.target-card {
+    position: absolute;
+    top: 50%;
+    left: calc(50% + 56px); /* Mengapung rapi tepat di sebelah kanan reticle */
+    transform: translateY(-50%) scale(1);
+    width: 320px;
+    background: rgba(13, 17, 24, 0.94);
+    border: 1px solid var(--ox-border);
+    border-radius: 14px;
+    padding: 16px;
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.75), 0 0 30px rgba(255, 152, 0, 0.18);
+    pointer-events: auto; /* Memungkinkan klik mouse & interaksi */
+    z-index: 20;
+    transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.2);
+    animation: cardSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes cardSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50%) translateX(-15px) scale(0.96);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(-50%) translateX(0) scale(1);
+    }
+}
+
+/* Connecting Notch towards Reticle */
+.card-connector {
+    position: absolute;
+    top: 50%;
+    left: -8px;
+    transform: translateY(-50%) rotate(45deg);
+    width: 14px;
+    height: 14px;
+    background: var(--ox-bg-card);
+    border-left: 1px solid var(--ox-border);
+    border-bottom: 1px solid var(--ox-border);
+}
+
+/* Header */
+.card-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding-bottom: 12px;
+    margin-bottom: 12px;
+}
+
+.target-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+}
+
+.target-category-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 9px;
+    background: var(--ox-bg-badge);
+    border: 1px solid var(--ox-border);
+    border-radius: 6px;
+    font-family: var(--font-heading);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    color: var(--ox-orange-light);
+    text-transform: uppercase;
+    box-shadow: 0 0 10px rgba(255, 152, 0, 0.15);
+}
+
+.target-distance-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ox-text-muted);
+}
+
+.target-title {
+    font-family: var(--font-heading);
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--ox-text-main);
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Options List */
+.card-options-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 380px;
+    overflow-y: auto;
+    padding-right: 2px;
+}
+
+/* Individual Option Button */
+.target-option-btn {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    background: var(--ox-bg-btn);
+    border: 1px solid var(--ox-border-subtle);
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: left;
+    color: var(--ox-text-main);
+    transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+    overflow: hidden;
+    animation: optionItemFade 0.25s ease-out forwards;
+}
+
+@keyframes optionItemFade {
+    from {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Glowing Left Accent Strip */
+.target-option-btn::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--ox-orange-gradient);
+    opacity: 0;
+    transition: opacity 0.2s ease, width 0.2s ease;
+}
+
+/* Option Icon Box */
+.option-icon-box {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--ox-orange-gradient-soft);
+    border: 1px solid var(--ox-border);
+    border-radius: 8px;
+    font-size: 15px;
+    color: var(--ox-orange-lighter);
+    transition: all 0.2s ease;
+}
+
+/* Option Content */
+.option-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.option-label {
+    font-family: var(--font-heading);
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--ox-text-main);
+    line-height: 1.25;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color 0.2s ease;
+}
+
+.option-desc {
+    font-size: 11px;
+    color: var(--ox-text-muted);
+    line-height: 1.2;
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Key Shortcut Badge */
+.target-key-badge {
+    flex-shrink: 0;
+    padding: 3px 7px;
+    background: rgba(255, 152, 0, 0.12);
+    border: 1px solid rgba(255, 152, 0, 0.35);
+    border-radius: 6px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--ox-orange-light);
+    letter-spacing: 0.5px;
+    transition: all 0.2s ease;
+}
+
+/* Option Hover & Focus State */
+.target-option-btn:hover,
+.target-option-btn.selected {
+    transform: translateX(6px);
+    background: var(--ox-orange-hover-gradient);
+    border-color: var(--ox-orange-light);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), 0 0 15px rgba(255, 152, 0, 0.25);
+}
+
+.target-option-btn:hover::before,
+.target-option-btn.selected::before {
+    opacity: 1;
+    width: 4px;
+}
+
+.target-option-btn:hover .option-icon-box,
+.target-option-btn.selected .option-icon-box {
+    background: var(--ox-orange-gradient);
+    color: #ffffff;
+    border-color: var(--ox-orange-lighter);
+    box-shadow: 0 0 12px var(--ox-orange-glow);
+    transform: scale(1.08);
+}
+
+.target-option-btn:hover .option-label,
+.target-option-btn.selected .option-label {
+    color: #ffffff;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+}
+
+.target-option-btn:hover .target-key-badge,
+.target-option-btn.selected .target-key-badge {
+    background: var(--ox-orange-light);
+    color: #0b0f17;
+    border-color: var(--ox-orange-lighter);
+    box-shadow: 0 0 8px var(--ox-orange-glow);
+}
+
+/* Click Action Ripple Effect */
+.target-option-btn:active {
+    transform: scale(0.97) translateX(4px);
+}
+
+/* Footer Hints */
+.card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.hint-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    color: var(--ox-text-muted);
+}
+
+.hint-pill .kbd {
+    display: inline-block;
+    padding: 1px 5px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--ox-orange-light);
+}
+
+
+/* ==========================================================================
+   3. TOP TARGET STATUS BANNER
+   ========================================================================== */
+.target-status-bar {
+    position: absolute;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 16px;
+    background: rgba(13, 17, 24, 0.92);
+    border: 1px solid var(--ox-border);
+    border-radius: 9999px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5), 0 0 15px rgba(255, 152, 0, 0.15);
+    pointer-events: none;
+    z-index: 15;
+    animation: fadeInDown 0.3s ease;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -15px);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+}
+
+.status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--ox-orange-light);
+    box-shadow: 0 0 10px var(--ox-orange-glow);
+}
+
+.live-pulse {
+    animation: livePulseAnim 1.5s infinite;
+}
+
+@keyframes livePulseAnim {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.4);
+        opacity: 0.6;
+    }
+}
+
+.status-text {
+    font-family: var(--font-heading);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--ox-orange-light);
+}
+
+.status-sub {
+    font-size: 11px;
+    color: var(--ox-text-muted);
+    border-left: 1px solid rgba(255, 255, 255, 0.15);
+    padding-left: 10px;
+}
+
+
+/* ==========================================================================
+   4. STANDALONE DEV PREVIEW TOOLBAR (BROWSER PREVIEW ONLY)
+   ========================================================================== */
+.dev-toolbar {
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: rgba(15, 23, 42, 0.95);
+    border: 1px solid var(--ox-border);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+    pointer-events: auto;
+    z-index: 999;
+}
+
+.dev-title {
+    font-family: var(--font-heading);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ox-orange-lighter);
+    margin-right: 4px;
+}
+
+.dev-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: rgba(255, 152, 0, 0.12);
+    border: 1px solid rgba(255, 152, 0, 0.35);
+    border-radius: 8px;
+    color: var(--ox-text-main);
+    font-family: var(--font-heading);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.dev-btn:hover {
+    background: var(--ox-orange-primary);
+    color: #ffffff;
+    box-shadow: 0 0 12px var(--ox-orange-glow);
+}
+
+.dev-btn-clear {
+    background: rgba(239, 68, 68, 0.15);
+    border-color: rgba(239, 68, 68, 0.4);
+    color: #f87171;
+}
+
+.dev-btn-clear:hover {
+    background: #ef4444;
+    color: #ffffff;
+    box-shadow: 0 0 12px rgba(239, 68, 68, 0.5);
+}

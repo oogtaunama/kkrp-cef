@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KKRP OxTarget - 3D Targeting System</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome 6 CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Common & OxTarget Stylesheets -->
+    <link rel="stylesheet" href="../common/common.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Target Mode Root Container -->
+    <main class="target-root" id="targetRoot">
+
+        <!-- ============================================================ -->
+        <!-- 1. RETICLE / THIRD-EYE TARGET CENTER                         -->
+        <!-- ============================================================ -->
+        <div class="reticle-wrapper" id="reticleWrapper">
+            <!-- Central Reticle Elements -->
+            <div class="reticle-core" id="reticleCore">
+                <!-- Idle Center Dot -->
+                <div class="reticle-idle-dot" id="idleDot"></div>
+
+                <!-- Active Glowing Eye Icon -->
+                <div class="reticle-eye-icon" id="eyeIcon">
+                    <i class="fa-solid fa-eye"></i>
+                </div>
+
+                <!-- Outer Circular Tech Rings -->
+                <div class="reticle-outer-ring" id="outerRing"></div>
+                <div class="reticle-pulse-ring" id="pulseRing"></div>
+            </div>
+
+            <!-- Visual Crosshair Guide Cross (Subtle lines) -->
+            <div class="crosshair-axis axis-horizontal"></div>
+            <div class="crosshair-axis axis-vertical"></div>
+        </div>
+
+
+        <!-- ============================================================ -->
+        <!-- 2. INTERACTION CONTEXT MENU CARD (FLOATING ADJACENT)          -->
+        <!-- ============================================================ -->
+        <div class="target-card glass-card hidden" id="targetCard">
+            <!-- Connecting Notch -->
+            <div class="card-connector"></div>
+
+            <!-- Target Header -->
+            <header class="card-header">
+                <div class="target-meta">
+                    <span class="target-category-badge" id="targetCategory">
+                        <i class="fa-solid fa-car" id="categoryIcon"></i>
+                        <span id="categoryText">KENDARAAN</span>
+                    </span>
+                    <span class="target-distance-badge" id="targetDistance">
+                        <i class="fa-solid fa-location-crosshairs"></i>
+                        <span id="distanceText">2.1m</span>
+                    </span>
+                </div>
+                <h2 class="target-title" id="targetTitle">Karin Sultan</h2>
+            </header>
+
+            <!-- Interactive Options List -->
+            <div class="card-options-list" id="optionsList">
+                <!-- Dynamic Options rendered by script.js -->
+            </div>
+
+            <!-- Card Footer Hints -->
+            <footer class="card-footer">
+                <div class="hint-pill">
+                    <span class="kbd">1-9</span>
+                    <span>Pilih Opsi</span>
+                </div>
+                <div class="hint-pill">
+                    <span class="kbd">LMB</span>
+                    <span>Klik Mouse</span>
+                </div>
+                <div class="hint-pill">
+                    <span class="kbd">ESC / ALT</span>
+                    <span>Keluar</span>
+                </div>
+            </footer>
+        </div>
+
+
+        <!-- ============================================================ -->
+        <!-- 3. TOP NOTIFICATION / TARGET STATUS BANNER                   -->
+        <!-- ============================================================ -->
+        <div class="target-status-bar" id="statusBar">
+            <div class="status-indicator live-pulse"></div>
+            <span class="status-text">OXTARGET AKTIF</span>
+            <span class="status-sub">Arahkan pandangan ke objek / kendaraan / warga</span>
+        </div>
+
+
+        <!-- ============================================================ -->
+        <!-- 4. STANDALONE BROWSER DEV / PREVIEW TOOLBAR                  -->
+        <!-- Ditampilkan otomatis hanya jika dibuka di luar game          -->
+        <!-- ============================================================ -->
+        <div class="dev-toolbar hidden" id="devToolbar">
+            <span class="dev-title"><i class="fa-solid fa-sliders"></i> DEV PREVIEW:</span>
+            <button class="dev-btn" onclick="MockTarget.vehicle()"><i class="fa-solid fa-car"></i> Kendaraan</button>
+            <button class="dev-btn" onclick="MockTarget.player()"><i class="fa-solid fa-user"></i> Warga</button>
+            <button class="dev-btn" onclick="MockTarget.atm()"><i class="fa-solid fa-money-bill-wave"></i> Mesin ATM</button>
+            <button class="dev-btn" onclick="MockTarget.garbage()"><i class="fa-solid fa-trash-can"></i> Tempat Sampah</button>
+            <button class="dev-btn" onclick="MockTarget.gaspump()"><i class="fa-solid fa-gas-pump"></i> Pom Bensin</button>
+            <button class="dev-btn dev-btn-clear" onclick="MockTarget.clear()"><i class="fa-solid fa-ban"></i> Reset Target</button>
+        </div>
+
+    </main>
+
+    <!-- Scripts -->
+    <script src="../common/cef-bridge.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
