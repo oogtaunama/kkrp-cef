@@ -242,4 +242,170 @@ window.addEventListener('DOMContentLoaded', () => {
             hexVoice.classList.remove('talking');
         }
     });
+
+    // ========================================================================
+    // 3. FIVEM CEF NOTIFICATION SYSTEM & PROXIMITY PROMPT
+    // Sesuai referensi cfx_notif.jpg (Warning, Error, Success, Info, Default)
+    // ========================================================================
+    const NotifyAudio = {
+        ctx: null,
+        init() {
+            if (!this.ctx && (window.AudioContext || window.webkitAudioContext)) {
+                const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                this.ctx = new AudioCtx();
+            }
+        },
+        play(type) {
+            try {
+                this.init();
+                if (!this.ctx) return;
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+
+                if (type === 'error') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(320, now);
+                    osc.frequency.exponentialRampToValueAtTime(180, now + 0.18);
+                    gain.gain.setValueAtTime(0.12, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.2);
+                } else if (type === 'warning') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(540, now);
+                    osc.frequency.setValueAtTime(680, now + 0.08);
+                    gain.gain.setValueAtTime(0.1, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.2);
+                } else {
+                    // Success / Info / Default
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(740, now);
+                    osc.frequency.exponentialRampToValueAtTime(1180, now + 0.1);
+                    gain.gain.setValueAtTime(0.09, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.15);
+                }
+            } catch (e) {}
+        }
+    };
+
+    const NotifyIcons = {
+        warning: 'fa-triangle-exclamation',
+        error: 'fa-circle-xmark',
+        success: 'fa-circle-check',
+        info: 'fa-circle-info',
+        syntax: 'fa-terminal',
+        default: 'fa-comment'
+    };
+
+    /**
+     * Tampilkan notifikasi FiveM CEF ke layar
+     * @param {Object} data - { type, title, message, duration }
+     */
+    function showFivemNotification(data) {
+        if (!data) return;
+        const stack = document.getElementById('notifyStack');
+        if (!stack) return;
+
+        const type = (data.type || 'info').toLowerCase();
+        const title = data.title || (type.toUpperCase());
+        const message = data.message || '';
+        const duration = Math.max(1500, Number(data.duration) || 4500);
+        const iconClass = NotifyIcons[type] || NotifyIcons.default;
+
+        // Buat card elemen notifikasi
+        const card = document.createElement('div');
+        card.className = `fivem-notify notify-${type}`;
+
+        card.innerHTML = `
+            <div class="notify-badge">
+                <i class="fa-solid ${iconClass}"></i>
+            </div>
+            <div class="notify-body">
+                <div class="notify-title">${title}</div>
+                <div class="notify-msg">${message}</div>
+            </div>
+            <div class="notify-progress"></div>
+        `;
+
+        stack.appendChild(card);
+        NotifyAudio.play(type);
+
+        // Slide in
+        requestAnimationFrame(() => {
+            card.classList.add('show');
+            const progress = card.querySelector('.notify-progress');
+            if (progress) {
+                progress.style.transition = `width ${duration}ms linear`;
+                requestAnimationFrame(() => {
+                    progress.style.width = '0%';
+                });
+            }
+        });
+
+        // Slide out & destroy
+        setTimeout(() => {
+            card.classList.remove('show');
+            card.classList.add('hide');
+            setTimeout(() => {
+                if (card.parentNode) {
+                    card.parentNode.removeChild(card);
+                }
+            }, 350);
+        }, duration);
+    }
+
+    // Listener Event Notifikasi dari Pawn
+    CefBridge.on('notify:show', (payload) => {
+        let data = payload;
+        if (typeof payload === 'string') {
+            try {
+                data = JSON.parse(payload);
+            } catch (e) {
+                data = { type: 'info', title: 'INFORMASI', message: payload, duration: 4500 };
+            }
+        }
+        showFivemNotification(data);
+    });
+
+    // Listener Proximity Prompt Target Mata (FiveM style)
+    const targetPrompt = document.getElementById('targetPrompt');
+    const targetPromptDesc = document.getElementById('targetPromptDesc');
+
+    CefBridge.on('target:promptShow', (payload) => {
+        let text = 'Target Interaktif';
+        if (typeof payload === 'string') {
+            try {
+                const parsed = JSON.parse(payload);
+                text = parsed.title || parsed.desc || payload;
+            } catch (e) {
+                text = payload;
+            }
+        } else if (payload && typeof payload === 'object') {
+            text = payload.title || payload.desc || 'Target Interaktif';
+        }
+
+        if (targetPromptDesc) {
+            targetPromptDesc.textContent = text;
+        }
+        if (targetPrompt) {
+            targetPrompt.classList.add('show');
+        }
+    });
+
+    CefBridge.on('target:promptHide', () => {
+        if (targetPrompt) {
+            targetPrompt.classList.remove('show');
+        }
+    });
 });
