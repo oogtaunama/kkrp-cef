@@ -78,7 +78,7 @@ body.browser-preview {
     z-index: 9999;
     transform: translateY(120%);
     opacity: 0;
-    transition: transform 0.42s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
+    transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.18s ease;
     filter: drop-shadow(0 20px 45px rgba(0, 0, 0, 0.85));
 }
 
