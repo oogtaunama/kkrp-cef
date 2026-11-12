@@ -50,8 +50,29 @@ const WEAPON_NAMES = {
     46: "Parachute"
 };
 
+// Kapasitas Magazine Standar GTA San Andreas (untuk kalkulasi peluru mag & cadangan)
+const WEAPON_CLIP_SIZES = {
+    22: 17, // 9mm Pistol
+    23: 17, // Silenced 9mm
+    24: 7,  // Desert Eagle
+    25: 1,  // Shotgun
+    26: 2,  // Sawnoff Shotgun
+    27: 7,  // Combat Shotgun
+    28: 50, // Micro Uzi
+    29: 30, // MP5 Navy
+    30: 30, // AK-47
+    31: 50, // M4 Carbine
+    32: 50, // Tec-9
+    33: 1,  // Country Rifle
+    34: 1,  // Sniper Rifle
+    35: 1,  // RPG-7
+    36: 1,  // Heatseeker
+    37: 50, // Flamethrower
+    38: 500 // Minigun
+};
+
 /**
- * Format Angka ke Format Mata Uang ($56,000)
+ * Format Angka ke Format Mata Uang ($56,000,12 atau $56,000)
  */
 function formatCurrency(val) {
     const num = Math.round(Number(val) || 0);
@@ -285,8 +306,8 @@ window.addEventListener('DOMContentLoaded', () => {
     // ============================================================
     const weaponHud = document.getElementById('weaponHud');
     const weaponNameEl = document.getElementById('weaponName');
-    const weaponClipEl = document.getElementById('weaponClip');
-    const weaponTotalEl = document.getElementById('weaponTotal');
+    const weaponTopAmmoEl = document.getElementById('weaponTopAmmo');
+    const weaponBigAmmoEl = document.getElementById('weaponBigAmmo');
     const weaponImgEl = document.getElementById('weaponImg');
 
     CefBridge.on('server:updateWeapon', (payload, pClip, pAmmo, pName) => {
@@ -319,8 +340,26 @@ window.addEventListener('DOMContentLoaded', () => {
             if (weaponNameEl) {
                 weaponNameEl.innerText = customName || WEAPON_NAMES[weaponId] || `Weapon #${weaponId}`;
             }
-            if (weaponClipEl) weaponClipEl.innerText = String(clip);
-            if (weaponTotalEl) weaponTotalEl.innerText = String(ammo);
+
+            // Hitung reserve ammo dan clip ammo untuk tampilan "13 / 18" (sesuai Gambar 2)
+            let displayClip = clip;
+            let displayReserve = ammo;
+
+            if (clip > 0) {
+                displayClip = clip;
+                displayReserve = Math.max(0, ammo - clip);
+            } else if (ammo > 0) {
+                const magSize = WEAPON_CLIP_SIZES[weaponId] || 30;
+                displayClip = Math.min(magSize, ammo);
+                displayReserve = Math.max(0, ammo - displayClip);
+            } else {
+                displayClip = 0;
+                displayReserve = 0;
+            }
+
+            if (weaponTopAmmoEl) weaponTopAmmoEl.innerText = String(displayReserve);
+            if (weaponBigAmmoEl) weaponBigAmmoEl.innerText = String(displayClip);
+
             if (weaponImgEl) {
                 weaponImgEl.src = `weapons/${weaponId}.svg`;
                 weaponImgEl.onerror = () => {

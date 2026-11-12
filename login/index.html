@@ -15,6 +15,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- YouTube Iframe API untuk Musik Lil Tatang - Kau Dan Basuri -->
+    <script src="https://www.youtube.com/iframe_api"></script>
 
     <script>
         tailwind.config = {
@@ -317,28 +319,17 @@
             <!-- Top Orange Accent Line -->
             <div class="absolute top-0 inset-x-0 h-[3px] bg-gradient-to-r from-brand-orange via-brand-light to-brand-orange"></div>
 
-            <!-- Header & Mode Tabs -->
-            <div class="flex items-center justify-between mb-4">
-                <div>
-                    <h1 id="card-title" class="font-heading font-extrabold text-lg text-white tracking-tight">
-                        Login Akun
-                    </h1>
-                    <p id="card-desc" class="text-xs text-zinc-400 mt-0.5">
-                        Masukkan kata sandi akun Anda untuk masuk.
-                    </p>
-                </div>
-                <!-- Mini Tab Switcher -->
-                <div class="flex items-center bg-black/40 p-1 rounded-xl border border-white/5">
-                    <button type="button" id="tab-login" onclick="switchAuthMode('login')" class="tab-btn active px-2.5 py-1 text-[11px] font-semibold rounded-lg">
-                        Masuk
-                    </button>
-                    <button type="button" id="tab-register" onclick="switchAuthMode('register')" class="tab-btn px-2.5 py-1 text-[11px] font-semibold rounded-lg">
-                        Daftar
-                    </button>
-                </div>
+            <!-- Header (Tanpa Tab Switcher - Pemain Tidak Bisa Beralih Manual) -->
+            <div class="mb-4">
+                <h1 id="card-title" class="font-heading font-extrabold text-lg text-white tracking-tight">
+                    Login Akun
+                </h1>
+                <p id="card-desc" class="text-xs text-zinc-400 mt-0.5">
+                    Masukkan kata sandi akun Anda untuk masuk.
+                </p>
             </div>
 
-            <!-- FORM LOGIN -->
+            <!-- FORM LOGIN (Hanya Tampil Jika UCP Sudah Terdaftar) -->
             <form id="login-form" onsubmit="handleLoginSubmit(event)" class="space-y-3.5">
                 
                 <!-- Account Name (Locked & Synced from CEF) -->
@@ -406,7 +397,7 @@
                 </div>
             </form>
 
-            <!-- FORM REGISTER (Pembuatan Akun Baru) -->
+            <!-- FORM REGISTER (Format Lama: UCP Terkunci, Code/PIN Discord, Password Baru & Konfirmasi) -->
             <form id="register-form" onsubmit="handleRegisterSubmit(event)" class="space-y-3 hidden">
                 
                 <!-- Account Name (Locked & Synced from CEF) -->
@@ -428,7 +419,27 @@
                     </div>
                 </div>
 
-                <!-- New Password Input -->
+                <!-- Kode Verifikasi / PIN Discord (code) -->
+                <div>
+                    <label for="register-verify-code" class="block text-[11px] font-medium text-zinc-400 mb-1">
+                        Kode Verifikasi Discord / PIN <span class="text-zinc-500 text-[10px]">(Format Angka)</span>
+                    </label>
+                    <div class="relative flex items-center">
+                        <i class="fa-solid fa-hashtag absolute left-3.5 text-zinc-500 text-xs pointer-events-none"></i>
+                        <input
+                            id="register-verify-code"
+                            type="text"
+                            inputmode="numeric"
+                            pattern="[0-9]*"
+                            required
+                            autocomplete="off"
+                            placeholder="Masukkan kode PIN Discord..."
+                            class="field-input w-full pl-9 pr-3.5 py-2 rounded-xl text-sm placeholder-zinc-600 font-mono tracking-wider"
+                        >
+                    </div>
+                </div>
+
+                <!-- New Password Input (pw) -->
                 <div>
                     <label for="register-password" class="block text-[11px] font-medium text-zinc-400 mb-1">
                         Kata Sandi Baru <span class="text-zinc-500 text-[10px]">(7-32 Karakter)</span>
@@ -442,7 +453,7 @@
                             minlength="7"
                             maxlength="32"
                             autocomplete="off"
-                            placeholder="Buat kata sandi..."
+                            placeholder="Buat kata sandi baru..."
                             class="field-input w-full pl-9 pr-10 py-2 rounded-xl text-sm placeholder-zinc-600"
                         >
                         <button
@@ -456,7 +467,7 @@
                     </div>
                 </div>
 
-                <!-- Confirm Password Input -->
+                <!-- Confirm Password Input (pw) -->
                 <div>
                     <label for="register-confirm-password" class="block text-[11px] font-medium text-zinc-400 mb-1">
                         Konfirmasi Kata Sandi
@@ -514,26 +525,27 @@
     </main>
 
     <!-- =========================================================================
-         BOTTOM-LEFT MUSIC ON/OFF SWITCH WIDGET
+         BOTTOM-LEFT MUSIC ON/OFF SWITCH WIDGET (Lil Tatang - Kau Dan Basuri)
          ========================================================================= -->
     <div class="fixed bottom-5 left-5 z-20">
         <div
             id="music-widget"
             onclick="toggleMusic()"
             role="switch"
-            aria-checked="false"
-            class="audio-dock rounded-xl px-3.5 py-2.5 flex items-center gap-3.5 cursor-pointer group"
+            aria-checked="true"
+            class="audio-dock is-playing rounded-xl px-3.5 py-2.5 flex items-center gap-3.5 cursor-pointer group"
+            title="Klik untuk mematikan / menyalakan musik"
         >
             <!-- Speaker Icon -->
-            <div class="w-8 h-8 rounded-lg bg-white/[0.04] border border-white/[0.08] flex items-center justify-center text-zinc-400 group-hover:text-brand-light transition-colors">
-                <i id="speaker-icon" class="fa-solid fa-volume-xmark text-xs"></i>
+            <div class="w-8 h-8 rounded-lg bg-white/[0.04] border border-white/[0.08] flex items-center justify-center text-brand-orange group-hover:text-brand-light transition-colors">
+                <i id="speaker-icon" class="fa-solid fa-volume-high text-xs text-brand-orange"></i>
             </div>
 
             <!-- Equalizer Status -->
             <div class="flex flex-col pr-1">
                 <div class="flex items-center gap-2">
                     <span class="text-xs font-semibold text-zinc-200 tracking-tight">
-                        Musik
+                        Lil Tatang - Kau Dan Basuri
                     </span>
                     <div class="flex items-end gap-[2px] h-3">
                         <span class="eq-bar"></span>
@@ -542,8 +554,8 @@
                         <span class="eq-bar"></span>
                     </div>
                 </div>
-                <span id="music-state-text" class="text-[10px] font-medium text-zinc-500 leading-none mt-1 transition-colors">
-                    OFF
+                <span id="music-state-text" class="text-[10px] font-medium text-brand-light leading-none mt-1 transition-colors">
+                    ON - Otomatis Memutar
                 </span>
             </div>
 
@@ -552,6 +564,11 @@
                 <div class="switch-thumb"></div>
             </div>
         </div>
+    </div>
+
+    <!-- Hidden YouTube Player Container (Lil Tatang - Kau Dan Basuri: zwKyJRI8Unc) -->
+    <div id="yt-player-container" style="position:fixed; width:1px; height:1px; opacity:0; pointer-events:none; left:-9999px; top:-9999px;">
+        <div id="yt-player"></div>
     </div>
 
     <!-- Hidden Preload Container for background CEF pages -->
@@ -1015,12 +1032,11 @@
 
         /* -----------------------------------------------------------------------
            3. AUTH MODE SWITCHER (LOGIN <-> REGISTER)
+           Kontrol penuh dari server open.mp (setAuthMode) tanpa tab switcher manual
            ----------------------------------------------------------------------- */
         let currentMode = 'login'; // 'login' | 'register'
         const cardTitle = document.getElementById('card-title');
         const cardDesc = document.getElementById('card-desc');
-        const tabLogin = document.getElementById('tab-login');
-        const tabRegister = document.getElementById('tab-register');
         const loginForm = document.getElementById('login-form');
         const registerForm = document.getElementById('register-form');
         const alertBox = document.getElementById('alert-box');
@@ -1029,24 +1045,26 @@
             currentMode = mode;
             hideAlert();
 
-            if (mode === 'login') {
-                tabLogin.classList.add('active');
-                tabRegister.classList.remove('active');
-                loginForm.classList.remove('hidden');
+            if (mode === 'register') {
+                loginForm.classList.add('hidden');
+                registerForm.classList.remove('hidden');
+
+                cardTitle.textContent = 'Registrasi Akun UCP';
+                cardDesc.textContent = 'Lengkapi PIN verifikasi Discord dan buat kata sandi baru.';
+                setTimeout(() => {
+                    const codeEl = document.getElementById('register-verify-code');
+                    if (codeEl) codeEl.focus();
+                }, 100);
+            } else {
                 registerForm.classList.add('hidden');
+                loginForm.classList.remove('hidden');
 
                 cardTitle.textContent = 'Login Akun';
                 cardDesc.textContent = 'Masukkan kata sandi akun Anda untuk masuk.';
-                setTimeout(() => document.getElementById('login-password').focus(), 100);
-            } else {
-                tabRegister.classList.add('active');
-                tabLogin.classList.remove('active');
-                registerForm.classList.remove('hidden');
-                loginForm.classList.add('hidden');
-
-                cardTitle.textContent = 'Daftar Akun';
-                cardDesc.textContent = 'Buat kata sandi baru untuk akun UCP Anda.';
-                setTimeout(() => document.getElementById('register-password').focus(), 100);
+                setTimeout(() => {
+                    const passEl = document.getElementById('login-password');
+                    if (passEl) passEl.focus();
+                }, 100);
             }
         }
 
@@ -1117,7 +1135,7 @@
         };
 
         window.showRegisterSuccess = function (msg) {
-            showAlert(msg || 'Pendaftaran berhasil! Silakan masuk.', true);
+            showAlert(msg || 'Pendaftaran berhasil! Mengalihkan ke login...', true);
             setTimeout(() => {
                 switchAuthMode('login');
             }, 1200);
@@ -1156,12 +1174,18 @@
             }
         }
 
-        // Submit Register Form
+        // Submit Register Form (Format: UCP, code PIN Discord, pw Password Baru)
         function handleRegisterSubmit(e) {
             e.preventDefault();
             const username = regNameInput.value;
+            const verifyCode = document.getElementById('register-verify-code').value.trim();
             const password = document.getElementById('register-password').value;
             const confirmPass = document.getElementById('register-confirm-password').value;
+
+            if (!verifyCode) {
+                showAlert('Kode verifikasi Discord / PIN tidak boleh kosong!');
+                return;
+            }
 
             if (password.length < 7 || password.length > 32) {
                 showAlert('Panjang kata sandi harus antara 7 hingga 32 karakter!');
@@ -1180,9 +1204,9 @@
             btnLabel.textContent = 'MENDAFTARKAN...';
 
             if (window.cef && typeof window.cef.emit === 'function') {
-                window.cef.emit('cef_onPlayerRegisterSubmit', password);
-                window.cef.emit('client:onRegisterSubmit', username, password);
-                window.cef.emit('register_submit', username, password);
+                window.cef.emit('cef_onPlayerRegisterSubmit', password, verifyCode);
+                window.cef.emit('client:onRegisterSubmit', username, verifyCode, password);
+                window.cef.emit('register_submit', username, password, verifyCode);
             }
 
             if (!window.cef) {
@@ -1249,15 +1273,71 @@
         })();
 
         /* -----------------------------------------------------------------------
-           5. MUSIC ON/OFF SWITCH CONTROLLER WITH SUNSET ACOUSTIC CHORD SYNTH
+           5. MUSIC CONTROLLER: LIL TATANG - KAU DAN BASURI (YOUTUBE AUTOPLAY)
            ----------------------------------------------------------------------- */
-        let isMusicOn = false;
+        let isMusicOn = true; // Musik otomatis memutar saat masuk halaman login
+        let ytPlayer = null;
+        let isYtReady = false;
         const audioEl = document.getElementById('bg-music');
         const musicWidget = document.getElementById('music-widget');
         const musicStateText = document.getElementById('music-state-text');
         const speakerIcon = document.getElementById('speaker-icon');
         let audioCtx = null;
         let synthTimer = null;
+
+        // Callback resmi YouTube IFrame Player API untuk video zwKyJRI8Unc (Lil Tatang - Kau Dan Basuri)
+        window.onYouTubeIframeAPIReady = function() {
+            ytPlayer = new YT.Player('yt-player', {
+                height: '200',
+                width: '200',
+                videoId: 'zwKyJRI8Unc',
+                playerVars: {
+                    'autoplay': 1,
+                    'loop': 1,
+                    'playlist': 'zwKyJRI8Unc',
+                    'controls': 0,
+                    'disablekb': 1,
+                    'fs': 0,
+                    'rel': 0
+                },
+                events: {
+                    'onReady': function(event) {
+                        isYtReady = true;
+                        if (isMusicOn) {
+                            try {
+                                event.target.setVolume(75);
+                                event.target.playVideo();
+                            } catch(e) {}
+                            setMusicUI(true);
+                        }
+                    },
+                    'onStateChange': function(event) {
+                        if (event.data === YT.PlayerState.PLAYING) {
+                            setMusicUI(true);
+                        } else if (event.data === YT.PlayerState.PAUSED) {
+                            if (!isMusicOn) setMusicUI(false);
+                        } else if (event.data === YT.PlayerState.ENDED) {
+                            if (isMusicOn && ytPlayer) ytPlayer.playVideo();
+                        }
+                    }
+                }
+            });
+        };
+
+        function setMusicUI(playing) {
+            musicWidget.setAttribute('aria-checked', String(playing));
+            if (playing) {
+                musicWidget.classList.add('is-playing');
+                musicStateText.textContent = 'ON - Sedang Berputar';
+                musicStateText.classList.replace('text-zinc-500', 'text-brand-light');
+                speakerIcon.className = 'fa-solid fa-volume-high text-xs text-brand-orange';
+            } else {
+                musicWidget.classList.remove('is-playing');
+                musicStateText.textContent = 'OFF';
+                musicStateText.classList.replace('text-brand-light', 'text-zinc-500');
+                speakerIcon.className = 'fa-solid fa-volume-xmark text-xs';
+            }
+        }
 
         const chords = [
             [220.00, 277.18, 329.63, 415.30], // Amaj7 warm sunset
@@ -1314,31 +1394,53 @@
 
         function toggleMusic() {
             isMusicOn = !isMusicOn;
-            musicWidget.setAttribute('aria-checked', String(isMusicOn));
+            setMusicUI(isMusicOn);
 
             if (isMusicOn) {
-                musicWidget.classList.add('is-playing');
-                musicStateText.textContent = 'ON';
-                musicStateText.classList.replace('text-zinc-500', 'text-brand-light');
-                speakerIcon.className = 'fa-solid fa-volume-high text-xs text-brand-orange';
-
-                audioEl.volume = 0.45;
-                const playPromise = audioEl.play();
-                if (playPromise !== undefined) {
-                    playPromise.catch(() => {
-                        startSynthFallback();
-                    });
+                if (isYtReady && ytPlayer && typeof ytPlayer.playVideo === 'function') {
+                    ytPlayer.playVideo();
+                } else if (audioEl) {
+                    audioEl.volume = 0.45;
+                    audioEl.play().catch(() => startSynthFallback());
                 }
             } else {
-                musicWidget.classList.remove('is-playing');
-                musicStateText.textContent = 'OFF';
-                musicStateText.classList.replace('text-brand-light', 'text-zinc-500');
-                speakerIcon.className = 'fa-solid fa-volume-xmark text-xs';
-
-                audioEl.pause();
+                if (isYtReady && ytPlayer && typeof ytPlayer.pauseVideo === 'function') {
+                    ytPlayer.pauseVideo();
+                }
+                if (audioEl) audioEl.pause();
                 stopSynthFallback();
             }
         }
+
+        // Jalankan autoplay musik saat halaman dibuka
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                if (isMusicOn) {
+                    if (isYtReady && ytPlayer && typeof ytPlayer.playVideo === 'function') {
+                        ytPlayer.playVideo();
+                    } else if (audioEl) {
+                        audioEl.volume = 0.45;
+                        audioEl.play().catch(() => {});
+                    }
+                }
+            }, 500);
+        });
+
+        // Trigger autoplay pada klik pengguna jika browser membatasi autoplay tanpa user gesture
+        function unlockAudioOnInteraction() {
+            if (isMusicOn) {
+                if (isYtReady && ytPlayer && typeof ytPlayer.playVideo === 'function') {
+                    ytPlayer.playVideo();
+                } else if (audioEl) {
+                    audioEl.volume = 0.45;
+                    audioEl.play().catch(() => {});
+                }
+            }
+            window.removeEventListener('click', unlockAudioOnInteraction);
+            window.removeEventListener('keydown', unlockAudioOnInteraction);
+        }
+        window.addEventListener('click', unlockAudioOnInteraction, { once: true });
+        window.addEventListener('keydown', unlockAudioOnInteraction, { once: true });
     </script>
 </body>
 </html>

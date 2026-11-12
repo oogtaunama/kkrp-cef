@@ -46,17 +46,16 @@ body {
     z-index: 100;
 }
 
-/* Baris 1: Jam & Tanggal (Kiri) + Logo & Nama Server (Kanan) */
+/* Baris 1: Jam & Tanggal (Kiri) + Logo & Nama Server (Kanan) - Bebas Melayang Tanpa Box */
 .server-top-row {
     display: flex;
     align-items: center;
-    gap: 16px;
-    background: rgba(15, 23, 42, 0.75);
-    padding: 6px 14px 6px 16px;
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(10px);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+    gap: 14px;
+    background: transparent;
+    padding: 0 2px;
+    border: none;
+    box-shadow: none;
+    backdrop-filter: none;
 }
 
 .server-datetime {
@@ -73,33 +72,35 @@ body {
     font-size: 15px;
     font-weight: 700;
     color: #ffffff;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.3px;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9), 0 0 8px rgba(0, 0, 0, 0.7);
 }
 
 .server-datetime .time-box .top-icon {
-    color: #94a3b8;
+    color: #e2e8f0;
+    filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.8));
 }
 
 .server-datetime .date-box {
     display: flex;
     align-items: center;
     gap: 6px;
-    font-size: 11px;
-    font-weight: 500;
-    color: #94a3b8;
+    font-size: 12px;
+    font-weight: 600;
+    color: #e2e8f0;
     letter-spacing: 0.3px;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9), 0 0 8px rgba(0, 0, 0, 0.7);
 }
 
 .server-datetime .date-box .top-icon {
-    color: #64748b;
+    color: #cbd5e1;
+    filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.8));
 }
 
 .server-branding {
     display: flex;
     align-items: center;
     gap: 10px;
-    border-left: 1px solid rgba(255, 255, 255, 0.12);
-    padding-left: 14px;
 }
 
 .logo-box {
@@ -114,42 +115,29 @@ body {
     max-width: 100%;
     max-height: 100%;
     object-fit: contain;
-    filter: drop-shadow(0 0 6px rgba(249, 115, 22, 0.65));
-    animation: logoGlow 3s ease-in-out infinite alternate;
-}
-
-@keyframes logoGlow {
-    from {
-        filter: drop-shadow(0 0 4px rgba(249, 115, 22, 0.5));
-        transform: scale(1);
-    }
-    to {
-        filter: drop-shadow(0 0 10px rgba(251, 146, 60, 0.95));
-        transform: scale(1.04);
-    }
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.75));
 }
 
 .brand-text {
     display: flex;
     flex-direction: column;
-    line-height: 1.1;
+    line-height: 1.15;
 }
 
 .server-title {
-    font-size: 18px;
-    font-weight: 900;
-    color: #f97316; /* Orange ciri khas server Kota Kecilku */
-    letter-spacing: 0.5px;
-    text-shadow: 0 0 10px rgba(249, 115, 22, 0.55);
+    font-size: 19px;
+    font-weight: 800;
+    color: #FF7A18; /* Orange ciri khas server Kota Kecilku */
+    letter-spacing: 0.3px;
+    text-shadow: 0 0 12px rgba(255, 122, 24, 0.65), 0 2px 5px rgba(0, 0, 0, 0.85);
 }
 
 .server-subtitle {
-    font-size: 12px;
-    font-weight: 600;
-    color: #f8fafc;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    opacity: 0.9;
+    font-size: 14px;
+    font-weight: 500;
+    color: #ffffff;
+    letter-spacing: 0.5px;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.85);
 }
 
 /* Baris 2: Player Identity Pills (Nama, ID, Job) */
@@ -163,12 +151,12 @@ body {
     display: flex;
     align-items: center;
     gap: 7px;
-    background: rgba(15, 23, 42, 0.82);
-    border: 1px solid rgba(255, 255, 255, 0.07);
+    background: rgba(28, 29, 36, 0.88);
+    border: 1px solid rgba(255, 255, 255, 0.06);
     border-radius: 8px;
     padding: 5px 11px;
     backdrop-filter: blur(8px);
-    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
 }
 
 .info-pill .pill-icon {
@@ -176,25 +164,23 @@ body {
 }
 
 .info-pill .pill-text {
-    font-size: 12px;
+    font-size: 12.5px;
     font-weight: 600;
-    color: #f1f5f9;
-    letter-spacing: 0.3px;
-}
-
-.info-pill .pill-text.bold {
-    font-weight: 800;
     color: #ffffff;
+    letter-spacing: 0.2px;
 }
 
-.info-pill .pill-tag {
-    background: #334155;
-    color: #94a3b8;
-    font-size: 10px;
-    font-weight: 800;
-    padding: 1px 4px;
-    border-radius: 4px;
-    letter-spacing: 0.5px;
+.info-pill .pill-id-prefix {
+    color: #8e8e99;
+    font-size: 12px;
+    font-weight: 700;
+    margin-right: 2px;
+}
+
+.info-pill .pill-id-val {
+    color: #ffffff;
+    font-size: 12.5px;
+    font-weight: 700;
 }
 
 /* Baris 3: Financial Pills (Cash & Bank) */
@@ -208,49 +194,58 @@ body {
     display: flex;
     align-items: center;
     gap: 7px;
-    background: rgba(15, 23, 42, 0.85);
-    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 8px;
     padding: 5px 12px;
     backdrop-filter: blur(8px);
-    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+}
+
+.cash-pill {
+    background: rgba(22, 60, 36, 0.85);
+    border: 1px solid rgba(46, 204, 113, 0.22);
 }
 
 .money-icon.cash {
-    color: #22c55e;
+    color: #2ecc71;
 }
 
 .money-val.cash {
     font-size: 13px;
-    font-weight: 800;
-    color: #4ade80;
-    text-shadow: 0 0 8px rgba(74, 222, 128, 0.35);
+    font-weight: 700;
+    color: #2ecc71;
+    text-shadow: 0 0 8px rgba(46, 204, 113, 0.4);
+}
+
+.bank-pill {
+    background: rgba(16, 52, 54, 0.85);
+    border: 1px solid rgba(0, 210, 211, 0.22);
 }
 
 .money-icon.bank {
-    color: #06b6d4;
+    color: #00d2d3;
 }
 
 .money-val.bank {
     font-size: 13px;
-    font-weight: 800;
-    color: #38bdf8;
-    text-shadow: 0 0 8px rgba(56, 189, 248, 0.35);
+    font-weight: 700;
+    color: #00d2d3;
+    text-shadow: 0 0 8px rgba(0, 210, 211, 0.4);
 }
 
-/* Baris 4: MODERN WEAPON HUD (Di Bawah Money Pills) */
+/* Baris 4: MODERN WEAPON HUD (Persis Referensi Gambar 2) */
 .weapon-hud-wrap {
-    width: 175px;
-    background: rgba(15, 23, 42, 0.88);
+    width: 160px;
+    height: 86px;
+    background: rgba(20, 21, 26, 0.95);
     border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 10px;
-    padding: 8px 14px;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+    border-radius: 12px;
+    padding: 8px 12px 10px 14px;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.65);
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    animation: slideInWeapon 0.25s ease-out;
+    justify-content: space-between;
+    animation: slideInWeapon 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @keyframes slideInWeapon {
@@ -264,65 +259,60 @@ body {
     }
 }
 
-.weapon-header {
+.weapon-row-top {
     display: flex;
     align-items: baseline;
     justify-content: space-between;
 }
 
 .weapon-name {
-    font-size: 12px;
-    font-weight: 700;
+    font-size: 13px;
+    font-weight: 600;
     color: #cbd5e1;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    max-width: 95px;
+    letter-spacing: 0.3px;
+    max-width: 105px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-.weapon-ammo {
-    display: flex;
-    align-items: baseline;
+.weapon-ammo-top {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #cbd5e1;
+    letter-spacing: 0.5px;
     line-height: 1;
 }
 
-.ammo-clip {
-    font-size: 15px;
-    font-weight: 700;
-    color: #ffffff;
-}
-
-.ammo-slash {
-    font-size: 14px;
-    font-weight: 600;
-    color: #64748b;
-    margin: 0 2px;
-}
-
-.ammo-total {
-    font-size: 22px;
-    font-weight: 900;
-    color: #f97316; /* Orange ciri khas server */
-    text-shadow: 0 0 10px rgba(249, 115, 22, 0.65);
-}
-
-.weapon-icon-wrap {
-    width: 100%;
-    height: 38px;
+.weapon-row-bottom {
     display: flex;
-    align-items: center;
-    justify-content: center;
+    align-items: flex-end;
+    justify-content: space-between;
     margin-top: 2px;
 }
 
+.weapon-img-wrap {
+    width: 88px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
 .weapon-img {
-    max-height: 34px;
-    max-width: 100%;
+    max-height: 40px;
+    max-width: 88px;
     object-fit: contain;
-    color: #cbd5e1;
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.7));
+}
+
+.weapon-ammo-big {
+    font-size: 32px;
+    font-weight: 800;
+    color: #FF7A18; /* Ciri khas orange server Kota Kecilku */
+    text-shadow: 0 0 14px rgba(255, 122, 24, 0.65);
+    line-height: 0.9;
+    letter-spacing: -0.5px;
 }
 
 /* ==========================================================================

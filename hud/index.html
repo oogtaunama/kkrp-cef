@@ -55,14 +55,14 @@
                     <span class="pill-text" id="hudPlayerName">Brenden Randall</span>
                 </div>
                 <div class="info-pill id-pill" id="pillId" title="ID Pemain">
-                    <span class="pill-tag">ID</span>
-                    <span class="pill-text bold" id="hudPlayerId">0</span>
+                    <span class="pill-id-prefix">ID</span>
+                    <span class="pill-id-val" id="hudPlayerId">452</span>
                 </div>
                 <div class="info-pill job-pill" id="pillJob" title="Pekerjaan / Pangkat">
                     <svg class="pill-icon" viewBox="0 0 24 24" width="12" height="12" fill="currentColor">
                         <path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/>
                     </svg>
-                    <span class="pill-text" id="hudPlayerJob">Warga</span>
+                    <span class="pill-text" id="hudPlayerJob">Officer II</span>
                 </div>
             </div>
 
@@ -72,27 +72,27 @@
                     <svg class="money-icon cash" viewBox="0 0 24 24" width="13" height="13" fill="currentColor">
                         <path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
                     </svg>
-                    <span class="money-val cash" id="hudCash">$0</span>
+                    <span class="money-val cash" id="hudCash">$56,000,12</span>
                 </div>
                 <div class="money-pill bank-pill" id="pillBank" title="Saldo Bank">
                     <svg class="money-icon bank" viewBox="0 0 24 24" width="13" height="13" fill="currentColor">
                         <path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.1-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/>
                     </svg>
-                    <span class="money-val bank" id="hudBank">$0</span>
+                    <span class="money-val bank" id="hudBank">$56,000,12</span>
                 </div>
             </div>
 
-            <!-- Baris 4: MODERN WEAPON HUD (Muncul HANYA Jika Memegang Senjata) -->
+            <!-- Baris 4: MODERN WEAPON HUD (Muncul HANYA Jika Memegang Senjata - Sesuai Gambar 2) -->
             <div class="weapon-hud-wrap" id="weaponHud" style="display: none;">
-                <div class="weapon-header">
-                    <div class="weapon-name" id="weaponName">Desert Eagle</div>
-                    <div class="weapon-ammo">
-                        <span class="ammo-clip" id="weaponClip">7</span><span class="ammo-slash">/</span>
-                        <span class="ammo-total" id="weaponTotal">28</span>
-                    </div>
+                <div class="weapon-row-top">
+                    <div class="weapon-name" id="weaponName">Assault SMG</div>
+                    <div class="weapon-ammo-top"><span id="weaponTopAmmo">13</span>/</div>
                 </div>
-                <div class="weapon-icon-wrap" id="weaponIconWrap">
-                    <img src="weapons/24.svg" alt="Weapon" id="weaponImg" class="weapon-img">
+                <div class="weapon-row-bottom">
+                    <div class="weapon-img-wrap" id="weaponIconWrap">
+                        <img src="weapons/29.svg" alt="Weapon" id="weaponImg" class="weapon-img">
+                    </div>
+                    <div class="weapon-ammo-big" id="weaponBigAmmo">18</div>
                 </div>
             </div>
 
