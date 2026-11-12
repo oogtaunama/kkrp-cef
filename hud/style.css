@@ -1,8 +1,10 @@
 /* ==========================================================================
-   NOPIXEL 4.0 INSPIRED QB HUD & SPEEDOMETER
-   Kota Kecilku Roleplay
-   Status: Voice, Health, Armor, Food, Water, Stress, Sleep
-   Reference: ref_hud_speedo.jpg
+   KOTA KECILKU ROLEPLAY - CEF HUD SYSTEM
+   - Top-Right: Server Info HUD (Jam, Tanggal, Logo KK, Server, ID, Job, Uang)
+   - Top-Right: Weapon HUD (Sesuai Senjata Aktif, Ammo Orange, Silhouette)
+   - Bottom-Left: NoPixel 4.0 HBE (7 Hexagons: Voice, HP, Armor, Food, Water, Stress, Sleep)
+   - Bottom-Left: Speedometer (Di sebelah Kanan Minimap)
+   - Right Side: Safe-Zone FiveM Notification Stack (Tidak Nabrak HUD)
    ========================================================================== */
 
 * {
@@ -30,13 +32,307 @@ body {
 }
 
 /* ==========================================================================
-   1. HEXAGONAL STATUS HUD (HBE) - Tepat di BAWAH Minimap
-   Posisi: Kiri bawah, sejajar persis di bawah radar GTA SA
+   1. SERVER INFO HUD & WEAPON HUD (Top-Right)
+   Sesuai referensi media_1794483597194_c2c78f12.png
+   ========================================================================== */
+.server-info-wrap {
+    position: absolute;
+    top: 18px;
+    right: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 7px;
+    z-index: 100;
+}
+
+/* Baris 1: Jam & Tanggal (Kiri) + Logo & Nama Server (Kanan) */
+.server-top-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: rgba(15, 23, 42, 0.75);
+    padding: 6px 14px 6px 16px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+}
+
+.server-datetime {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+}
+
+.server-datetime .time-box {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 15px;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: 0.5px;
+}
+
+.server-datetime .time-box .top-icon {
+    color: #94a3b8;
+}
+
+.server-datetime .date-box {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 500;
+    color: #94a3b8;
+    letter-spacing: 0.3px;
+}
+
+.server-datetime .date-box .top-icon {
+    color: #64748b;
+}
+
+.server-branding {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-left: 1px solid rgba(255, 255, 255, 0.12);
+    padding-left: 14px;
+}
+
+.logo-box {
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.server-logo-img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 0 6px rgba(249, 115, 22, 0.65));
+    animation: logoGlow 3s ease-in-out infinite alternate;
+}
+
+@keyframes logoGlow {
+    from {
+        filter: drop-shadow(0 0 4px rgba(249, 115, 22, 0.5));
+        transform: scale(1);
+    }
+    to {
+        filter: drop-shadow(0 0 10px rgba(251, 146, 60, 0.95));
+        transform: scale(1.04);
+    }
+}
+
+.brand-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+}
+
+.server-title {
+    font-size: 18px;
+    font-weight: 900;
+    color: #f97316; /* Orange ciri khas server Kota Kecilku */
+    letter-spacing: 0.5px;
+    text-shadow: 0 0 10px rgba(249, 115, 22, 0.55);
+}
+
+.server-subtitle {
+    font-size: 12px;
+    font-weight: 600;
+    color: #f8fafc;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    opacity: 0.9;
+}
+
+/* Baris 2: Player Identity Pills (Nama, ID, Job) */
+.server-pills-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.info-pill {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    background: rgba(15, 23, 42, 0.82);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 8px;
+    padding: 5px 11px;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.3);
+}
+
+.info-pill .pill-icon {
+    color: #94a3b8;
+}
+
+.info-pill .pill-text {
+    font-size: 12px;
+    font-weight: 600;
+    color: #f1f5f9;
+    letter-spacing: 0.3px;
+}
+
+.info-pill .pill-text.bold {
+    font-weight: 800;
+    color: #ffffff;
+}
+
+.info-pill .pill-tag {
+    background: #334155;
+    color: #94a3b8;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 1px 4px;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+}
+
+/* Baris 3: Financial Pills (Cash & Bank) */
+.server-money-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.money-pill {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    background: rgba(15, 23, 42, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    padding: 5px 12px;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.3);
+}
+
+.money-icon.cash {
+    color: #22c55e;
+}
+
+.money-val.cash {
+    font-size: 13px;
+    font-weight: 800;
+    color: #4ade80;
+    text-shadow: 0 0 8px rgba(74, 222, 128, 0.35);
+}
+
+.money-icon.bank {
+    color: #06b6d4;
+}
+
+.money-val.bank {
+    font-size: 13px;
+    font-weight: 800;
+    color: #38bdf8;
+    text-shadow: 0 0 8px rgba(56, 189, 248, 0.35);
+}
+
+/* Baris 4: MODERN WEAPON HUD (Di Bawah Money Pills) */
+.weapon-hud-wrap {
+    width: 175px;
+    background: rgba(15, 23, 42, 0.88);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    padding: 8px 14px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    animation: slideInWeapon 0.25s ease-out;
+}
+
+@keyframes slideInWeapon {
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.weapon-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+}
+
+.weapon-name {
+    font-size: 12px;
+    font-weight: 700;
+    color: #cbd5e1;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    max-width: 95px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.weapon-ammo {
+    display: flex;
+    align-items: baseline;
+    line-height: 1;
+}
+
+.ammo-clip {
+    font-size: 15px;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.ammo-slash {
+    font-size: 14px;
+    font-weight: 600;
+    color: #64748b;
+    margin: 0 2px;
+}
+
+.ammo-total {
+    font-size: 22px;
+    font-weight: 900;
+    color: #f97316; /* Orange ciri khas server */
+    text-shadow: 0 0 10px rgba(249, 115, 22, 0.65);
+}
+
+.weapon-icon-wrap {
+    width: 100%;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2px;
+}
+
+.weapon-img {
+    max-height: 34px;
+    max-width: 100%;
+    object-fit: contain;
+    color: #cbd5e1;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.7));
+}
+
+/* ==========================================================================
+   2. HEXAGONAL STATUS HUD (HBE) - Di Bawah Kiri Minimap
+   Voice, Health, Armor, Food, Water, Stress, Sleep
    ========================================================================== */
 .nopixel-hbe-wrap {
     position: absolute;
-    bottom: 8px;
-    left: 18px;
+    bottom: 12px;
+    left: 20px;
     display: flex;
     align-items: center;
     gap: 4px;
@@ -92,7 +388,6 @@ body {
     filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.85));
 }
 
-/* Warna spesifik tiap Hexagon sesuai NoPixel 4.0 */
 /* 1. Voice (Mic) */
 .hex-item.voice .hex-fill { fill: #64748b; }
 .hex-item.voice .hex-border { stroke: #94a3b8; }
@@ -144,56 +439,60 @@ body {
     filter: drop-shadow(0 0 5px rgba(234, 179, 8, 0.75));
 }
 
-/* Critical warning pulse saat status kritis */
+/* Efek Berkedip Kritis */
 @keyframes criticalPulse {
-    0% { transform: scale(1); filter: drop-shadow(0 0 2px #ef4444); }
-    50% { transform: scale(1.1); filter: drop-shadow(0 0 8px #ef4444); }
-    100% { transform: scale(1); filter: drop-shadow(0 0 2px #ef4444); }
+    0%, 100% {
+        transform: scale(1);
+        filter: drop-shadow(0 0 4px #ef4444);
+    }
+    50% {
+        transform: scale(1.12);
+        filter: drop-shadow(0 0 10px #dc2626);
+    }
 }
 
 .hex-item.critical {
     animation: criticalPulse 0.9s infinite ease-in-out;
 }
+
 .hex-item.critical .hex-border {
     stroke: #ef4444 !important;
 }
 
-
 /* ==========================================================================
-   2. SPEEDOMETER (NoPixel 4.0 Style - Tepat di KANAN Map)
-   Posisi: Sebelah kanan radar GTA SA (left: 246px; bottom: 10px)
+   3. NOPIXEL 4.0 SPEEDOMETER (Di Sebelah KANAN Minimap)
    ========================================================================== */
 .speedo-wrapper {
     position: absolute;
-    bottom: 10px;
-    left: 246px;
+    bottom: 12px;
+    left: 254px; /* Tepat di sebelah kanan radar GTA SA */
     z-index: 100;
 }
 
 .speedo-card {
-    background: rgba(15, 23, 42, 0.75);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 10px;
-    padding: 7px 11px;
-    min-width: 170px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+    background: rgba(15, 23, 42, 0.88);
+    border-radius: 8px;
+    padding: 8px 12px;
+    width: 145px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.45);
+    display: flex;
+    flex-direction: column;
 }
 
-/* Baris Atas Speedo */
 .speedo-top {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
     margin-bottom: 2px;
 }
 
 .seatbelt-badge {
-    color: #475569;
+    color: #64748b;
     display: flex;
     align-items: center;
-    transition: color 0.25s ease;
+    transition: color 0.2s ease, filter 0.2s ease;
 }
 
 .seatbelt-badge.active {
@@ -214,7 +513,6 @@ body {
     align-items: center;
 }
 
-/* Baris Tengah Speedo: Kotak Gear, 3 Digit Speed, Fuel Gauge Vertikal */
 .speedo-mid {
     display: flex;
     align-items: center;
@@ -223,7 +521,6 @@ body {
     margin: 3px 0 7px 0;
 }
 
-/* Kotak Gear Glowing Cyan NoPixel 4.0 */
 .gear-box {
     width: 30px;
     height: 40px;
@@ -252,7 +549,6 @@ body {
     align-items: center;
 }
 
-/* Angka Kecepatan Digital 3-Digit (000 format) */
 .speed-nums {
     flex: 1;
     text-align: center;
@@ -277,7 +573,6 @@ body {
     text-shadow: none;
 }
 
-/* Jalur Indikator Bensin Vertikal (Di bawah icon fuel pump) */
 .fuel-track-vert {
     width: 5px;
     height: 36px;
@@ -296,7 +591,6 @@ body {
     transition: height 0.4s ease;
 }
 
-/* Baris Bawah: 16 Segmen RPM Ticks */
 .rpm-bar {
     display: flex;
     align-items: center;
@@ -323,20 +617,19 @@ body {
 }
 
 /* ==========================================================================
-   FIVEM CEF NOTIFICATION SYSTEM (qb-notify / okokNotify)
-   Sesuai referensi gambar cfx_notif.jpg
+   4. FIVEM CEF NOTIFICATION SYSTEM (Safe-Zone: Posisi di Bawah Server Info)
+   Dijamin TIDAK NABRAK / BERTABRAKAN dengan Server Info & Weapon HUD
    ========================================================================== */
-
 .fivem-notify-stack {
     position: fixed;
-    top: 25px;
-    right: 25px;
+    top: 235px; /* Aman di bawah Server Info & Weapon HUD */
+    right: 24px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
     z-index: 999999;
     pointer-events: none;
-    width: 350px;
+    width: 340px;
     max-width: 90vw;
 }
 
@@ -344,14 +637,15 @@ body {
     position: relative;
     display: flex;
     align-items: stretch;
-    background: rgba(18, 24, 34, 0.96);
-    border-radius: 6px;
+    background: rgba(15, 23, 42, 0.95);
+    border-radius: 8px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.65), 0 0 1px rgba(255, 255, 255, 0.1);
     overflow: hidden;
-    pointer-events: auto;
     transform: translateX(120%);
     opacity: 0;
-    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+    transition: transform 0.35s cubic-bezier(0.18, 0.89, 0.32, 1.28), opacity 0.25s ease;
+    backdrop-filter: blur(10px);
+    border-left: 4px solid #64748b;
 }
 
 .fivem-notify.show {
@@ -364,217 +658,184 @@ body {
     opacity: 0;
 }
 
-/* Kotak Badge Icon Kiri dengan Aksen Garis Diagonal (Hazard Striping) */
 .notify-badge {
-    width: 56px;
-    min-width: 56px;
+    width: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
-    position: relative;
-    font-size: 22px;
+    font-size: 18px;
     color: #ffffff;
-    background-image: repeating-linear-gradient(
-        45deg,
-        rgba(0, 0, 0, 0.22),
-        rgba(0, 0, 0, 0.22) 7px,
-        transparent 7px,
-        transparent 14px
-    );
+    flex-shrink: 0;
 }
 
-/* Konten Teks Notifikasi */
 .notify-body {
-    flex: 1;
-    padding: 12px 14px;
+    padding: 10px 14px 10px 2px;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    min-width: 0;
 }
 
 .notify-title {
-    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     font-size: 13px;
-    font-weight: 700;
+    font-weight: 800;
     letter-spacing: 0.5px;
-    text-transform: uppercase;
     margin-bottom: 2px;
-    line-height: 1.2;
+    text-transform: uppercase;
 }
 
 .notify-msg {
-    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     font-size: 12px;
-    font-weight: 400;
-    color: #cbd5e1;
+    font-weight: 500;
     line-height: 1.4;
+    color: #cbd5e1;
     word-break: break-word;
 }
 
-/* Countdown Progress Bar di Bagian Bawah */
 .notify-progress {
     position: absolute;
     bottom: 0;
     left: 0;
-    height: 3.5px;
+    height: 3px;
     width: 100%;
-    transition: width linear;
+    background: currentColor;
+    opacity: 0.7;
 }
 
-/* Tipe-Tipe Notifikasi Sesuai Referensi Gambar cfx_notif.jpg */
+/* Warna Notifikasi FiveM */
+.notify-warning {
+    border-left-color: #f59e0b;
+}
+.notify-warning .notify-badge {
+    background: rgba(245, 158, 11, 0.15);
+    color: #f59e0b;
+}
+.notify-warning .notify-title {
+    color: #fbbf24;
+}
+.notify-warning .notify-progress {
+    color: #f59e0b;
+}
 
-/* 1. WARNING (Kuning) */
-.fivem-notify.notify-warning .notify-badge {
-    background-color: #ca8a04;
+.notify-error {
+    border-left-color: #ef4444;
 }
-.fivem-notify.notify-warning .notify-title {
-    color: #facc15;
+.notify-error .notify-badge {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
 }
-.fivem-notify.notify-warning .notify-progress {
-    background: #facc15;
-    box-shadow: 0 0 8px rgba(250, 204, 21, 0.7);
-}
-
-/* 2. ERROR (Merah) */
-.fivem-notify.notify-error .notify-badge {
-    background-color: #dc2626;
-}
-.fivem-notify.notify-error .notify-title {
+.notify-error .notify-title {
     color: #f87171;
 }
-.fivem-notify.notify-error .notify-progress {
-    background: #ef4444;
-    box-shadow: 0 0 8px rgba(239, 68, 68, 0.7);
+.notify-error .notify-progress {
+    color: #ef4444;
 }
 
-/* 3. SUCCESS (Hijau) */
-.fivem-notify.notify-success .notify-badge {
-    background-color: #16a34a;
+.notify-success {
+    border-left-color: #10b981;
 }
-.fivem-notify.notify-success .notify-title {
-    color: #4ade80;
+.notify-success .notify-badge {
+    background: rgba(16, 185, 129, 0.15);
+    color: #10b981;
 }
-.fivem-notify.notify-success .notify-progress {
-    background: #22c55e;
-    box-shadow: 0 0 8px rgba(34, 197, 94, 0.7);
+.notify-success .notify-title {
+    color: #34d399;
+}
+.notify-success .notify-progress {
+    color: #10b981;
 }
 
-/* 4. INFO (Biru / Cyan) */
-.fivem-notify.notify-info .notify-badge {
-    background-color: #0284c7;
+.notify-info {
+    border-left-color: #f97316; /* Orange server theme */
 }
-.fivem-notify.notify-info .notify-title {
+.notify-info .notify-badge {
+    background: rgba(249, 115, 22, 0.15);
+    color: #f97316;
+}
+.notify-info .notify-title {
+    color: #fbbf24;
+}
+.notify-info .notify-progress {
+    color: #f97316;
+}
+
+.notify-syntax {
+    border-left-color: #38bdf8;
+}
+.notify-syntax .notify-badge {
+    background: rgba(56, 189, 248, 0.15);
     color: #38bdf8;
 }
-.fivem-notify.notify-info .notify-progress {
-    background: #0ea5e9;
-    box-shadow: 0 0 8px rgba(14, 165, 233, 0.7);
+.notify-syntax .notify-title {
+    color: #7dd3fc;
 }
-
-/* 5. DEFAULT / SYNTAX (Abu-abu Slate) */
-.fivem-notify.notify-default .notify-badge,
-.fivem-notify.notify-syntax .notify-badge {
-    background-color: #475569;
+.notify-syntax .notify-progress {
+    color: #38bdf8;
 }
-.fivem-notify.notify-default .notify-title,
-.fivem-notify.notify-syntax .notify-title {
-    color: #cbd5e1;
-}
-.fivem-notify.notify-default .notify-progress,
-.fivem-notify.notify-syntax .notify-progress {
-    background: #94a3b8;
-    box-shadow: 0 0 8px rgba(148, 163, 184, 0.7);
-}
-
 
 /* ==========================================================================
-   FIVEM PROXIMITY INTERACTION PROMPT
-   Muncul saat dekat dengan target mata (ATM, Kendaraan, dll) lalu hilang
+   5. FIVEM PROXIMITY INTERACTION PROMPT (ALT)
    ========================================================================== */
-
 .target-proximity-prompt {
     position: fixed;
-    bottom: 30px;
-    left: 50%;
-    transform: translateX(-50%) translateY(40px);
+    top: 50%;
+    left: calc(50% + 45px);
+    transform: translateY(-50%) scale(0.9);
     opacity: 0;
     pointer-events: none;
-    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
-    z-index: 99999;
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 8px 18px 8px 14px;
-    background: rgba(13, 17, 24, 0.95);
-    border: 1.5px solid rgba(255, 152, 0, 0.65);
-    border-radius: 30px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.65), 0 0 15px rgba(255, 152, 0, 0.25);
+    gap: 10px;
+    background: rgba(15, 23, 42, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 8px 14px;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+    transition: all 0.25s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+    z-index: 9999;
 }
 
 .target-proximity-prompt.show {
-    transform: translateX(-50%) translateY(0);
     opacity: 1;
+    transform: translateY(-50%) scale(1);
 }
 
 .prompt-icon-box {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: rgba(255, 152, 0, 0.15);
-    border: 1px solid rgba(255, 152, 0, 0.4);
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    background: rgba(249, 115, 22, 0.2);
+    color: #f97316;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #ffa726;
-    font-size: 15px;
-    animation: promptPulse 2s infinite ease-in-out;
-}
-
-@keyframes promptPulse {
-    0%, 100% {
-        box-shadow: 0 0 6px rgba(255, 152, 0, 0.3);
-        transform: scale(1);
-    }
-    50% {
-        box-shadow: 0 0 12px rgba(255, 152, 0, 0.7);
-        transform: scale(1.08);
-    }
 }
 
 .prompt-content {
     display: flex;
     flex-direction: column;
-    justify-content: center;
 }
 
 .prompt-title {
-    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    color: #ffa726;
-    text-transform: uppercase;
-    line-height: 1;
-    margin-bottom: 3px;
+    font-size: 10px;
+    font-weight: 800;
+    color: #94a3b8;
+    letter-spacing: 0.5px;
 }
 
 .prompt-desc {
-    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     font-size: 13px;
-    font-weight: 600;
+    font-weight: 700;
     color: #ffffff;
-    line-height: 1.1;
 }
 
 .prompt-keycap {
-    background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
-    color: #0b0f17;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #334155;
+    color: #ffffff;
     font-size: 11px;
-    font-weight: 900;
-    letter-spacing: 0.5px;
-    padding: 4px 9px;
-    border-radius: 6px;
-    box-shadow: 0 0 10px rgba(255, 152, 0, 0.6);
+    font-weight: 800;
+    padding: 3px 7px;
+    border-radius: 4px;
+    border-bottom: 2px solid #1e293b;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }

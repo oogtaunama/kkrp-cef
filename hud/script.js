@@ -1,20 +1,65 @@
 /**
- * HUD Controller - NoPixel 4.0 Inspired QB HUD & Speedometer
- * Kota Kecilku Roleplay
- * Status: Voice, Health, Armor, Food, Water, Stress, Sleep
- * Reference: ref_hud_speedo.jpg
+ * HUD Controller - Kota Kecilku Roleplay
+ * - Top-Right: Server Info HUD (Jam, Tanggal, Logo KK, Server, ID, Job, Uang)
+ * - Top-Right: Weapon HUD (Sesuai Senjata Aktif, Ammo Orange, Silhouette)
+ * - Bottom-Left: NoPixel 4.0 HBE (7 Hexagons: Voice, HP, Armor, Food, Water, Stress, Sleep)
+ * - Bottom-Left: Speedometer (Di sebelah Kanan Minimap)
+ * - Notification System & Target Proximity Prompt
  */
 
 // Tinggi total SVG Hexagon (viewBox: 0 0 28 32)
 const HEX_HEIGHT = 32;
 
+// Kamus Nama Senjata GTA San Andreas
+const WEAPON_NAMES = {
+    0: "Fist",
+    1: "Brass Knuckles",
+    2: "Golf Club",
+    3: "Nightstick",
+    4: "Knife",
+    5: "Baseball Bat",
+    6: "Shovel",
+    7: "Pool Cue",
+    8: "Katana",
+    9: "Chainsaw",
+    14: "Flowers",
+    15: "Cane",
+    16: "Grenade",
+    17: "Tear Gas",
+    18: "Molotov",
+    22: "9mm Pistol",
+    23: "Silenced 9mm",
+    24: "Desert Eagle",
+    25: "Shotgun",
+    26: "Sawnoff Shotgun",
+    27: "Combat Shotgun",
+    28: "Micro Uzi",
+    29: "MP5 Navy",
+    30: "AK-47",
+    31: "M4 Carbine",
+    32: "Tec-9",
+    33: "Country Rifle",
+    34: "Sniper Rifle",
+    35: "RPG-7",
+    36: "Heat-Seeking Rocket",
+    37: "Flamethrower",
+    38: "Minigun",
+    41: "Spray Can",
+    42: "Fire Extinguisher",
+    43: "Camera",
+    46: "Parachute"
+};
+
+/**
+ * Format Angka ke Format Mata Uang ($56,000)
+ */
+function formatCurrency(val) {
+    const num = Math.round(Number(val) || 0);
+    return '$' + num.toLocaleString('en-US');
+}
+
 /**
  * Update level isi Hexagon (mengatur clipPath rect SVG dari bawah ke atas)
- * @param {string} rectId - ID elemen rect di dalam clipPath
- * @param {number} value - Nilai persentase (0 - 100)
- * @param {string} itemId - ID parent item untuk efek class critical
- * @param {number|null} criticalThreshold - Batas nilai kritis
- * @param {boolean} invertCritical - Jika true, nilai >= criticalThreshold dianggap kritis (misal: stress)
  */
 function setHexProgress(rectId, value, itemId = null, criticalThreshold = null, invertCritical = false) {
     const rect = document.getElementById(rectId);
@@ -45,7 +90,6 @@ function setHexProgress(rectId, value, itemId = null, criticalThreshold = null, 
 
 /**
  * Update 3-digit digital speedometer (000 format dengan leading zeros redup)
- * Sesuai referensi ref_hud_speedo.jpg
  */
 function setSpeedDisplay(speed) {
     const spd = Math.max(0, Math.round(Number(speed) || 0));
@@ -78,8 +122,6 @@ function setSpeedDisplay(speed) {
 
 /**
  * Update Horizontal Segmented RPM Ticks (16 Ticks)
- * Normal: Cyan (#2dd4bf)
- * Redline: Merah (#ef4444)
  */
 function updateRpmTicks(speed, maxSpeed = 160) {
     const ticks = document.querySelectorAll('.rpm-bar .rpm-tick');
@@ -104,59 +146,54 @@ function updateRpmTicks(speed, maxSpeed = 160) {
 }
 
 /**
- * Parsing data status pemain dari Pawn
+ * Update Real-Time Clock & Date (HH:MM & DD.MM.YYYY)
  */
-function parseStatusData(arg1, arg2, arg3, arg4, arg5, arg6) {
-    if (typeof arg1 === 'object' && arg1 !== null) {
-        return arg1;
+function startClockUpdater() {
+    function update() {
+        const now = new Date();
+        const hh = String(now.getHours()).padStart(2, '0');
+        const mm = String(now.getMinutes()).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const year = now.getFullYear();
+
+        const timeEl = document.getElementById('hudTime');
+        const dateEl = document.getElementById('hudDate');
+        if (timeEl) timeEl.innerText = `${hh}:${mm}`;
+        if (dateEl) dateEl.innerText = `${day}.${month}.${year}`;
     }
-    if (typeof arg1 === 'string') {
-        try {
-            return JSON.parse(arg1);
-        } catch (e) {}
-    }
-    return {
-        health: Number(arg1),
-        armor: Number(arg2),
-        hunger: Number(arg3),
-        thirst: Number(arg4),
-        stress: Number(arg5),
-        sleepy: Number(arg6)
-    };
+    update();
+    setInterval(update, 1000);
 }
 
 /**
- * Parsing data kendaraan dari Pawn
+ * Parsing data objek atau JSON string
  */
-function parseVehicleData(arg1, arg2, arg3, arg4) {
-    if (typeof arg1 === 'object' && arg1 !== null) {
-        return arg1;
-    }
-    if (typeof arg1 === 'string') {
+function parseJsonSafe(arg) {
+    if (typeof arg === 'object' && arg !== null) return arg;
+    if (typeof arg === 'string') {
         try {
-            return JSON.parse(arg1);
+            return JSON.parse(arg);
         } catch (e) {}
     }
-    return {
-        inVehicle: Boolean(arg1),
-        speed: Number(arg2),
-        fuel: Number(arg3),
-        gear: arg4 || '1'
-    };
+    return {};
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-    console.log('[CEF HUD] NoPixel 4.0 QB HUD Initialized.');
+    console.log('[CEF HUD] Kota Kecilku Roleplay HUD Initialized.');
 
     // HUD WAJIB UNFOCUSED AGAR KURSOR MOUSE HILANG SAAT GAMEPLAY
     if (typeof CefBridge !== 'undefined') {
         CefBridge.setFocus(false);
     }
 
-    // Default status awal (7 Hexagons)
+    // Jalankan jam & tanggal real-time
+    startClockUpdater();
+
+    // Inisialisasi default 7 Hexagons Status
     setHexProgress('rectVoice', 100);
     setHexProgress('rectHealth', 100);
-    setHexProgress('rectArmor', 100);
+    setHexProgress('rectArmor', 0);
     setHexProgress('rectFood', 100);
     setHexProgress('rectWater', 100);
     setHexProgress('rectStress', 0, 'hexStress', 60, true);
@@ -164,28 +201,42 @@ window.addEventListener('DOMContentLoaded', () => {
     setSpeedDisplay(0);
     updateRpmTicks(0);
 
-    // Kirim notifikasi ke Pawn bahwa HUD sudah siap menerima event
+    // Kirim sinyal ke Pawn bahwa HUD sudah siap menerima event
     if (typeof CefBridge !== 'undefined') {
         CefBridge.emit('client:onHudReady');
     }
 
-    // Listener update status player dari server Pawn
+    // ============================================================
+    // 1. LISTENER UPDATE STATUS PLAYER (7 HEXAGONS)
+    // ============================================================
     CefBridge.on('server:updatePlayerStatus', (...args) => {
-        const data = parseStatusData(...args);
+        let data = {};
+        if (args.length === 1) {
+            data = parseJsonSafe(args[0]);
+        } else {
+            data = {
+                health: Number(args[0]),
+                armor: Number(args[1]),
+                hunger: Number(args[2]),
+                thirst: Number(args[3]),
+                stress: Number(args[4]),
+                sleepy: Number(args[5])
+            };
+        }
 
-        // 1. Health / Darah (Hijau)
+        // 1. Health / Darah
         if (data.health !== undefined) {
             setHexProgress('rectHealth', data.health, 'hexHealth', 20);
         }
-        // 2. Armor / Rompi (Biru)
+        // 2. Armor / Rompi
         if (data.armor !== undefined) {
             setHexProgress('rectArmor', data.armor, 'hexArmor');
         }
-        // 3. Hunger / Makan (Oranye)
+        // 3. Hunger / Makan
         if (data.hunger !== undefined || data.food !== undefined) {
             setHexProgress('rectFood', data.hunger ?? data.food, 'hexFood', 20);
         }
-        // 4. Thirst / Minum (Cyan)
+        // 4. Thirst / Minum
         if (data.thirst !== undefined || data.water !== undefined) {
             setHexProgress('rectWater', data.thirst ?? data.water, 'hexWater', 20);
         }
@@ -199,80 +250,194 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Listener speedometer kendaraan dari server Pawn
-    CefBridge.on('server:updateVehicleStatus', (...args) => {
-        const data = parseVehicleData(...args);
-        const speedo = document.getElementById('speedoHud');
-        if (!speedo) return;
+    // ============================================================
+    // 2. LISTENER UPDATE SERVER INFO HUD (TOP-RIGHT)
+    // ============================================================
+    CefBridge.on('server:updateServerInfo', (payload) => {
+        const data = parseJsonSafe(payload);
 
-        if (!data.inVehicle) {
-            speedo.style.display = 'none';
-            return;
+        if (data.name !== undefined) {
+            const nameEl = document.getElementById('hudPlayerName');
+            if (nameEl) nameEl.innerText = data.name.replace('_', ' ');
         }
-
-        speedo.style.display = 'block';
-
-        // 1. Digital 3-Digit Speed
-        setSpeedDisplay(data.speed || 0);
-
-        // 2. Vertical Fuel Level Bar
-        const elFuel = document.getElementById('fuelFill');
-        if (elFuel) {
-            const fuelPercent = Math.max(0, Math.min(100, Math.round(data.fuel || 0)));
-            elFuel.style.height = `${fuelPercent}%`;
+        if (data.id !== undefined) {
+            const idEl = document.getElementById('hudPlayerId');
+            if (idEl) idEl.innerText = String(data.id);
         }
-
-        // 3. Gear Box
-        const elGear = document.getElementById('gearVal');
-        if (elGear) {
-            elGear.innerText = String(data.gear || '1');
+        if (data.job !== undefined) {
+            const jobEl = document.getElementById('hudPlayerJob');
+            if (jobEl) jobEl.innerText = String(data.job);
         }
-
-        // 4. Horizontal RPM Ticks
-        updateRpmTicks(data.speed || 0);
+        if (data.cash !== undefined) {
+            const cashEl = document.getElementById('hudCash');
+            if (cashEl) cashEl.innerText = formatCurrency(data.cash);
+        }
+        if (data.bank !== undefined) {
+            const bankEl = document.getElementById('hudBank');
+            if (bankEl) bankEl.innerText = formatCurrency(data.bank);
+        }
     });
 
-    // Listener status mikrofon/voice
-    CefBridge.on('server:updateVoiceStatus', (isTalking) => {
+    // ============================================================
+    // 3. LISTENER MODERN WEAPON HUD (TOP-RIGHT)
+    // Sesuai referensi media_1794484266280_70b49703.png
+    // Muncul HANYA jika memegang senjata (weaponId > 0)
+    // ============================================================
+    const weaponHud = document.getElementById('weaponHud');
+    const weaponNameEl = document.getElementById('weaponName');
+    const weaponClipEl = document.getElementById('weaponClip');
+    const weaponTotalEl = document.getElementById('weaponTotal');
+    const weaponImgEl = document.getElementById('weaponImg');
+
+    CefBridge.on('server:updateWeapon', (payload, pClip, pAmmo, pName) => {
+        let weaponId = 0;
+        let clip = 0;
+        let ammo = 0;
+        let customName = null;
+
+        if (typeof payload === 'object' && payload !== null) {
+            weaponId = Number(payload.weaponId ?? payload.weapon ?? 0);
+            clip = Number(payload.clip ?? 0);
+            ammo = Number(payload.ammo ?? payload.totalAmmo ?? 0);
+            customName = payload.name || payload.weaponName || null;
+        } else if (typeof payload === 'string' && payload.startsWith('{')) {
+            const d = parseJsonSafe(payload);
+            weaponId = Number(d.weaponId ?? d.weapon ?? 0);
+            clip = Number(d.clip ?? 0);
+            ammo = Number(d.ammo ?? d.totalAmmo ?? 0);
+            customName = d.name || d.weaponName || null;
+        } else {
+            weaponId = Number(payload) || 0;
+            clip = Number(pClip) || 0;
+            ammo = Number(pAmmo) || 0;
+            customName = pName || null;
+        }
+
+        // Ketentuan: HANYA MUNCUL JIKA PEGANG SENJATA (sembunyikan jika fist / unarmed)
+        if (weaponId > 0) {
+            if (weaponHud) weaponHud.style.display = 'flex';
+            if (weaponNameEl) {
+                weaponNameEl.innerText = customName || WEAPON_NAMES[weaponId] || `Weapon #${weaponId}`;
+            }
+            if (weaponClipEl) weaponClipEl.innerText = String(clip);
+            if (weaponTotalEl) weaponTotalEl.innerText = String(ammo);
+            if (weaponImgEl) {
+                weaponImgEl.src = `weapons/${weaponId}.svg`;
+                weaponImgEl.onerror = () => {
+                    weaponImgEl.src = 'weapons/default.svg';
+                };
+            }
+        } else {
+            // Tangan kosong / Fist -> sembunyikan sepenuhnya
+            if (weaponHud) weaponHud.style.display = 'none';
+        }
+    });
+
+    // ============================================================
+    // 4. LISTENER VEHICLE SPEEDOMETER (DI SEBELAH KANAN MINIMAP)
+    // ============================================================
+    const speedoWrap = document.getElementById('speedoWrap');
+    const fuelFill = document.getElementById('fuelFill');
+    const gearVal = document.getElementById('gearVal');
+    const seatbeltBadge = document.getElementById('seatbeltBadge');
+
+    CefBridge.on('server:updateVehicleStatus', (...args) => {
+        let data = {};
+        if (args.length === 1) {
+            data = parseJsonSafe(args[0]);
+        } else {
+            data = {
+                inVehicle: Boolean(args[0]),
+                speed: Number(args[1]),
+                fuel: Number(args[2]),
+                gear: args[3] || 'D'
+            };
+        }
+
+        if (speedoWrap) {
+            if (data.inVehicle) {
+                speedoWrap.style.display = 'block';
+                setSpeedDisplay(data.speed || 0);
+                updateRpmTicks(data.speed || 0);
+
+                if (fuelFill && data.fuel !== undefined) {
+                    const clampedFuel = Math.max(0, Math.min(100, Number(data.fuel)));
+                    fuelFill.style.height = `${clampedFuel}%`;
+                    if (clampedFuel <= 15) {
+                        fuelFill.style.background = '#ef4444';
+                        fuelFill.style.boxShadow = '0 0 6px #ef4444';
+                    } else {
+                        fuelFill.style.background = '#ffffff';
+                        fuelFill.style.boxShadow = '0 0 6px rgba(255, 255, 255, 0.7)';
+                    }
+                }
+
+                if (gearVal && data.gear !== undefined) {
+                    gearVal.innerText = String(data.gear);
+                }
+
+                if (seatbeltBadge && data.seatbelt !== undefined) {
+                    if (data.seatbelt) {
+                        seatbeltBadge.classList.add('active');
+                    } else {
+                        seatbeltBadge.classList.remove('active');
+                    }
+                }
+            } else {
+                speedoWrap.style.display = 'none';
+            }
+        }
+    });
+
+    // Voice Status
+    CefBridge.on('server:updateVoice', (talking, level) => {
         const hexVoice = document.getElementById('hexVoice');
         if (!hexVoice) return;
-        if (isTalking) {
+        if (talking) {
             hexVoice.classList.add('talking');
         } else {
             hexVoice.classList.remove('talking');
         }
+        if (level !== undefined) {
+            setHexProgress('rectVoice', level);
+        }
     });
 
-    // ========================================================================
-    // 3. FIVEM CEF NOTIFICATION SYSTEM & PROXIMITY PROMPT
-    // Sesuai referensi cfx_notif.jpg (Warning, Error, Success, Info, Default)
-    // ========================================================================
+    // ============================================================
+    // 5. FIVEM NOTIFICATION SYSTEM (AUDIO & SAFE STACK)
+    // ============================================================
     const NotifyAudio = {
         ctx: null,
         init() {
-            if (!this.ctx && (window.AudioContext || window.webkitAudioContext)) {
-                const AudioCtx = window.AudioContext || window.webkitAudioContext;
-                this.ctx = new AudioCtx();
+            if (!this.ctx) {
+                try {
+                    const AudioContext = window.AudioContext || window.webkitAudioContext;
+                    if (AudioContext) this.ctx = new AudioContext();
+                } catch (e) {}
             }
         },
         play(type) {
             try {
                 this.init();
                 if (!this.ctx) return;
+                if (this.ctx.state === 'suspended') {
+                    this.ctx.resume();
+                }
+
                 const now = this.ctx.currentTime;
                 const osc = this.ctx.createOscillator();
                 const gain = this.ctx.createGain();
 
                 if (type === 'error') {
                     osc.type = 'sawtooth';
-                    osc.frequency.setValueAtTime(320, now);
-                    osc.frequency.exponentialRampToValueAtTime(180, now + 0.18);
+                    osc.frequency.setValueAtTime(220, now);
+                    osc.frequency.setValueAtTime(140, now + 0.1);
                     gain.gain.setValueAtTime(0.12, now);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
                     osc.connect(gain);
                     gain.connect(this.ctx.destination);
                     osc.start(now);
-                    osc.stop(now + 0.2);
+                    osc.stop(now + 0.25);
                 } else if (type === 'warning') {
                     osc.type = 'triangle';
                     osc.frequency.setValueAtTime(540, now);
@@ -284,7 +449,7 @@ window.addEventListener('DOMContentLoaded', () => {
                     osc.start(now);
                     osc.stop(now + 0.2);
                 } else {
-                    // Success / Info / Default
+                    // Success / Info
                     osc.type = 'sine';
                     osc.frequency.setValueAtTime(740, now);
                     osc.frequency.exponentialRampToValueAtTime(1180, now + 0.1);
@@ -308,10 +473,6 @@ window.addEventListener('DOMContentLoaded', () => {
         default: 'fa-comment'
     };
 
-    /**
-     * Tampilkan notifikasi FiveM CEF ke layar
-     * @param {Object} data - { type, title, message, duration }
-     */
     function showFivemNotification(data) {
         if (!data) return;
         const stack = document.getElementById('notifyStack');
@@ -323,7 +484,6 @@ window.addEventListener('DOMContentLoaded', () => {
         const duration = Math.max(1500, Number(data.duration) || 4500);
         const iconClass = NotifyIcons[type] || NotifyIcons.default;
 
-        // Buat card elemen notifikasi
         const card = document.createElement('div');
         card.className = `fivem-notify notify-${type}`;
 
@@ -341,7 +501,6 @@ window.addEventListener('DOMContentLoaded', () => {
         stack.appendChild(card);
         NotifyAudio.play(type);
 
-        // Slide in
         requestAnimationFrame(() => {
             card.classList.add('show');
             const progress = card.querySelector('.notify-progress');
@@ -353,7 +512,6 @@ window.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Slide out & destroy
         setTimeout(() => {
             card.classList.remove('show');
             card.classList.add('hide');
@@ -365,7 +523,6 @@ window.addEventListener('DOMContentLoaded', () => {
         }, duration);
     }
 
-    // Listener Event Notifikasi dari Pawn
     CefBridge.on('notify:show', (payload) => {
         let data = payload;
         if (typeof payload === 'string') {
@@ -378,7 +535,7 @@ window.addEventListener('DOMContentLoaded', () => {
         showFivemNotification(data);
     });
 
-    // Listener Proximity Prompt Target Mata (FiveM style)
+    // Proximity Prompt Mata ALT
     const targetPrompt = document.getElementById('targetPrompt');
     const targetPromptDesc = document.getElementById('targetPromptDesc');
 
@@ -395,17 +552,11 @@ window.addEventListener('DOMContentLoaded', () => {
             text = payload.title || payload.desc || 'Target Interaktif';
         }
 
-        if (targetPromptDesc) {
-            targetPromptDesc.textContent = text;
-        }
-        if (targetPrompt) {
-            targetPrompt.classList.add('show');
-        }
+        if (targetPromptDesc) targetPromptDesc.textContent = text;
+        if (targetPrompt) targetPrompt.classList.add('show');
     });
 
     CefBridge.on('target:promptHide', () => {
-        if (targetPrompt) {
-            targetPrompt.classList.remove('show');
-        }
+        if (targetPrompt) targetPrompt.classList.remove('show');
     });
 });
