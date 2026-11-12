@@ -9,6 +9,23 @@
     // =========================================================================
     // 1. SOUND FX SYNTHESIZER (Web Audio API - Zero External Dependencies)
     // =========================================================================
+    const PhoneSvg = {
+        phone: '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>',
+        phoneMissed: '<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 9c-1.6 0-3.15.25-4.6.72v3.1c0 .39-.23.74-.56.9-.98.49-1.87 1.12-2.66 1.85-.18.18-.43.28-.7.28-.28 0-.53-.11-.71-.29L.29 13.08a.996.996 0 0 1 0-1.41C3.41 8.65 7.46 7 12 7s8.59 1.65 11.71 4.67c.39.39.39 1.02 0 1.41l-2.48 2.48c-.18.18-.43.29-.71.29-.27 0-.52-.11-.7-.28-.79-.74-1.69-1.36-2.67-1.85-.33-.16-.56-.5-.56-.9v-3.1C15.15 9.25 13.6 9 12 9z"/></svg>',
+        comment: '<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>',
+        trash: '<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>',
+        heart: '<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>',
+        heartEmpty: '<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M16.5 3c-1.74 0-3.41.81-4.5 2.09C10.91 3.81 9.24 3 7.5 3 4.42 3 2 5.42 2 8.5c0 3.78 3.4 6.86 8.55 11.54L12 21.35l1.45-1.32C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3zm-4.4 15.55l-.1.1-.1-.1C7.14 14.24 4 11.39 4 8.5 4 6.5 5.5 5 7.5 5c1.54 0 3.04.99 3.57 2.36h1.87C13.46 5.99 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5 0 2.89-3.14 5.74-7.9 10.05z"/></svg>',
+        car: '<svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.85 7h10.29l1.04 3H5.81l1.04-3zM19 17H5v-4.66l.12-.34h13.77l.11.34V17z"/><circle cx="7.5" cy="14.5" r="1.5"/><circle cx="16.5" cy="14.5" r="1.5"/></svg>',
+        location: '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg>',
+        crosshairs: '<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3A8.994 8.994 0 0 0 13 3.06V1h-2v2.06A8.994 8.994 0 0 0 3.06 11H1v2h2.06A8.994 8.994 0 0 0 11 20.94V23h2v-2.06A8.994 8.994 0 0 0 20.94 13H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/></svg>',
+        bell: '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>',
+        volume: '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>',
+        plane: '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>',
+        camera: '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><circle cx="12" cy="12" r="3.2"/><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>',
+        xTwitter: '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>'
+    };
+
     const PhoneAudio = {
         ctx: null,
         ringtoneInterval: null,
@@ -460,7 +477,7 @@
         },
 
         // Top Dynamic Island Notification
-        showNotification(title, desc, iconClass = 'fa-solid fa-bell', appTarget = null) {
+        showNotification(title, desc, iconSvg = 'bell', appTarget = null) {
             PhoneAudio.playNotification();
             const notif = document.getElementById('notchNotification');
             const notifTitle = document.getElementById('notifTitle');
@@ -469,7 +486,7 @@
 
             if (notifTitle) notifTitle.textContent = title;
             if (notifDesc) notifDesc.textContent = desc;
-            if (notifIcon) notifIcon.innerHTML = `<i class="${iconClass}"></i>`;
+            if (notifIcon) notifIcon.innerHTML = PhoneSvg[iconSvg] || iconSvg || PhoneSvg.bell;
 
             notif.classList.add('show');
             clearTimeout(this._notifTimeout);
@@ -768,7 +785,7 @@
                 if (msg.isLocation) {
                     bubble.classList.add('location-bubble');
                     bubble.innerHTML = `
-                        <i class="fa-solid fa-location-dot"></i>
+                        <span style="color: #38bdf8; display: flex; align-items: center;">${PhoneSvg.location}</span>
                         <div>
                             <strong>Titik Lokasi GPS</strong>
                             <div style="font-size: 11px; opacity: 0.85;">Klik untuk menandai di radar</div>
@@ -867,9 +884,9 @@
                         </div>
                     </div>
                     <div class="contact-actions">
-                        <button class="c-act-btn c-act-call" title="Panggil"><i class="fa-solid fa-phone"></i></button>
-                        <button class="c-act-btn c-act-sms" title="Kirim Pesan"><i class="fa-solid fa-comment"></i></button>
-                        <button class="c-act-btn c-act-del" title="Hapus"><i class="fa-solid fa-trash"></i></button>
+                        <button class="c-act-btn c-act-call" title="Panggil">${PhoneSvg.phone}</button>
+                        <button class="c-act-btn c-act-sms" title="Kirim Pesan">${PhoneSvg.comment}</button>
+                        <button class="c-act-btn c-act-del" title="Hapus">${PhoneSvg.trash}</button>
                     </div>
                 `;
 
@@ -1008,7 +1025,7 @@
                     <div class="chirp-footer">
                         <span>${chirp.time || '10m lalu'}</span>
                         <button class="chirp-like-btn ${chirp.isLiked ? 'liked' : ''}">
-                            <i class="fa-${chirp.isLiked ? 'solid' : 'regular'} fa-heart"></i>
+                            ${chirp.isLiked ? PhoneSvg.heart : PhoneSvg.heartEmpty}
                             <span>${chirp.likes || 0}</span>
                         </button>
                     </div>
@@ -1064,7 +1081,7 @@
                 card.className = 'veh-card';
                 card.innerHTML = `
                     <div class="veh-top">
-                        <span class="veh-name"><i class="fa-solid fa-car"></i> ${veh.modelName}</span>
+                        <span class="veh-name" style="display:inline-flex; align-items:center; gap:6px;">${PhoneSvg.car} ${veh.modelName}</span>
                         <span class="veh-plate">${veh.plate}</span>
                     </div>
                     <div class="veh-meta-grid">
@@ -1072,7 +1089,7 @@
                         <span>Status: <strong>${veh.status || 'Tersimpan'}</strong></span>
                     </div>
                     <button class="veh-gps-btn">
-                        <i class="fa-solid fa-location-crosshairs"></i> Lacak Kendaraan (GPS)
+                        ${PhoneSvg.crosshairs} <span>Lacak Kendaraan (GPS)</span>
                     </button>
                 `;
 
@@ -1105,8 +1122,8 @@
                     <div class="ad-footer">
                         <span>Oleh: <strong>${ad.author}</strong></span>
                         <div class="ad-actions">
-                            <button class="ad-btn ad-btn-call" title="Telepon"><i class="fa-solid fa-phone"></i></button>
-                            <button class="ad-btn ad-btn-sms" title="Kirim Pesan"><i class="fa-solid fa-comment"></i></button>
+                            <button class="ad-btn ad-btn-call" title="Telepon">${PhoneSvg.phone}</button>
+                            <button class="ad-btn ad-btn-sms" title="Kirim Pesan">${PhoneSvg.comment}</button>
                         </div>
                     </div>
                 `;
@@ -1198,7 +1215,7 @@
                 date: 'Hari ini'
             });
 
-            this.showNotification('Foto Disimpan', 'Tangkapan foto disimpan ke Galeri.', 'fa-solid fa-camera');
+            this.showNotification('Foto Disimpan', 'Tangkapan foto disimpan ke Galeri.', 'camera');
         },
 
         renderPhotosGrid() {
@@ -1304,7 +1321,7 @@
                         <span class="recent-name">${note.title}</span>
                         <span class="recent-meta">${note.content}</span>
                     </div>
-                    <button class="c-act-btn c-act-del"><i class="fa-solid fa-trash"></i></button>
+                    <button class="c-act-btn c-act-del" title="Hapus">${PhoneSvg.trash}</button>
                 `;
                 row.querySelector('.c-act-del').onclick = () => {
                     PhoneState.notes = PhoneState.notes.filter(n => n.id !== note.id);
@@ -1351,12 +1368,12 @@
                 row.className = 'recent-row';
                 row.innerHTML = `
                     <div class="recent-info">
-                        <span class="recent-name ${item.type === 'missed' ? 'missed' : ''}">
-                            <i class="fa-solid ${item.type === 'missed' ? 'fa-phone-slash' : 'fa-phone'}"></i> ${item.name || item.number}
+                        <span class="recent-name ${item.type === 'missed' ? 'missed' : ''}" style="display:inline-flex; align-items:center; gap:6px;">
+                            ${item.type === 'missed' ? PhoneSvg.phoneMissed : PhoneSvg.phone} ${item.name || item.number}
                         </span>
                         <span class="recent-meta">${item.type === 'missed' ? 'Tak Terjawab' : (item.type === 'incoming' ? 'Masuk' : 'Keluar')} • ${item.time}</span>
                     </div>
-                    <div class="recent-call-icon"><i class="fa-solid fa-phone"></i></div>
+                    <div class="recent-call-icon">${PhoneSvg.phone}</div>
                 `;
                 row.onclick = () => {
                     this.startCall(item.number);
@@ -1398,11 +1415,11 @@
             // Physical Volume Buttons
             document.getElementById('volUpBtn')?.addEventListener('click', () => {
                 PhoneAudio.playClick();
-                this.showNotification('Volume', 'Volume Ditingkatkan (100%)', 'fa-solid fa-volume-high');
+                this.showNotification('Volume', 'Volume Ditingkatkan (100%)', 'volume');
             });
             document.getElementById('volDownBtn')?.addEventListener('click', () => {
                 PhoneAudio.playClick();
-                this.showNotification('Volume', 'Volume Diturunkan (50%)', 'fa-solid fa-volume-low');
+                this.showNotification('Volume', 'Volume Diturunkan (50%)', 'volume');
             });
 
             // Back button on all apps
@@ -1615,7 +1632,7 @@
             document.getElementById('toggleAirplaneMode')?.addEventListener('change', (e) => {
                 PhoneState.airplaneMode = e.target.checked;
                 PhoneAudio.playClick();
-                this.showNotification('Mode Pesawat', PhoneState.airplaneMode ? 'Mode pesawat diaktifkan' : 'Mode pesawat dinonaktifkan', 'fa-solid fa-plane');
+                this.showNotification('Mode Pesawat', PhoneState.airplaneMode ? 'Mode pesawat diaktifkan' : 'Mode pesawat dinonaktifkan', 'plane');
             });
 
             // Sound Toggle
@@ -1775,7 +1792,7 @@
             PhoneUI.showNotification(
                 `Pesan dari ${fromName || fromNumber}`,
                 isLocation ? '📍 Mengirimkan titik lokasi' : text,
-                'fa-solid fa-comment',
+                'comment',
                 'messages'
             );
 
@@ -1803,7 +1820,7 @@
                 likes: 0,
                 isLiked: false
             });
-            PhoneUI.showNotification(`Kicauan Baru (@${author})`, content, 'fa-brands fa-x-twitter', 'twitter');
+            PhoneUI.showNotification(`Kicauan Baru (@${author})`, content, 'xTwitter', 'twitter');
             if (PhoneState.currentView === 'viewAppTwitter') {
                 PhoneUI.renderTwitterFeed();
             }
@@ -1819,7 +1836,7 @@
                 phone: phone,
                 time: 'Baru saja'
             });
-            PhoneUI.showNotification(`[IKLAN] ${category}`, desc, 'fa-solid fa-bullhorn', 'yellowpages');
+            PhoneUI.showNotification(`[IKLAN] ${category}`, desc, 'bullhorn', 'yellowpages');
             if (PhoneState.currentView === 'viewAppYellowpages') {
                 PhoneUI.renderYellowpagesFeed();
             }

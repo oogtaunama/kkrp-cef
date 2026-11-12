@@ -605,6 +605,13 @@ body.browser-preview {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
     transition: filter 0.15s ease;
 }
+.app-icon svg {
+    width: 28px;
+    height: 28px;
+    fill: #ffffff;
+    display: block;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.25));
+}
 .app-item:hover .app-icon {
     filter: brightness(1.1);
 }
@@ -680,6 +687,10 @@ body.browser-preview {
 .dock-app .app-icon {
     width: 50px;
     height: 50px;
+}
+.dock-app .app-icon svg {
+    width: 26px;
+    height: 26px;
 }
 
 /* ==========================================================================
@@ -2181,3 +2192,24 @@ input:checked + .slider:before { transform: translateX(18px); }
 }
 .btn-secondary { background: rgba(255, 255, 255, 0.12); color: #ffffff; }
 .btn-primary { background: var(--ios-blue); color: #ffffff; }
+
+/* SVG Icon Consistency */
+svg {
+    display: inline-block;
+    vertical-align: middle;
+    flex-shrink: 0;
+}
+.nav-back-btn svg, .app-header-action svg { width: 18px; height: 18px; fill: currentColor; }
+.call-tool-btn svg { width: 20px; height: 20px; fill: currentColor; }
+.c-act-btn svg { width: 14px; height: 14px; fill: currentColor; }
+.ad-btn svg { width: 14px; height: 14px; fill: currentColor; }
+.bank-quick-btn svg { width: 18px; height: 18px; fill: #34d399; }
+.recent-call-icon svg { width: 15px; height: 15px; fill: currentColor; }
+.settings-icon-box svg { width: 15px; height: 15px; fill: #ffffff; }
+.call-action-btn svg { width: 26px; height: 26px; fill: #ffffff; }
+.lock-action-btn svg { width: 18px; height: 18px; fill: #ffffff; }
+.unlock-swipe-pill svg { width: 14px; height: 14px; fill: rgba(255, 255, 255, 0.7); }
+.dispatch-icon svg { width: 24px; height: 24px; fill: #ffffff; }
+.chat-tool-btn svg { width: 16px; height: 16px; fill: #38bdf8; }
+.chat-send-btn svg { width: 14px; height: 14px; fill: #ffffff; }
+.modal-close-btn svg { width: 16px; height: 16px; fill: currentColor; }

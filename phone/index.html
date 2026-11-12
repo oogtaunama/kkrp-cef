@@ -8,8 +8,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- FontAwesome for modern icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Base & Phone Styles -->
     <link rel="stylesheet" href="../common/common.css">
     <link rel="stylesheet" href="style.css">
@@ -21,7 +19,9 @@
     <!-- Top Dynamic Island Notification Banner -->
     <div class="notch-notification" id="notchNotification">
         <div class="notch-pill">
-            <div class="notch-icon" id="notifIcon"><i class="fa-solid fa-bell"></i></div>
+            <div class="notch-icon" id="notifIcon">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+            </div>
             <div class="notch-content">
                 <div class="notch-title" id="notifTitle">Pemberitahuan</div>
                 <div class="notch-desc" id="notifDesc">Pesan baru diterima</div>
@@ -52,7 +52,7 @@
             <div class="phone-status-bar" id="statusBar">
                 <div class="status-left">
                     <span class="status-clock" id="statusClock">12:00</span>
-                    <i class="fa-solid fa-location-arrow status-gps-icon"></i>
+                    <svg class="status-gps-icon" viewBox="0 0 24 24" width="10" height="10" fill="currentColor"><path d="M21 3L3 10.53v.98l6.84 2.65L12.48 21h.99L21 3z"/></svg>
                 </div>
                 <div class="status-right">
                     <div class="signal-bars" title="Sinyal Seluler">
@@ -62,7 +62,7 @@
                         <span class="bar bar-4"></span>
                     </div>
                     <span class="status-net">5G</span>
-                    <i class="fa-solid fa-wifi status-wifi" title="Wi-Fi"></i>
+                    <svg class="status-wifi" viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M12 3C7.79 3 3.96 4.67 1.12 7.37L12 21 22.88 7.37C20.04 4.67 16.21 3 12 3zm0 3.5c3.27 0 6.26 1.25 8.52 3.3L12 19.3 3.48 9.8C5.74 7.75 8.73 6.5 12 6.5z"/></svg>
                     <div class="battery-wrapper" title="Baterai">
                         <span class="battery-percent" id="batteryPercent">98%</span>
                         <div class="battery-body">
@@ -80,7 +80,7 @@
                 <!-- ============================================================ -->
                 <div class="screen-view screen-lock active" id="viewLockScreen">
                     <div class="lock-header">
-                        <i class="fa-solid fa-lock lock-icon" id="lockIcon"></i>
+                        <svg class="lock-icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
                         <span class="lock-swipe-hint">Buka Kunci</span>
                     </div>
                     <div class="lock-clock-wrap">
@@ -94,14 +94,14 @@
                     <!-- Bottom Quick Actions: Flashlight & Camera -->
                     <div class="lock-bottom-actions">
                         <button class="lock-action-btn" id="lockFlashlightBtn" title="Senter">
-                            <i class="fa-solid fa-flashlight"></i>
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M6 2h12v3l-4 4v11a2 2 0 0 1-2 2h0a2 2 0 0 1-2-2V9L6 5V2zm2 2v.67l3.33 3.33h1.34L16 4.67V4H8zm3 7v9h2v-9h-2z"/></svg>
                         </button>
                         <div class="unlock-swipe-pill" id="unlockSwipeBtn">
-                            <i class="fa-solid fa-chevron-up"></i>
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/></svg>
                             <span>Sentuh Untuk Membuka</span>
                         </div>
                         <button class="lock-action-btn" id="lockCameraBtn" title="Kamera">
-                            <i class="fa-solid fa-camera"></i>
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><circle cx="12" cy="12" r="3.2"/><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>
                         </button>
                     </div>
                 </div>
@@ -116,7 +116,7 @@
                         <div class="ios-widget date-weather-widget" id="widgetWeather">
                             <div class="widget-top">
                                 <span class="widget-city">Los Santos</span>
-                                <i class="fa-solid fa-sun-cloud widget-icon"></i>
+                                <svg class="widget-icon" viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/></svg>
                             </div>
                             <div class="widget-temp">28°C</div>
                             <div class="widget-desc">Cerah Berawan • Hari Ini</div>
@@ -129,7 +129,7 @@
                         <!-- 1. Contacts -->
                         <div class="app-item" data-app="contacts">
                             <div class="app-icon icon-contacts">
-                                <i class="fa-solid fa-address-book"></i>
+                                <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm6 12H6v-1c0-2 4-3.1 6-3.1s6 1.1 6 3.1v1z"/></svg>
                             </div>
                             <span class="app-label">Kontak</span>
                         </div>
@@ -137,7 +137,7 @@
                         <!-- 2. Messages -->
                         <div class="app-item" data-app="messages">
                             <div class="app-icon icon-messages">
-                                <i class="fa-solid fa-comment"></i>
+                                <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
                                 <span class="app-badge" id="badgeMessages" style="display:none;">1</span>
                             </div>
                             <span class="app-label">Pesan</span>
@@ -146,7 +146,7 @@
                         <!-- 3. Fleeca Bank -->
                         <div class="app-item" data-app="bank">
                             <div class="app-icon icon-bank">
-                                <i class="fa-solid fa-building-columns"></i>
+                                <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M4 10h3v7H4zm6 0h3v7h-3zm6 0h3v7h-3zM2 22h19v-3H2v3zm9.5-20L2 7v2h19V7l-9.5-5z"/></svg>
                             </div>
                             <span class="app-label">M-Bank</span>
                         </div>
@@ -154,7 +154,7 @@
                         <!-- 4. Chirper (Twitter) -->
                         <div class="app-item" data-app="twitter">
                             <div class="app-icon icon-twitter">
-                                <i class="fa-brands fa-x-twitter"></i>
+                                <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
                                 <span class="app-badge" id="badgeTwitter" style="display:none;">2</span>
                             </div>
                             <span class="app-label">Chirper</span>
@@ -163,7 +163,7 @@
                         <!-- 5. Garage / Kendaraan -->
                         <div class="app-item" data-app="garage">
                             <div class="app-icon icon-garage">
-                                <i class="fa-solid fa-car-side"></i>
+                                <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.85 7h10.29l1.04 3H5.81l1.04-3zM19 17H5v-4.66l.12-.34h13.77l.11.34V17z"/><circle cx="7.5" cy="14.5" r="1.5"/><circle cx="16.5" cy="14.5" r="1.5"/></svg>
                             </div>
                             <span class="app-label">Garasi</span>
                         </div>
@@ -171,7 +171,7 @@
                         <!-- 6. Yellow Pages (Iklan) -->
                         <div class="app-item" data-app="yellowpages">
                             <div class="app-icon icon-yellowpages">
-                                <i class="fa-solid fa-bullhorn"></i>
+                                <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 9h-2V5h2v6zm0 4h-2v-2h2v2z"/></svg>
                             </div>
                             <span class="app-label">Iklan</span>
                         </div>
@@ -179,7 +179,7 @@
                         <!-- 7. Emergency Dispatch -->
                         <div class="app-item" data-app="dispatch">
                             <div class="app-icon icon-dispatch">
-                                <i class="fa-solid fa-shield-heart"></i>
+                                <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3zm1 14h-2v-2h2v2zm0-4h-2V7h2v5z"/></svg>
                             </div>
                             <span class="app-label">Layanan 911</span>
                         </div>
@@ -187,7 +187,7 @@
                         <!-- 8. Camera -->
                         <div class="app-item" data-app="camera">
                             <div class="app-icon icon-camera">
-                                <i class="fa-solid fa-camera"></i>
+                                <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><circle cx="12" cy="12" r="3.2"/><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>
                             </div>
                             <span class="app-label">Kamera</span>
                         </div>
@@ -195,7 +195,7 @@
                         <!-- 9. Photos / Gallery -->
                         <div class="app-item" data-app="photos">
                             <div class="app-icon icon-photos">
-                                <i class="fa-solid fa-images"></i>
+                                <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
                             </div>
                             <span class="app-label">Galeri</span>
                         </div>
@@ -203,7 +203,7 @@
                         <!-- 10. Notes / Catatan -->
                         <div class="app-item" data-app="notes">
                             <div class="app-icon icon-notes">
-                                <i class="fa-solid fa-note-sticky"></i>
+                                <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
                             </div>
                             <span class="app-label">Catatan</span>
                         </div>
@@ -211,7 +211,7 @@
                         <!-- 11. Calculator -->
                         <div class="app-item" data-app="calculator">
                             <div class="app-icon icon-calculator">
-                                <i class="fa-solid fa-calculator"></i>
+                                <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-6 2h5v3h-5V5zm-6 0h4v3H7V5zm0 5h4v3H7v-3zm6 0h5v3h-5v-3zm-6 5h4v4H7v-4zm6 0h5v4h-5v-4z"/></svg>
                             </div>
                             <span class="app-label">Kalkulator</span>
                         </div>
@@ -219,7 +219,7 @@
                         <!-- 12. Settings -->
                         <div class="app-item" data-app="settings">
                             <div class="app-icon icon-settings">
-                                <i class="fa-solid fa-gear"></i>
+                                <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
                             </div>
                             <span class="app-label">Pengaturan</span>
                         </div>
@@ -228,30 +228,30 @@
                     <!-- iOS Frosted Glass Blur Dock (4 Aplikasi Utama) -->
                     <div class="ios-dock">
                         <!-- Dock 1: Phone / Dialer -->
-                        <div class="dock-app" data-app="phone">
+                        <div class="dock-app" data-app="phone" title="Telepon">
                             <div class="app-icon icon-phone">
-                                <i class="fa-solid fa-phone"></i>
+                                <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
                             </div>
                         </div>
 
                         <!-- Dock 2: Messages -->
-                        <div class="dock-app" data-app="messages">
+                        <div class="dock-app" data-app="messages" title="Pesan">
                             <div class="app-icon icon-messages">
-                                <i class="fa-solid fa-comment"></i>
+                                <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
                             </div>
                         </div>
 
                         <!-- Dock 3: Bank -->
-                        <div class="dock-app" data-app="bank">
+                        <div class="dock-app" data-app="bank" title="M-Banking">
                             <div class="app-icon icon-bank">
-                                <i class="fa-solid fa-building-columns"></i>
+                                <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M4 10h3v7H4zm6 0h3v7h-3zm6 0h3v7h-3zM2 22h19v-3H2v3zm9.5-20L2 7v2h19V7l-9.5-5z"/></svg>
                             </div>
                         </div>
 
                         <!-- Dock 4: Settings -->
-                        <div class="dock-app" data-app="settings">
+                        <div class="dock-app" data-app="settings" title="Pengaturan">
                             <div class="app-icon icon-settings">
-                                <i class="fa-solid fa-gear"></i>
+                                <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
                             </div>
                         </div>
                     </div>
@@ -262,22 +262,32 @@
                 <!-- ============================================================ -->
                 <div class="screen-view app-screen" id="viewAppPhone">
                     <header class="app-header">
-                        <button class="nav-back-btn" data-action="go-home"><i class="fa-solid fa-chevron-left"></i></button>
+                        <button class="nav-back-btn" data-action="go-home">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+                        </button>
                         <h2 class="app-header-title">Telepon</h2>
                         <div class="app-header-action"></div>
                     </header>
 
                     <!-- Phone Tabs: Keypad vs Riwayat -->
                     <div class="phone-tabs-bar">
-                        <button class="phone-tab active" data-tab="keypad"><i class="fa-solid fa-grip"></i> Keypad</button>
-                        <button class="phone-tab" data-tab="recents"><i class="fa-solid fa-clock-rotate-left"></i> Riwayat</button>
+                        <button class="phone-tab active" data-tab="keypad">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M10 10h4v4h-4zm6 0h4v4h-4zM4 10h4v4H4zm0 6h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4zM4 4h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4z"/></svg>
+                            <span>Keypad</span>
+                        </button>
+                        <button class="phone-tab" data-tab="recents">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M13 3a9 9 0 0 0-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42A8.954 8.954 0 0 0 13 21a9 9 0 0 0 0-18zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg>
+                            <span>Riwayat</span>
+                        </button>
                     </div>
 
                     <!-- Tab 1: Keypad Content -->
                     <div class="phone-tab-content active" id="tabContentKeypad">
                         <div class="dialer-display">
                             <div class="dialer-number" id="dialerNumberText"></div>
-                            <button class="dialer-del-btn" id="dialerBackspaceBtn"><i class="fa-solid fa-delete-left"></i></button>
+                            <button class="dialer-del-btn" id="dialerBackspaceBtn" title="Hapus">
+                                <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M22 3H7c-.69 0-1.23.35-1.59.88L0 12l5.41 8.11c.36.53.9.89 1.59.89h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-3 12.59L17.59 17 14 13.41 10.41 17 9 15.59 12.59 12 9 8.41 10.41 7 14 10.59 17.59 7 19 8.41 15.41 12 19 15.59z"/></svg>
+                            </button>
                         </div>
 
                         <div class="dialer-keypad">
@@ -296,8 +306,8 @@
                         </div>
 
                         <div class="dialer-actions">
-                            <button class="call-action-btn call-start-btn" id="startCallBtn">
-                                <i class="fa-solid fa-phone"></i>
+                            <button class="call-action-btn call-start-btn" id="startCallBtn" title="Panggil">
+                                <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
                             </button>
                         </div>
                     </div>
@@ -316,7 +326,7 @@
                 <div class="screen-view call-overlay" id="viewActiveCall">
                     <div class="call-contact-card">
                         <div class="caller-avatar" id="callAvatar">
-                            <i class="fa-solid fa-user"></i>
+                            <svg viewBox="0 0 24 24" width="40" height="40" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
                         </div>
                         <h3 class="caller-name" id="callName">Nama Kontak</h3>
                         <span class="caller-number" id="callNumber">0812-XXXX-XXXX</span>
@@ -325,14 +335,23 @@
                     </div>
 
                     <div class="call-controls-grid">
-                        <button class="call-tool-btn" id="callMuteBtn"><i class="fa-solid fa-microphone-slash"></i><span>Mute</span></button>
-                        <button class="call-tool-btn" id="callKeypadBtn"><i class="fa-solid fa-grip"></i><span>Keypad</span></button>
-                        <button class="call-tool-btn" id="callSpeakerBtn"><i class="fa-solid fa-volume-high"></i><span>Speaker</span></button>
+                        <button class="call-tool-btn" id="callMuteBtn">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M19 11h-1.7c0 .74-.16 1.43-.43 2.05l1.23 1.23c.56-.98.9-2.09.9-3.28zm-4.02.17c0-.06.02-.11.02-.17V5c0-1.66-1.34-3-3-3S9 3.34 9 5v.18l5.98 5.99zM4.27 3L3 4.27l6.01 6.01V11c0 1.66 1.33 3 2.99 3 .22 0 .44-.03.65-.08l1.66 1.66c-.71.33-1.5.52-2.31.52-2.76 0-5.3-2.1-5.3-5.1H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c.91-.13 1.77-.45 2.54-.9l4.19 4.18L21 19.73 4.27 3z"/></svg>
+                            <span>Mute</span>
+                        </button>
+                        <button class="call-tool-btn" id="callKeypadBtn">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M10 10h4v4h-4zm6 0h4v4h-4zM4 10h4v4H4zm0 6h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4zM4 4h4v4H4zm6 0h4v4h-4zm6 0h4v4h-4z"/></svg>
+                            <span>Keypad</span>
+                        </button>
+                        <button class="call-tool-btn" id="callSpeakerBtn">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+                            <span>Speaker</span>
+                        </button>
                     </div>
 
                     <div class="call-bottom-action">
-                        <button class="call-action-btn call-hangup-btn" id="hangupCallBtn">
-                            <i class="fa-solid fa-phone-slash"></i>
+                        <button class="call-action-btn call-hangup-btn" id="hangupCallBtn" title="Tutup">
+                            <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M12 9c-1.6 0-3.15.25-4.6.72v3.1c0 .39-.23.74-.56.9-.98.49-1.87 1.12-2.66 1.85-.18.18-.43.28-.7.28-.28 0-.53-.11-.71-.29L.29 13.08a.996.996 0 0 1 0-1.41C3.41 8.65 7.46 7 12 7s8.59 1.65 11.71 4.67c.39.39.39 1.02 0 1.41l-2.48 2.48c-.18.18-.43.29-.71.29-.27 0-.52-.11-.7-.28-.79-.74-1.69-1.36-2.67-1.85-.33-.16-.56-.5-.56-.9v-3.1C15.15 9.25 13.6 9 12 9z"/></svg>
                         </button>
                     </div>
                 </div>
@@ -344,7 +363,7 @@
                     <div class="incoming-pulse-ring"></div>
                     <div class="call-contact-card">
                         <div class="caller-avatar incoming-avatar" id="incomingAvatar">
-                            <i class="fa-solid fa-phone-volume"></i>
+                            <svg viewBox="0 0 24 24" width="40" height="40" fill="currentColor"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
                         </div>
                         <div class="incoming-label">Panggilan Masuk</div>
                         <h3 class="caller-name" id="incomingName">Penelepon</h3>
@@ -353,14 +372,14 @@
 
                     <div class="incoming-actions-row">
                         <div class="incoming-action-col">
-                            <button class="call-action-btn call-hangup-btn" id="declineCallBtn">
-                                <i class="fa-solid fa-phone-slash"></i>
+                            <button class="call-action-btn call-hangup-btn" id="declineCallBtn" title="Tolak">
+                                <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M12 9c-1.6 0-3.15.25-4.6.72v3.1c0 .39-.23.74-.56.9-.98.49-1.87 1.12-2.66 1.85-.18.18-.43.28-.7.28-.28 0-.53-.11-.71-.29L.29 13.08a.996.996 0 0 1 0-1.41C3.41 8.65 7.46 7 12 7s8.59 1.65 11.71 4.67c.39.39.39 1.02 0 1.41l-2.48 2.48c-.18.18-.43.29-.71.29-.27 0-.52-.11-.7-.28-.79-.74-1.69-1.36-2.67-1.85-.33-.16-.56-.5-.56-.9v-3.1C15.15 9.25 13.6 9 12 9z"/></svg>
                             </button>
                             <span>Tolak</span>
                         </div>
                         <div class="incoming-action-col">
-                            <button class="call-action-btn call-accept-btn" id="acceptCallBtn">
-                                <i class="fa-solid fa-phone"></i>
+                            <button class="call-action-btn call-accept-btn" id="acceptCallBtn" title="Jawab">
+                                <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
                             </button>
                             <span>Jawab</span>
                         </div>
@@ -372,13 +391,17 @@
                 <!-- ============================================================ -->
                 <div class="screen-view app-screen" id="viewAppMessages">
                     <header class="app-header">
-                        <button class="nav-back-btn" data-action="go-home"><i class="fa-solid fa-chevron-left"></i></button>
+                        <button class="nav-back-btn" data-action="go-home">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+                        </button>
                         <h2 class="app-header-title">Pesan</h2>
-                        <button class="app-header-action" id="newMessageBtn"><i class="fa-solid fa-pen-to-square"></i></button>
+                        <button class="app-header-action" id="newMessageBtn" title="Pesan Baru">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                        </button>
                     </header>
 
                     <div class="search-box-wrap">
-                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
                         <input type="text" class="search-input" id="searchMessagesInput" placeholder="Cari pesan atau kontak...">
                     </div>
 
@@ -392,12 +415,16 @@
                 <!-- ============================================================ -->
                 <div class="screen-view app-screen" id="viewChatConversation">
                     <header class="app-header chat-header">
-                        <button class="nav-back-btn" id="backToThreadsBtn"><i class="fa-solid fa-chevron-left"></i></button>
+                        <button class="nav-back-btn" id="backToThreadsBtn">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+                        </button>
                         <div class="chat-header-info">
                             <span class="chat-recipient-name" id="chatRecipientName">Nama Kontak</span>
                             <span class="chat-recipient-num" id="chatRecipientNumber">0812-XXXX</span>
                         </div>
-                        <button class="app-header-action chat-call-shortcut" id="chatCallShortcutBtn"><i class="fa-solid fa-phone"></i></button>
+                        <button class="app-header-action chat-call-shortcut" id="chatCallShortcutBtn" title="Panggil">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+                        </button>
                     </header>
 
                     <div class="chat-messages-container" id="chatMessagesContainer">
@@ -406,11 +433,11 @@
 
                     <div class="chat-input-bar">
                         <button class="chat-tool-btn" id="shareLocationBtn" title="Bagikan Titik Lokasi GPS">
-                            <i class="fa-solid fa-location-dot"></i>
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg>
                         </button>
                         <input type="text" class="chat-text-input" id="chatTextInput" placeholder="Pesan iMessage..." autocomplete="off">
-                        <button class="chat-send-btn" id="sendMsgBtn">
-                            <i class="fa-solid fa-arrow-up"></i>
+                        <button class="chat-send-btn" id="sendMsgBtn" title="Kirim">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z"/></svg>
                         </button>
                     </div>
                 </div>
@@ -420,9 +447,13 @@
                 <!-- ============================================================ -->
                 <div class="screen-view app-screen" id="viewAppContacts">
                     <header class="app-header">
-                        <button class="nav-back-btn" data-action="go-home"><i class="fa-solid fa-chevron-left"></i></button>
+                        <button class="nav-back-btn" data-action="go-home">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+                        </button>
                         <h2 class="app-header-title">Kontak</h2>
-                        <button class="app-header-action" id="addContactModalBtn"><i class="fa-solid fa-plus"></i></button>
+                        <button class="app-header-action" id="addContactModalBtn" title="Tambah Kontak">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                        </button>
                     </header>
 
                     <div class="my-card-banner">
@@ -434,7 +465,7 @@
                     </div>
 
                     <div class="search-box-wrap">
-                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
                         <input type="text" class="search-input" id="searchContactsInput" placeholder="Cari nama atau nomor...">
                     </div>
 
@@ -448,7 +479,9 @@
                 <!-- ============================================================ -->
                 <div class="screen-view app-screen" id="viewAppBank">
                     <header class="app-header">
-                        <button class="nav-back-btn" data-action="go-home"><i class="fa-solid fa-chevron-left"></i></button>
+                        <button class="nav-back-btn" data-action="go-home">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+                        </button>
                         <h2 class="app-header-title">Fleeca Bank</h2>
                         <div class="app-header-action"></div>
                     </header>
@@ -456,7 +489,7 @@
                     <div class="bank-card-container">
                         <div class="bank-debit-card">
                             <div class="card-top">
-                                <span class="card-brand"><i class="fa-solid fa-building-columns"></i> FLEECA BANK</span>
+                                <span class="card-brand">FLEECA BANK</span>
                                 <span class="card-chip"></span>
                             </div>
                             <div class="card-balance-wrap">
@@ -472,15 +505,15 @@
 
                     <div class="bank-action-row">
                         <button class="bank-quick-btn" id="btnOpenTransferModal">
-                            <i class="fa-solid fa-paper-plane"></i>
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
                             <span>Transfer</span>
                         </button>
                         <button class="bank-quick-btn" id="btnOpenInvoicesModal">
-                            <i class="fa-solid fa-file-invoice-dollar"></i>
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
                             <span>Tagihan</span>
                         </button>
                         <button class="bank-quick-btn" id="btnRefreshBank">
-                            <i class="fa-solid fa-rotate"></i>
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M17.65 6.35A7.958 7.958 0 0 0 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
                             <span>Refresh</span>
                         </button>
                     </div>
@@ -498,9 +531,13 @@
                 <!-- ============================================================ -->
                 <div class="screen-view app-screen" id="viewAppTwitter">
                     <header class="app-header">
-                        <button class="nav-back-btn" data-action="go-home"><i class="fa-solid fa-chevron-left"></i></button>
-                        <h2 class="app-header-title"><i class="fa-brands fa-x-twitter"></i> Chirper</h2>
-                        <button class="app-header-action" id="newTweetBtn"><i class="fa-solid fa-plus"></i></button>
+                        <button class="nav-back-btn" data-action="go-home">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+                        </button>
+                        <h2 class="app-header-title">Chirper</h2>
+                        <button class="app-header-action" id="newTweetBtn" title="Kicau Baru">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                        </button>
                     </header>
 
                     <div class="twitter-feed" id="twitterFeedList">
@@ -513,7 +550,9 @@
                 <!-- ============================================================ -->
                 <div class="screen-view app-screen" id="viewAppGarage">
                     <header class="app-header">
-                        <button class="nav-back-btn" data-action="go-home"><i class="fa-solid fa-chevron-left"></i></button>
+                        <button class="nav-back-btn" data-action="go-home">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+                        </button>
                         <h2 class="app-header-title">Garasi Saya</h2>
                         <div class="app-header-action"></div>
                     </header>
@@ -528,9 +567,13 @@
                 <!-- ============================================================ -->
                 <div class="screen-view app-screen" id="viewAppYellowpages">
                     <header class="app-header">
-                        <button class="nav-back-btn" data-action="go-home"><i class="fa-solid fa-chevron-left"></i></button>
+                        <button class="nav-back-btn" data-action="go-home">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+                        </button>
                         <h2 class="app-header-title">Iklan Kota</h2>
-                        <button class="app-header-action" id="postAdBtn"><i class="fa-solid fa-plus"></i></button>
+                        <button class="app-header-action" id="postAdBtn" title="Pasang Iklan">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                        </button>
                     </header>
 
                     <div class="yellowpages-feed" id="yellowpagesFeedList">
@@ -543,7 +586,9 @@
                 <!-- ============================================================ -->
                 <div class="screen-view app-screen" id="viewAppDispatch">
                     <header class="app-header">
-                        <button class="nav-back-btn" data-action="go-home"><i class="fa-solid fa-chevron-left"></i></button>
+                        <button class="nav-back-btn" data-action="go-home">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+                        </button>
                         <h2 class="app-header-title">Layanan Darurat</h2>
                         <div class="app-header-action"></div>
                     </header>
@@ -551,7 +596,9 @@
                     <div class="dispatch-cards-grid">
                         <!-- 911 Police -->
                         <div class="dispatch-card card-police" data-service="police">
-                            <div class="dispatch-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                            <div class="dispatch-icon">
+                                <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3zm1 14h-2v-2h2v2zm0-4h-2V7h2v5z"/></svg>
+                            </div>
                             <div class="dispatch-meta">
                                 <h3>911 - Kepolisian (SAPD)</h3>
                                 <p>Laporkan kejahatan, perampokan, atau darurat keamanan.</p>
@@ -561,7 +608,9 @@
 
                         <!-- 912 EMS / Medic -->
                         <div class="dispatch-card card-medic" data-service="medic">
-                            <div class="dispatch-icon"><i class="fa-solid fa-truck-medical"></i></div>
+                            <div class="dispatch-icon">
+                                <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M19 10.5V6c0-1.1-.9-2-2-2H3c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h1v3l3-3h8l4 3v-3h1c1.1 0 2-.9 2-2v-4.5zM11 13H9v2H7v-2H5v-2h2V9h2v2h2v2zm7-2h-3V7h3v4z"/></svg>
+                            </div>
                             <div class="dispatch-meta">
                                 <h3>912 - Rumah Sakit (SAMD)</h3>
                                 <p>Bantuan medis darurat, kecelakaan, atau pingsan.</p>
@@ -571,7 +620,9 @@
 
                         <!-- 913 Mechanic -->
                         <div class="dispatch-card card-mechanic" data-service="mechanic">
-                            <div class="dispatch-icon"><i class="fa-solid fa-wrench"></i></div>
+                            <div class="dispatch-icon">
+                                <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z"/></svg>
+                            </div>
                             <div class="dispatch-meta">
                                 <h3>913 - Jasa Mekanik & Derek</h3>
                                 <p>Kendaraan rusak, mogok, derek, atau kehabisan bensin.</p>
@@ -581,7 +632,9 @@
 
                         <!-- 914 Taxi -->
                         <div class="dispatch-card card-taxi" data-service="taxi">
-                            <div class="dispatch-icon"><i class="fa-solid fa-taxi"></i></div>
+                            <div class="dispatch-icon">
+                                <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.85 7h10.29l1.04 3H5.81l1.04-3zM19 17H5v-4.66l.12-.34h13.77l.11.34V17z"/></svg>
+                            </div>
                             <div class="dispatch-meta">
                                 <h3>914 - Taxi & Transportasi</h3>
                                 <p>Pesan jemputan taksi ke lokasi Anda sekarang.</p>
@@ -604,16 +657,24 @@
                         </div>
                         <div class="camera-focus-bracket"></div>
                         <div class="camera-top-toolbar">
-                            <button class="cam-tool-btn" id="camFlashBtn"><i class="fa-solid fa-bolt"></i></button>
+                            <button class="cam-tool-btn" id="camFlashBtn">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>
+                            </button>
                             <span class="cam-hdr-badge">HDR</span>
-                            <button class="cam-tool-btn" id="camCloseBtn"><i class="fa-solid fa-xmark"></i></button>
+                            <button class="cam-tool-btn" id="camCloseBtn">
+                                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+                            </button>
                         </div>
                     </div>
 
                     <div class="camera-bottom-toolbar">
-                        <button class="cam-side-btn" id="camGalleryBtn" title="Buka Galeri"><i class="fa-solid fa-images"></i></button>
+                        <button class="cam-side-btn" id="camGalleryBtn" title="Buka Galeri">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+                        </button>
                         <button class="cam-shutter-btn" id="camShutterBtn"></button>
-                        <button class="cam-side-btn" id="camFlipBtn" title="Balik Kamera"><i class="fa-solid fa-arrows-rotate"></i></button>
+                        <button class="cam-side-btn" id="camFlipBtn" title="Balik Kamera">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></svg>
+                        </button>
                     </div>
                 </div>
 
@@ -622,7 +683,9 @@
                 <!-- ============================================================ -->
                 <div class="screen-view app-screen" id="viewAppPhotos">
                     <header class="app-header">
-                        <button class="nav-back-btn" data-action="go-home"><i class="fa-solid fa-chevron-left"></i></button>
+                        <button class="nav-back-btn" data-action="go-home">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+                        </button>
                         <h2 class="app-header-title">Galeri Foto</h2>
                         <div class="app-header-action"></div>
                     </header>
@@ -637,9 +700,13 @@
                 <!-- ============================================================ -->
                 <div class="screen-view app-screen" id="viewAppNotes">
                     <header class="app-header">
-                        <button class="nav-back-btn" data-action="go-home"><i class="fa-solid fa-chevron-left"></i></button>
+                        <button class="nav-back-btn" data-action="go-home">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+                        </button>
                         <h2 class="app-header-title">Catatan</h2>
-                        <button class="app-header-action" id="newNoteBtn"><i class="fa-solid fa-plus"></i></button>
+                        <button class="app-header-action" id="newNoteBtn" title="Catatan Baru">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                        </button>
                     </header>
 
                     <div class="notes-list" id="notesListContainer">
@@ -652,7 +719,9 @@
                 <!-- ============================================================ -->
                 <div class="screen-view app-screen" id="viewAppCalculator">
                     <header class="app-header">
-                        <button class="nav-back-btn" data-action="go-home"><i class="fa-solid fa-chevron-left"></i></button>
+                        <button class="nav-back-btn" data-action="go-home">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+                        </button>
                         <h2 class="app-header-title">Kalkulator</h2>
                         <div class="app-header-action"></div>
                     </header>
@@ -694,7 +763,9 @@
                 <!-- ============================================================ -->
                 <div class="screen-view app-screen" id="viewAppSettings">
                     <header class="app-header">
-                        <button class="nav-back-btn" data-action="go-home"><i class="fa-solid fa-chevron-left"></i></button>
+                        <button class="nav-back-btn" data-action="go-home">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+                        </button>
                         <h2 class="app-header-title">Pengaturan</h2>
                         <div class="app-header-action"></div>
                     </header>
@@ -712,7 +783,9 @@
                         <!-- System Toggles Section -->
                         <div class="settings-group">
                             <div class="settings-row">
-                                <div class="settings-icon-box bg-orange"><i class="fa-solid fa-plane"></i></div>
+                                <div class="settings-icon-box bg-orange">
+                                    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
+                                </div>
                                 <span class="settings-label">Mode Pesawat</span>
                                 <label class="ios-switch">
                                     <input type="checkbox" id="toggleAirplaneMode">
@@ -721,7 +794,9 @@
                             </div>
 
                             <div class="settings-row">
-                                <div class="settings-icon-box bg-blue"><i class="fa-solid fa-volume-high"></i></div>
+                                <div class="settings-icon-box bg-blue">
+                                    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+                                </div>
                                 <span class="settings-label">Suara Ringtone</span>
                                 <label class="ios-switch">
                                     <input type="checkbox" id="toggleSoundMode" checked>
@@ -730,7 +805,9 @@
                             </div>
 
                             <div class="settings-row">
-                                <div class="settings-icon-box bg-purple"><i class="fa-solid fa-moon"></i></div>
+                                <div class="settings-icon-box bg-purple">
+                                    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12.3 2a10 10 0 0 0-.19 19.82A10 10 0 0 0 21.8 12.5a8 8 0 0 1-9.5-10.5z"/></svg>
+                                </div>
                                 <span class="settings-label">Dark Mode</span>
                                 <label class="ios-switch">
                                     <input type="checkbox" id="toggleDarkMode" checked>
@@ -794,7 +871,9 @@
         <div class="modal-card">
             <div class="modal-header">
                 <h3>Tambah Kontak Baru</h3>
-                <button class="modal-close-btn" data-close="modalAddContact"><i class="fa-solid fa-xmark"></i></button>
+                <button class="modal-close-btn" data-close="modalAddContact">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+                </button>
             </div>
             <div class="modal-body">
                 <div class="form-group">
@@ -818,7 +897,9 @@
         <div class="modal-card">
             <div class="modal-header">
                 <h3>Transfer Dana M-Banking</h3>
-                <button class="modal-close-btn" data-close="modalBankTransfer"><i class="fa-solid fa-xmark"></i></button>
+                <button class="modal-close-btn" data-close="modalBankTransfer">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+                </button>
             </div>
             <div class="modal-body">
                 <div class="form-group">
@@ -846,7 +927,9 @@
         <div class="modal-card">
             <div class="modal-header">
                 <h3>Buat Kicauan Baru</h3>
-                <button class="modal-close-btn" data-close="modalNewTweet"><i class="fa-solid fa-xmark"></i></button>
+                <button class="modal-close-btn" data-close="modalNewTweet">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+                </button>
             </div>
             <div class="modal-body">
                 <div class="form-group">
@@ -866,7 +949,9 @@
         <div class="modal-card">
             <div class="modal-header">
                 <h3>Pasang Iklan Kota (Yellow Pages)</h3>
-                <button class="modal-close-btn" data-close="modalPostAd"><i class="fa-solid fa-xmark"></i></button>
+                <button class="modal-close-btn" data-close="modalPostAd">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+                </button>
             </div>
             <div class="modal-body">
                 <div class="form-group">
@@ -895,14 +980,19 @@
         <div class="modal-card">
             <div class="modal-header">
                 <h3 id="dispatchModalTitle">Layanan Darurat</h3>
-                <button class="modal-close-btn" data-close="modalDispatchReport"><i class="fa-solid fa-xmark"></i></button>
+                <button class="modal-close-btn" data-close="modalDispatchReport">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+                </button>
             </div>
             <div class="modal-body">
                 <div class="form-group">
                     <label>Pesan / Keterangan Darurat</label>
                     <textarea class="form-input form-textarea" id="dispatchMessageInput" placeholder="Jelaskan situasi darurat Anda secara singkat..."></textarea>
                 </div>
-                <p class="dispatch-gps-notice"><i class="fa-solid fa-location-crosshairs"></i> Koordinat lokasi Anda akan otomatis dilampirkan ke panggilan ini.</p>
+                <p class="dispatch-gps-notice">
+                    <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" style="vertical-align: -1px;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                    Koordinat lokasi Anda akan otomatis dilampirkan ke panggilan ini.
+                </p>
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" data-close="modalDispatchReport">Batal</button>
