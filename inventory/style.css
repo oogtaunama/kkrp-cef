@@ -17,12 +17,12 @@
 
     /* Backgrounds & Glass Panels */
     --bg-dark-base: rgba(10, 12, 18, 0.88);
-    --bg-panel: rgba(15, 18, 27, 0.82);
-    --bg-card: rgba(20, 25, 38, 0.75);
-    --bg-slot: rgba(18, 22, 33, 0.65);
-    --bg-slot-hover: rgba(35, 42, 60, 0.85);
-    --bg-slot-active: rgba(255, 123, 0, 0.15);
-    --bg-input: rgba(12, 15, 23, 0.85);
+    --bg-panel: rgba(13, 17, 26, 0.96);
+    --bg-card: rgba(20, 25, 38, 0.92);
+    --bg-slot: rgba(18, 22, 33, 0.88);
+    --bg-slot-hover: rgba(35, 42, 60, 0.95);
+    --bg-slot-active: rgba(255, 123, 0, 0.22);
+    --bg-input: rgba(12, 15, 23, 0.92);
 
     /* Borders */
     --border-subtle: rgba(255, 255, 255, 0.07);
@@ -80,9 +80,7 @@ body {
 .inventory-backdrop {
     position: fixed;
     inset: 0;
-    background: radial-gradient(circle at 50% 50%, rgba(20, 15, 10, 0.6) 0%, rgba(5, 6, 10, 0.88) 100%);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    background: radial-gradient(circle at 50% 50%, rgba(10, 12, 18, 0.75) 0%, rgba(5, 6, 10, 0.92) 100%);
     z-index: 1;
     pointer-events: none;
     animation: fadeInBackdrop 0.25s ease-out;
@@ -165,8 +163,6 @@ body {
 /* Glass Card Component */
 .glass-card {
     background: var(--bg-panel);
-    backdrop-filter: blur(18px) saturate(180%);
-    -webkit-backdrop-filter: blur(18px) saturate(180%);
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-panel);
@@ -1016,9 +1012,7 @@ body {
     position: fixed;
     z-index: 9999;
     width: 270px;
-    background: rgba(14, 18, 28, 0.96);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    background: rgba(14, 18, 28, 0.98);
     border: 1px solid var(--border-orange-bright);
     border-radius: var(--radius-md);
     box-shadow: 0 20px 45px rgba(0, 0, 0, 0.8), var(--shadow-orange);
@@ -1239,8 +1233,7 @@ body {
     position: fixed;
     inset: 0;
     z-index: 10000;
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(8px);
+    background: rgba(0, 0, 0, 0.85);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1382,8 +1375,7 @@ body {
     align-items: center;
     gap: 20px;
     padding: 7px 22px;
-    background: rgba(10, 13, 20, 0.85);
-    backdrop-filter: blur(12px);
+    background: rgba(10, 13, 20, 0.95);
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-full);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
