@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KKRP FiveM Smartphone - iOS System</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for modern icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Base & Phone Styles -->
+    <link rel="stylesheet" href="../common/common.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Game Viewport Backdrop (Transparent for GTA 3D View) -->
+    <div class="phone-viewport-backdrop" id="backdrop"></div>
+
+    <!-- Top Dynamic Island Notification Banner -->
+    <div class="notch-notification" id="notchNotification">
+        <div class="notch-pill">
+            <div class="notch-icon" id="notifIcon"><i class="fa-solid fa-bell"></i></div>
+            <div class="notch-content">
+                <div class="notch-title" id="notifTitle">Pemberitahuan</div>
+                <div class="notch-desc" id="notifDesc">Pesan baru diterima</div>
+            </div>
+            <div class="notch-time" id="notifTime">Sekarang</div>
+        </div>
+    </div>
+
+    <!-- Phone Wrapper Frame (iPhone iOS Style) -->
+    <div class="phone-device-wrapper" id="phoneWrapper">
+        
+        <!-- Physical Side Buttons -->
+        <div class="phone-btn phone-btn-mute" id="muteSwitch" title="Mute Switch"></div>
+        <div class="phone-btn phone-btn-volup" id="volUpBtn" title="Volume Up"></div>
+        <div class="phone-btn phone-btn-voldown" id="volDownBtn" title="Volume Down"></div>
+        <div class="phone-btn phone-btn-power" id="powerBtn" title="Power / Lock"></div>
+
+        <!-- Phone Outer Border & Screen Canvas -->
+        <div class="phone-body" id="phoneBody">
+            
+            <!-- Dynamic Island / Top Camera Notch -->
+            <div class="phone-notch" id="phoneNotch">
+                <div class="camera-lens"></div>
+                <div class="speaker-grill"></div>
+            </div>
+
+            <!-- iOS Top Status Bar -->
+            <div class="phone-status-bar" id="statusBar">
+                <div class="status-left">
+                    <span class="status-clock" id="statusClock">12:00</span>
+                    <i class="fa-solid fa-location-arrow status-gps-icon"></i>
+                </div>
+                <div class="status-right">
+                    <div class="signal-bars" title="Sinyal Seluler">
+                        <span class="bar bar-1"></span>
+                        <span class="bar bar-2"></span>
+                        <span class="bar bar-3"></span>
+                        <span class="bar bar-4"></span>
+                    </div>
+                    <span class="status-net">5G</span>
+                    <i class="fa-solid fa-wifi status-wifi" title="Wi-Fi"></i>
+                    <div class="battery-wrapper" title="Baterai">
+                        <span class="battery-percent" id="batteryPercent">98%</span>
+                        <div class="battery-body">
+                            <div class="battery-level" id="batteryLevel" style="width: 90%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Screen Viewport Inner -->
+            <div class="phone-screen" id="phoneScreen">
+
+                <!-- ============================================================ -->
+                <!-- 1. LOCK SCREEN (Layar Kunci iOS)                            -->
+                <!-- ============================================================ -->
+                <div class="screen-view screen-lock active" id="viewLockScreen">
+                    <div class="lock-header">
+                        <i class="fa-solid fa-lock lock-icon" id="lockIcon"></i>
+                        <span class="lock-swipe-hint">Buka Kunci</span>
+                    </div>
+                    <div class="lock-clock-wrap">
+                        <div class="lock-date" id="lockDate">Kamis, 12 November</div>
+                        <div class="lock-time" id="lockTime">12:00</div>
+                    </div>
+
+                    <!-- Quick Notifications on Lock Screen -->
+                    <div class="lock-notifs-container" id="lockNotifsList"></div>
+
+                    <!-- Bottom Quick Actions: Flashlight & Camera -->
+                    <div class="lock-bottom-actions">
+                        <button class="lock-action-btn" id="lockFlashlightBtn" title="Senter">
+                            <i class="fa-solid fa-flashlight"></i>
+                        </button>
+                        <div class="unlock-swipe-pill" id="unlockSwipeBtn">
+                            <i class="fa-solid fa-chevron-up"></i>
+                            <span>Sentuh Untuk Membuka</span>
+                        </div>
+                        <button class="lock-action-btn" id="lockCameraBtn" title="Kamera">
+                            <i class="fa-solid fa-camera"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ============================================================ -->
+                <!-- 2. HOME SCREEN (Grid Aplikasi iOS)                           -->
+                <!-- ============================================================ -->
+                <div class="screen-view screen-home" id="viewHomeScreen">
+                    
+                    <!-- Date & Weather Widget -->
+                    <div class="home-widget-row">
+                        <div class="ios-widget date-weather-widget" id="widgetWeather">
+                            <div class="widget-top">
+                                <span class="widget-city">Los Santos</span>
+                                <i class="fa-solid fa-sun-cloud widget-icon"></i>
+                            </div>
+                            <div class="widget-temp">28°C</div>
+                            <div class="widget-desc">Cerah Berawan • Hari Ini</div>
+                        </div>
+                    </div>
+
+                    <!-- App Grid Icons (4 Kolom) -->
+                    <div class="app-grid">
+                        
+                        <!-- 1. Contacts -->
+                        <div class="app-item" data-app="contacts">
+                            <div class="app-icon icon-contacts">
+                                <i class="fa-solid fa-address-book"></i>
+                            </div>
+                            <span class="app-label">Kontak</span>
+                        </div>
+
+                        <!-- 2. Messages -->
+                        <div class="app-item" data-app="messages">
+                            <div class="app-icon icon-messages">
+                                <i class="fa-solid fa-comment"></i>
+                                <span class="app-badge" id="badgeMessages" style="display:none;">1</span>
+                            </div>
+                            <span class="app-label">Pesan</span>
+                        </div>
+
+                        <!-- 3. Fleeca Bank -->
+                        <div class="app-item" data-app="bank">
+                            <div class="app-icon icon-bank">
+                                <i class="fa-solid fa-building-columns"></i>
+                            </div>
+                            <span class="app-label">M-Bank</span>
+                        </div>
+
+                        <!-- 4. Chirper (Twitter) -->
+                        <div class="app-item" data-app="twitter">
+                            <div class="app-icon icon-twitter">
+                                <i class="fa-brands fa-x-twitter"></i>
+                                <span class="app-badge" id="badgeTwitter" style="display:none;">2</span>
+                            </div>
+                            <span class="app-label">Chirper</span>
+                        </div>
+
+                        <!-- 5. Garage / Kendaraan -->
+                        <div class="app-item" data-app="garage">
+                            <div class="app-icon icon-garage">
+                                <i class="fa-solid fa-car-side"></i>
+                            </div>
+                            <span class="app-label">Garasi</span>
+                        </div>
+
+                        <!-- 6. Yellow Pages (Iklan) -->
+                        <div class="app-item" data-app="yellowpages">
+                            <div class="app-icon icon-yellowpages">
+                                <i class="fa-solid fa-bullhorn"></i>
+                            </div>
+                            <span class="app-label">Iklan</span>
+                        </div>
+
+                        <!-- 7. Emergency Dispatch -->
+                        <div class="app-item" data-app="dispatch">
+                            <div class="app-icon icon-dispatch">
+                                <i class="fa-solid fa-shield-heart"></i>
+                            </div>
+                            <span class="app-label">Layanan 911</span>
+                        </div>
+
+                        <!-- 8. Camera -->
+                        <div class="app-item" data-app="camera">
+                            <div class="app-icon icon-camera">
+                                <i class="fa-solid fa-camera"></i>
+                            </div>
+                            <span class="app-label">Kamera</span>
+                        </div>
+
+                        <!-- 9. Photos / Gallery -->
+                        <div class="app-item" data-app="photos">
+                            <div class="app-icon icon-photos">
+                                <i class="fa-solid fa-images"></i>
+                            </div>
+                            <span class="app-label">Galeri</span>
+                        </div>
+
+                        <!-- 10. Notes / Catatan -->
+                        <div class="app-item" data-app="notes">
+                            <div class="app-icon icon-notes">
+                                <i class="fa-solid fa-note-sticky"></i>
+                            </div>
+                            <span class="app-label">Catatan</span>
+                        </div>
+
+                        <!-- 11. Calculator -->
+                        <div class="app-item" data-app="calculator">
+                            <div class="app-icon icon-calculator">
+                                <i class="fa-solid fa-calculator"></i>
+                            </div>
+                            <span class="app-label">Kalkulator</span>
+                        </div>
+
+                        <!-- 12. Settings -->
+                        <div class="app-item" data-app="settings">
+                            <div class="app-icon icon-settings">
+                                <i class="fa-solid fa-gear"></i>
+                            </div>
+                            <span class="app-label">Pengaturan</span>
+                        </div>
+                    </div>
+
+                    <!-- iOS Frosted Glass Blur Dock (4 Aplikasi Utama) -->
+                    <div class="ios-dock">
+                        <!-- Dock 1: Phone / Dialer -->
+                        <div class="dock-app" data-app="phone">
+                            <div class="app-icon icon-phone">
+                                <i class="fa-solid fa-phone"></i>
+                            </div>
+                        </div>
+
+                        <!-- Dock 2: Messages -->
+                        <div class="dock-app" data-app="messages">
+                            <div class="app-icon icon-messages">
+                                <i class="fa-solid fa-comment"></i>
+                            </div>
+                        </div>
+
+                        <!-- Dock 3: Bank -->
+                        <div class="dock-app" data-app="bank">
+                            <div class="app-icon icon-bank">
+                                <i class="fa-solid fa-building-columns"></i>
+                            </div>
+                        </div>
+
+                        <!-- Dock 4: Settings -->
+                        <div class="dock-app" data-app="settings">
+                            <div class="app-icon icon-settings">
+                                <i class="fa-solid fa-gear"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============================================================ -->
+                <!-- 3. APP: PHONE / DIALER (Keypad, Recents, Active Call)        -->
+                <!-- ============================================================ -->
+                <div class="screen-view app-screen" id="viewAppPhone">
+                    <header class="app-header">
+                        <button class="nav-back-btn" data-action="go-home"><i class="fa-solid fa-chevron-left"></i></button>
+                        <h2 class="app-header-title">Telepon</h2>
+                        <div class="app-header-action"></div>
+                    </header>
+
+                    <!-- Phone Tabs: Keypad vs Riwayat -->
+                    <div class="phone-tabs-bar">
+                        <button class="phone-tab active" data-tab="keypad"><i class="fa-solid fa-grip"></i> Keypad</button>
+                        <button class="phone-tab" data-tab="recents"><i class="fa-solid fa-clock-rotate-left"></i> Riwayat</button>
+                    </div>
+
+                    <!-- Tab 1: Keypad Content -->
+                    <div class="phone-tab-content active" id="tabContentKeypad">
+                        <div class="dialer-display">
+                            <div class="dialer-number" id="dialerNumberText"></div>
+                            <button class="dialer-del-btn" id="dialerBackspaceBtn"><i class="fa-solid fa-delete-left"></i></button>
+                        </div>
+
+                        <div class="dialer-keypad">
+                            <button class="key-btn" data-key="1"><span class="k-num">1</span><span class="k-sub">&nbsp;</span></button>
+                            <button class="key-btn" data-key="2"><span class="k-num">2</span><span class="k-sub">ABC</span></button>
+                            <button class="key-btn" data-key="3"><span class="k-num">3</span><span class="k-sub">DEF</span></button>
+                            <button class="key-btn" data-key="4"><span class="k-num">4</span><span class="k-sub">GHI</span></button>
+                            <button class="key-btn" data-key="5"><span class="k-num">5</span><span class="k-sub">JKL</span></button>
+                            <button class="key-btn" data-key="6"><span class="k-num">6</span><span class="k-sub">MNO</span></button>
+                            <button class="key-btn" data-key="7"><span class="k-num">7</span><span class="k-sub">PQRS</span></button>
+                            <button class="key-btn" data-key="8"><span class="k-num">8</span><span class="k-sub">TUV</span></button>
+                            <button class="key-btn" data-key="9"><span class="k-num">9</span><span class="k-sub">WXYZ</span></button>
+                            <button class="key-btn" data-key="*"><span class="k-num">*</span><span class="k-sub">&nbsp;</span></button>
+                            <button class="key-btn" data-key="0"><span class="k-num">0</span><span class="k-sub">+</span></button>
+                            <button class="key-btn" data-key="#"><span class="k-num">#</span><span class="k-sub">&nbsp;</span></button>
+                        </div>
+
+                        <div class="dialer-actions">
+                            <button class="call-action-btn call-start-btn" id="startCallBtn">
+                                <i class="fa-solid fa-phone"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Tab 2: Recents / Riwayat Panggilan -->
+                    <div class="phone-tab-content" id="tabContentRecents">
+                        <div class="recents-list" id="recentsList">
+                            <!-- Populated dynamically via JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============================================================ -->
+                <!-- 4. ACTIVE CALL OVERLAY (Sedang Berlangsung)                   -->
+                <!-- ============================================================ -->
+                <div class="screen-view call-overlay" id="viewActiveCall">
+                    <div class="call-contact-card">
+                        <div class="caller-avatar" id="callAvatar">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                        <h3 class="caller-name" id="callName">Nama Kontak</h3>
+                        <span class="caller-number" id="callNumber">0812-XXXX-XXXX</span>
+                        <div class="call-status-pill" id="callStatusText">Menghubungkan...</div>
+                        <div class="call-timer" id="callTimer">00:00</div>
+                    </div>
+
+                    <div class="call-controls-grid">
+                        <button class="call-tool-btn" id="callMuteBtn"><i class="fa-solid fa-microphone-slash"></i><span>Mute</span></button>
+                        <button class="call-tool-btn" id="callKeypadBtn"><i class="fa-solid fa-grip"></i><span>Keypad</span></button>
+                        <button class="call-tool-btn" id="callSpeakerBtn"><i class="fa-solid fa-volume-high"></i><span>Speaker</span></button>
+                    </div>
+
+                    <div class="call-bottom-action">
+                        <button class="call-action-btn call-hangup-btn" id="hangupCallBtn">
+                            <i class="fa-solid fa-phone-slash"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ============================================================ -->
+                <!-- 5. INCOMING CALL MODAL (Panggilan Masuk)                      -->
+                <!-- ============================================================ -->
+                <div class="screen-view incoming-call-overlay" id="viewIncomingCall">
+                    <div class="incoming-pulse-ring"></div>
+                    <div class="call-contact-card">
+                        <div class="caller-avatar incoming-avatar" id="incomingAvatar">
+                            <i class="fa-solid fa-phone-volume"></i>
+                        </div>
+                        <div class="incoming-label">Panggilan Masuk</div>
+                        <h3 class="caller-name" id="incomingName">Penelepon</h3>
+                        <span class="caller-number" id="incomingNumber">0812-XXXX-XXXX</span>
+                    </div>
+
+                    <div class="incoming-actions-row">
+                        <div class="incoming-action-col">
+                            <button class="call-action-btn call-hangup-btn" id="declineCallBtn">
+                                <i class="fa-solid fa-phone-slash"></i>
+                            </button>
+                            <span>Tolak</span>
+                        </div>
+                        <div class="incoming-action-col">
+                            <button class="call-action-btn call-accept-btn" id="acceptCallBtn">
+                                <i class="fa-solid fa-phone"></i>
+                            </button>
+                            <span>Jawab</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============================================================ -->
+                <!-- 6. APP: MESSAGES (Pesan & SMS)                               -->
+                <!-- ============================================================ -->
+                <div class="screen-view app-screen" id="viewAppMessages">
+                    <header class="app-header">
+                        <button class="nav-back-btn" data-action="go-home"><i class="fa-solid fa-chevron-left"></i></button>
+                        <h2 class="app-header-title">Pesan</h2>
+                        <button class="app-header-action" id="newMessageBtn"><i class="fa-solid fa-pen-to-square"></i></button>
+                    </header>
+
+                    <div class="search-box-wrap">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" class="search-input" id="searchMessagesInput" placeholder="Cari pesan atau kontak...">
+                    </div>
+
+                    <div class="threads-list" id="messagesThreadList">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- ============================================================ -->
+                <!-- 7. IN-CHAT CONVERSATION SCREEN                               -->
+                <!-- ============================================================ -->
+                <div class="screen-view app-screen" id="viewChatConversation">
+                    <header class="app-header chat-header">
+                        <button class="nav-back-btn" id="backToThreadsBtn"><i class="fa-solid fa-chevron-left"></i></button>
+                        <div class="chat-header-info">
+                            <span class="chat-recipient-name" id="chatRecipientName">Nama Kontak</span>
+                            <span class="chat-recipient-num" id="chatRecipientNumber">0812-XXXX</span>
+                        </div>
+                        <button class="app-header-action chat-call-shortcut" id="chatCallShortcutBtn"><i class="fa-solid fa-phone"></i></button>
+                    </header>
+
+                    <div class="chat-messages-container" id="chatMessagesContainer">
+                        <!-- Message bubbles rendered by JS -->
+                    </div>
+
+                    <div class="chat-input-bar">
+                        <button class="chat-tool-btn" id="shareLocationBtn" title="Bagikan Titik Lokasi GPS">
+                            <i class="fa-solid fa-location-dot"></i>
+                        </button>
+                        <input type="text" class="chat-text-input" id="chatTextInput" placeholder="Pesan iMessage..." autocomplete="off">
+                        <button class="chat-send-btn" id="sendMsgBtn">
+                            <i class="fa-solid fa-arrow-up"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ============================================================ -->
+                <!-- 8. APP: CONTACTS (Buku Kontak)                               -->
+                <!-- ============================================================ -->
+                <div class="screen-view app-screen" id="viewAppContacts">
+                    <header class="app-header">
+                        <button class="nav-back-btn" data-action="go-home"><i class="fa-solid fa-chevron-left"></i></button>
+                        <h2 class="app-header-title">Kontak</h2>
+                        <button class="app-header-action" id="addContactModalBtn"><i class="fa-solid fa-plus"></i></button>
+                    </header>
+
+                    <div class="my-card-banner">
+                        <div class="my-card-avatar" id="myCardAvatar">ME</div>
+                        <div class="my-card-info">
+                            <h4 id="myCardName">Karakter Saya</h4>
+                            <span id="myCardPhone">0812-9988-7711</span>
+                        </div>
+                    </div>
+
+                    <div class="search-box-wrap">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" class="search-input" id="searchContactsInput" placeholder="Cari nama atau nomor...">
+                    </div>
+
+                    <div class="contacts-list" id="contactsListContainer">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- ============================================================ -->
+                <!-- 9. APP: FLEECA BANK (M-Banking)                              -->
+                <!-- ============================================================ -->
+                <div class="screen-view app-screen" id="viewAppBank">
+                    <header class="app-header">
+                        <button class="nav-back-btn" data-action="go-home"><i class="fa-solid fa-chevron-left"></i></button>
+                        <h2 class="app-header-title">Fleeca Bank</h2>
+                        <div class="app-header-action"></div>
+                    </header>
+
+                    <div class="bank-card-container">
+                        <div class="bank-debit-card">
+                            <div class="card-top">
+                                <span class="card-brand"><i class="fa-solid fa-building-columns"></i> FLEECA BANK</span>
+                                <span class="card-chip"></span>
+                            </div>
+                            <div class="card-balance-wrap">
+                                <span class="card-balance-label">Total Saldo Tersedia</span>
+                                <div class="card-balance-val" id="bankBalanceVal">$0</div>
+                            </div>
+                            <div class="card-bottom">
+                                <div class="card-holder" id="bankCardHolder">NAMA PEMILIK</div>
+                                <div class="card-number" id="bankCardNumber">**** **** 1234</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bank-action-row">
+                        <button class="bank-quick-btn" id="btnOpenTransferModal">
+                            <i class="fa-solid fa-paper-plane"></i>
+                            <span>Transfer</span>
+                        </button>
+                        <button class="bank-quick-btn" id="btnOpenInvoicesModal">
+                            <i class="fa-solid fa-file-invoice-dollar"></i>
+                            <span>Tagihan</span>
+                        </button>
+                        <button class="bank-quick-btn" id="btnRefreshBank">
+                            <i class="fa-solid fa-rotate"></i>
+                            <span>Refresh</span>
+                        </button>
+                    </div>
+
+                    <div class="bank-history-wrap">
+                        <h4 class="section-title">Riwayat Transaksi</h4>
+                        <div class="bank-history-list" id="bankHistoryList">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============================================================ -->
+                <!-- 10. APP: CHIRPER / TWITTER                                   -->
+                <!-- ============================================================ -->
+                <div class="screen-view app-screen" id="viewAppTwitter">
+                    <header class="app-header">
+                        <button class="nav-back-btn" data-action="go-home"><i class="fa-solid fa-chevron-left"></i></button>
+                        <h2 class="app-header-title"><i class="fa-brands fa-x-twitter"></i> Chirper</h2>
+                        <button class="app-header-action" id="newTweetBtn"><i class="fa-solid fa-plus"></i></button>
+                    </header>
+
+                    <div class="twitter-feed" id="twitterFeedList">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- ============================================================ -->
+                <!-- 11. APP: GARAGE / VALET KENDARAAN                            -->
+                <!-- ============================================================ -->
+                <div class="screen-view app-screen" id="viewAppGarage">
+                    <header class="app-header">
+                        <button class="nav-back-btn" data-action="go-home"><i class="fa-solid fa-chevron-left"></i></button>
+                        <h2 class="app-header-title">Garasi Saya</h2>
+                        <div class="app-header-action"></div>
+                    </header>
+
+                    <div class="garage-list" id="garageVehiclesList">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- ============================================================ -->
+                <!-- 12. APP: YELLOW PAGES / IKLAN WARGA                          -->
+                <!-- ============================================================ -->
+                <div class="screen-view app-screen" id="viewAppYellowpages">
+                    <header class="app-header">
+                        <button class="nav-back-btn" data-action="go-home"><i class="fa-solid fa-chevron-left"></i></button>
+                        <h2 class="app-header-title">Iklan Kota</h2>
+                        <button class="app-header-action" id="postAdBtn"><i class="fa-solid fa-plus"></i></button>
+                    </header>
+
+                    <div class="yellowpages-feed" id="yellowpagesFeedList">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- ============================================================ -->
+                <!-- 13. APP: EMERGENCY DISPATCH 911                              -->
+                <!-- ============================================================ -->
+                <div class="screen-view app-screen" id="viewAppDispatch">
+                    <header class="app-header">
+                        <button class="nav-back-btn" data-action="go-home"><i class="fa-solid fa-chevron-left"></i></button>
+                        <h2 class="app-header-title">Layanan Darurat</h2>
+                        <div class="app-header-action"></div>
+                    </header>
+
+                    <div class="dispatch-cards-grid">
+                        <!-- 911 Police -->
+                        <div class="dispatch-card card-police" data-service="police">
+                            <div class="dispatch-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                            <div class="dispatch-meta">
+                                <h3>911 - Kepolisian (SAPD)</h3>
+                                <p>Laporkan kejahatan, perampokan, atau darurat keamanan.</p>
+                            </div>
+                            <button class="dispatch-call-btn">Panggil</button>
+                        </div>
+
+                        <!-- 912 EMS / Medic -->
+                        <div class="dispatch-card card-medic" data-service="medic">
+                            <div class="dispatch-icon"><i class="fa-solid fa-truck-medical"></i></div>
+                            <div class="dispatch-meta">
+                                <h3>912 - Rumah Sakit (SAMD)</h3>
+                                <p>Bantuan medis darurat, kecelakaan, atau pingsan.</p>
+                            </div>
+                            <button class="dispatch-call-btn">Panggil</button>
+                        </div>
+
+                        <!-- 913 Mechanic -->
+                        <div class="dispatch-card card-mechanic" data-service="mechanic">
+                            <div class="dispatch-icon"><i class="fa-solid fa-wrench"></i></div>
+                            <div class="dispatch-meta">
+                                <h3>913 - Jasa Mekanik & Derek</h3>
+                                <p>Kendaraan rusak, mogok, derek, atau kehabisan bensin.</p>
+                            </div>
+                            <button class="dispatch-call-btn">Panggil</button>
+                        </div>
+
+                        <!-- 914 Taxi -->
+                        <div class="dispatch-card card-taxi" data-service="taxi">
+                            <div class="dispatch-icon"><i class="fa-solid fa-taxi"></i></div>
+                            <div class="dispatch-meta">
+                                <h3>914 - Taxi & Transportasi</h3>
+                                <p>Pesan jemputan taksi ke lokasi Anda sekarang.</p>
+                            </div>
+                            <button class="dispatch-call-btn">Panggil</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============================================================ -->
+                <!-- 14. APP: CAMERA                                              -->
+                <!-- ============================================================ -->
+                <div class="screen-view app-screen screen-camera" id="viewAppCamera">
+                    <div class="camera-viewfinder">
+                        <div class="camera-grid-lines">
+                            <div class="c-line c-line-v1"></div>
+                            <div class="c-line c-line-v2"></div>
+                            <div class="c-line c-line-h1"></div>
+                            <div class="c-line c-line-h2"></div>
+                        </div>
+                        <div class="camera-focus-bracket"></div>
+                        <div class="camera-top-toolbar">
+                            <button class="cam-tool-btn" id="camFlashBtn"><i class="fa-solid fa-bolt"></i></button>
+                            <span class="cam-hdr-badge">HDR</span>
+                            <button class="cam-tool-btn" id="camCloseBtn"><i class="fa-solid fa-xmark"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="camera-bottom-toolbar">
+                        <button class="cam-side-btn" id="camGalleryBtn" title="Buka Galeri"><i class="fa-solid fa-images"></i></button>
+                        <button class="cam-shutter-btn" id="camShutterBtn"></button>
+                        <button class="cam-side-btn" id="camFlipBtn" title="Balik Kamera"><i class="fa-solid fa-arrows-rotate"></i></button>
+                    </div>
+                </div>
+
+                <!-- ============================================================ -->
+                <!-- 15. APP: PHOTOS / GALLERY                                    -->
+                <!-- ============================================================ -->
+                <div class="screen-view app-screen" id="viewAppPhotos">
+                    <header class="app-header">
+                        <button class="nav-back-btn" data-action="go-home"><i class="fa-solid fa-chevron-left"></i></button>
+                        <h2 class="app-header-title">Galeri Foto</h2>
+                        <div class="app-header-action"></div>
+                    </header>
+
+                    <div class="photos-grid" id="photosGridContainer">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- ============================================================ -->
+                <!-- 16. APP: NOTES / CATATAN                                     -->
+                <!-- ============================================================ -->
+                <div class="screen-view app-screen" id="viewAppNotes">
+                    <header class="app-header">
+                        <button class="nav-back-btn" data-action="go-home"><i class="fa-solid fa-chevron-left"></i></button>
+                        <h2 class="app-header-title">Catatan</h2>
+                        <button class="app-header-action" id="newNoteBtn"><i class="fa-solid fa-plus"></i></button>
+                    </header>
+
+                    <div class="notes-list" id="notesListContainer">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- ============================================================ -->
+                <!-- 17. APP: CALCULATOR                                          -->
+                <!-- ============================================================ -->
+                <div class="screen-view app-screen" id="viewAppCalculator">
+                    <header class="app-header">
+                        <button class="nav-back-btn" data-action="go-home"><i class="fa-solid fa-chevron-left"></i></button>
+                        <h2 class="app-header-title">Kalkulator</h2>
+                        <div class="app-header-action"></div>
+                    </header>
+
+                    <div class="calc-display-wrap">
+                        <div class="calc-formula" id="calcFormula"></div>
+                        <div class="calc-current" id="calcCurrent">0</div>
+                    </div>
+
+                    <div class="calc-keys-grid">
+                        <button class="c-key c-fn" data-calc="clear">C</button>
+                        <button class="c-key c-fn" data-calc="sign">±</button>
+                        <button class="c-key c-fn" data-calc="percent">%</button>
+                        <button class="c-key c-op" data-calc="/">÷</button>
+
+                        <button class="c-key c-num" data-calc="7">7</button>
+                        <button class="c-key c-num" data-calc="8">8</button>
+                        <button class="c-key c-num" data-calc="9">9</button>
+                        <button class="c-key c-op" data-calc="*">×</button>
+
+                        <button class="c-key c-num" data-calc="4">4</button>
+                        <button class="c-key c-num" data-calc="5">5</button>
+                        <button class="c-key c-num" data-calc="6">6</button>
+                        <button class="c-key c-op" data-calc="-">-</button>
+
+                        <button class="c-key c-num" data-calc="1">1</button>
+                        <button class="c-key c-num" data-calc="2">2</button>
+                        <button class="c-key c-num" data-calc="3">3</button>
+                        <button class="c-key c-op" data-calc="+">+</button>
+
+                        <button class="c-key c-num c-zero" data-calc="0">0</button>
+                        <button class="c-key c-num" data-calc=".">.</button>
+                        <button class="c-key c-op c-equal" data-calc="=">=</button>
+                    </div>
+                </div>
+
+                <!-- ============================================================ -->
+                <!-- 18. APP: SETTINGS (Pengaturan)                               -->
+                <!-- ============================================================ -->
+                <div class="screen-view app-screen" id="viewAppSettings">
+                    <header class="app-header">
+                        <button class="nav-back-btn" data-action="go-home"><i class="fa-solid fa-chevron-left"></i></button>
+                        <h2 class="app-header-title">Pengaturan</h2>
+                        <div class="app-header-action"></div>
+                    </header>
+
+                    <div class="settings-scroll-content">
+                        <!-- Profile Card -->
+                        <div class="settings-profile-card">
+                            <div class="settings-avatar" id="settingsAvatar">LS</div>
+                            <div class="settings-profile-info">
+                                <h3 id="settingsProfileName">Nama Karakter</h3>
+                                <p id="settingsProfilePhone">0812-9988-7711</p>
+                            </div>
+                        </div>
+
+                        <!-- System Toggles Section -->
+                        <div class="settings-group">
+                            <div class="settings-row">
+                                <div class="settings-icon-box bg-orange"><i class="fa-solid fa-plane"></i></div>
+                                <span class="settings-label">Mode Pesawat</span>
+                                <label class="ios-switch">
+                                    <input type="checkbox" id="toggleAirplaneMode">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+
+                            <div class="settings-row">
+                                <div class="settings-icon-box bg-blue"><i class="fa-solid fa-volume-high"></i></div>
+                                <span class="settings-label">Suara Ringtone</span>
+                                <label class="ios-switch">
+                                    <input type="checkbox" id="toggleSoundMode" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+
+                            <div class="settings-row">
+                                <div class="settings-icon-box bg-purple"><i class="fa-solid fa-moon"></i></div>
+                                <span class="settings-label">Dark Mode</span>
+                                <label class="ios-switch">
+                                    <input type="checkbox" id="toggleDarkMode" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Wallpaper Picker Section -->
+                        <div class="settings-group">
+                            <div class="settings-header-label">PILIH WALLPAPER (iOS)</div>
+                            <div class="wallpaper-presets-grid" id="wallpaperPresetsGrid">
+                                <div class="wall-preset active" data-wall="ios13-wave" title="iOS 13 Wave"></div>
+                                <div class="wall-preset" data-wall="dark-oled" title="Dark Neon"></div>
+                                <div class="wall-preset" data-wall="cyber-sunset" title="Cyber Sunset"></div>
+                                <div class="wall-preset" data-wall="pacific-blue" title="Pacific Blue"></div>
+                                <div class="wall-preset" data-wall="emerald-flow" title="Emerald Flow"></div>
+                                <div class="wall-preset" data-wall="minimal-black" title="Minimal OLED"></div>
+                            </div>
+                        </div>
+
+                        <!-- Device Information Section -->
+                        <div class="settings-group">
+                            <div class="settings-header-label">TENTANG PERANGKAT</div>
+                            <div class="settings-info-row">
+                                <span>Model</span>
+                                <strong>iPhone 13 Pro (KKRP Edition)</strong>
+                            </div>
+                            <div class="settings-info-row">
+                                <span>Versi Perangkat</span>
+                                <strong>iOS 16.5</strong>
+                            </div>
+                            <div class="settings-info-row">
+                                <span>Nomor Telepon</span>
+                                <strong id="settingsPhoneNum">0812-9988-7711</strong>
+                            </div>
+                            <div class="settings-info-row">
+                                <span>Sinyal Provider</span>
+                                <strong>KKRP Mobile (5G)</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div> <!-- /.phone-screen -->
+
+            <!-- Bottom Home Indicator Bar (iOS Style) -->
+            <div class="phone-home-indicator-wrap" id="homeIndicatorWrap">
+                <div class="phone-home-bar" id="homeIndicatorBar" title="Geser ke atas / Klik untuk Beranda"></div>
+            </div>
+
+        </div> <!-- /.phone-body -->
+    </div> <!-- /.phone-device-wrapper -->
+
+    <!-- ============================================================ -->
+    <!-- MODALS: Add Contact, Transfer Money, Post Tweet, Post Ad     -->
+    <!-- ============================================================ -->
+
+    <!-- Modal: Tambah Kontak -->
+    <div class="modal-backdrop" id="modalAddContact">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Tambah Kontak Baru</h3>
+                <button class="modal-close-btn" data-close="modalAddContact"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Nama Kontak</label>
+                    <input type="text" class="form-input" id="newContactNameInput" placeholder="Contoh: Franklin Clinton">
+                </div>
+                <div class="form-group">
+                    <label>Nomor Telepon</label>
+                    <input type="text" class="form-input" id="newContactPhoneInput" placeholder="Contoh: 5550192">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-close="modalAddContact">Batal</button>
+                <button class="btn btn-primary" id="saveContactSubmitBtn">Simpan Kontak</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Transfer Bank -->
+    <div class="modal-backdrop" id="modalBankTransfer">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Transfer Dana M-Banking</h3>
+                <button class="modal-close-btn" data-close="modalBankTransfer"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Tujuan (ID Player / No. Rekening / No. HP)</label>
+                    <input type="text" class="form-input" id="transferTargetInput" placeholder="ID Player atau Rekening">
+                </div>
+                <div class="form-group">
+                    <label>Jumlah Nominal ($)</label>
+                    <input type="number" class="form-input" id="transferAmountInput" placeholder="Contoh: 1500" min="1">
+                </div>
+                <div class="form-group">
+                    <label>Catatan Transfer (Opsional)</label>
+                    <input type="text" class="form-input" id="transferNoteInput" placeholder="Contoh: Bayar sewa flat">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-close="modalBankTransfer">Batal</button>
+                <button class="btn btn-primary" id="submitBankTransferBtn">Kirim Uang</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Buat Tweet / Chirp -->
+    <div class="modal-backdrop" id="modalNewTweet">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Buat Kicauan Baru</h3>
+                <button class="modal-close-btn" data-close="modalNewTweet"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <textarea class="form-input form-textarea" id="newTweetContentInput" maxlength="140" placeholder="Apa yang sedang terjadi di Los Santos hari ini?"></textarea>
+                    <div class="char-count" id="tweetCharCount">140 karakter tersisa</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-close="modalNewTweet">Batal</button>
+                <button class="btn btn-primary" id="submitTweetBtn">Posting Tweet</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Pasang Iklan -->
+    <div class="modal-backdrop" id="modalPostAd">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Pasang Iklan Kota (Yellow Pages)</h3>
+                <button class="modal-close-btn" data-close="modalPostAd"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Kategori Iklan</label>
+                    <select class="form-input" id="adCategorySelect">
+                        <option value="Kendaraan">Jual / Beli Kendaraan</option>
+                        <option value="Properti">Properti & Rumah</option>
+                        <option value="Jasa">Jasa & Lowongan Kerja</option>
+                        <option value="Umum">Umum / Barang Lainnya</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Deskripsi Iklan</label>
+                    <textarea class="form-input form-textarea" id="adDescriptionInput" maxlength="180" placeholder="Jelaskan barang atau jasa yang ditawarkan..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-close="modalPostAd">Batal</button>
+                <button class="btn btn-primary" id="submitAdBtn">Pasang Iklan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Kirim Laporan Darurat 911 -->
+    <div class="modal-backdrop" id="modalDispatchReport">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 id="dispatchModalTitle">Layanan Darurat</h3>
+                <button class="modal-close-btn" data-close="modalDispatchReport"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Pesan / Keterangan Darurat</label>
+                    <textarea class="form-input form-textarea" id="dispatchMessageInput" placeholder="Jelaskan situasi darurat Anda secara singkat..."></textarea>
+                </div>
+                <p class="dispatch-gps-notice"><i class="fa-solid fa-location-crosshairs"></i> Koordinat lokasi Anda akan otomatis dilampirkan ke panggilan ini.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-close="modalDispatchReport">Batal</button>
+                <button class="btn btn-primary" id="submitDispatchReportBtn">Kirim Panggilan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts: CEF Bridge & Phone Controller -->
+    <script src="../common/cef-bridge.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
