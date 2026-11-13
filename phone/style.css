@@ -290,6 +290,10 @@ body.browser-preview {
     height: 100%;
     border-radius: var(--screen-radius);
     overflow: hidden;
+    -webkit-mask-image: -webkit-radial-gradient(white, black);
+    mask-image: radial-gradient(white, black);
+    transform: translateZ(0);
+    isolation: isolate;
     /* Default iOS 13 Stock Wallpaper (Wave) */
     background: 
         radial-gradient(ellipse at 80% 20%, rgba(255, 75, 43, 0.8) 0%, transparent 50%),
@@ -300,6 +304,15 @@ body.browser-preview {
     background-position: center;
     display: flex;
     flex-direction: column;
+}
+
+/* KETIKA LAYAR TERKUNCI (LOCKSCREEN): SEMBUNYIKAN SELURUH APLIKASI & WIDGET */
+.phone-screen.is-locked .screen-view:not(.screen-lock),
+.phone-screen.is-locked .screen-home {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
 }
 
 /* Dynamic Wallpapers */
@@ -340,12 +353,16 @@ body.browser-preview {
     left: 0;
     width: 100%;
     height: 100%;
+    border-radius: var(--screen-radius);
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-mask-image: -webkit-radial-gradient(white, black);
+    mask-image: radial-gradient(white, black);
+    transform: translateZ(0);
     padding-top: 42px; /* clearance for status bar */
     padding-bottom: 30px; /* clearance for home indicator */
     display: none;
     flex-direction: column;
-    overflow-y: auto;
-    overflow-x: hidden;
     scrollbar-width: none;
 }
 .screen-view::-webkit-scrollbar { display: none; }
@@ -362,9 +379,14 @@ body.browser-preview {
 
 /* App Screens Generic Header */
 .app-screen {
-    background: rgba(15, 23, 42, 0.92);
+    background: rgba(15, 23, 42, 0.94);
     backdrop-filter: blur(25px);
     -webkit-backdrop-filter: blur(25px);
+    border-radius: var(--screen-radius);
+    overflow: hidden;
+    -webkit-mask-image: -webkit-radial-gradient(white, black);
+    mask-image: radial-gradient(white, black);
+    transform: translateZ(0);
 }
 
 .app-header {
@@ -1911,6 +1933,7 @@ body.browser-preview {
 }
 
 .photo-thumb {
+    position: relative;
     aspect-ratio: 1;
     background: #1e293b;
     border-radius: 8px;
@@ -1918,6 +1941,71 @@ body.browser-preview {
     cursor: pointer;
     background-size: cover;
     background-position: center;
+    transition: transform 0.12s ease;
+}
+.photo-thumb:active {
+    transform: scale(0.95);
+}
+
+.photo-thumb-tag {
+    position: absolute;
+    bottom: 3px;
+    right: 4px;
+    font-size: 9px;
+    font-weight: 600;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 1px 4px;
+    border-radius: 4px;
+    color: #ffffff;
+}
+
+/* Photo Modal Details */
+.photo-modal-card {
+    max-width: 320px;
+}
+.photo-preview-box {
+    width: 100%;
+    height: 280px;
+    border-radius: 14px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+    background-color: #0f172a;
+}
+.photo-modal-footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+/* Contact Share Styles */
+.c-act-share {
+    background: rgba(0, 122, 255, 0.2);
+    color: #60a5fa;
+}
+.c-act-share:hover {
+    background: rgba(0, 122, 255, 0.4);
+}
+
+.my-card-share-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(0, 122, 255, 0.25);
+    border: 1px solid rgba(0, 122, 255, 0.45);
+    color: #ffffff;
+    border-radius: 14px;
+    padding: 6px 12px;
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s ease, transform 0.12s ease;
+    margin-left: auto;
+}
+.my-card-share-btn:active {
+    transform: scale(0.94);
+    background: rgba(0, 122, 255, 0.45);
 }
 
 /* ==========================================================================

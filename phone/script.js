@@ -424,6 +424,10 @@
             PhoneState.isLocked = false;
             if (playSound) PhoneAudio.playClick();
 
+            if (this.screen) {
+                this.screen.classList.remove('is-locked');
+            }
+
             const lockEl = document.getElementById('viewLockScreen');
             if (lockEl) {
                 lockEl.classList.add('unlocked');
@@ -431,16 +435,18 @@
                 lockEl.style.opacity = '';
             }
 
-            // Always reveal the home screen underneath
-            if (PhoneState.currentView === 'viewLockScreen' || !PhoneState.currentView) {
-                this.switchView('viewHomeScreen', false);
-            }
+            // Reveal home screen cleanly
+            this.switchView('viewHomeScreen', false);
         },
 
         // Lock Phone (Go back to Lock Screen)
         lockPhone(playSound = true) {
             PhoneState.isLocked = true;
             if (playSound) PhoneAudio.playClick();
+
+            if (this.screen) {
+                this.screen.classList.add('is-locked');
+            }
 
             const lockEl = document.getElementById('viewLockScreen');
             if (lockEl) {
@@ -449,8 +455,9 @@
                 lockEl.style.opacity = '';
             }
 
-            // Reset home view underneath so next unlock reveals menu directly
-            this.switchView('viewHomeScreen', false);
+            // Sembunyikan seluruh tampilan aplikasi dan menu home agar lockscreen murni bersih
+            document.querySelectorAll('.screen-view:not(.screen-lock)').forEach(el => el.classList.remove('active'));
+            PhoneState.currentView = 'viewLockScreen';
         },
 
         // Switch Screen View
@@ -906,6 +913,9 @@
                     <div class="contact-actions">
                         <button class="c-act-btn c-act-call" title="Panggil">${PhoneSvg.phone}</button>
                         <button class="c-act-btn c-act-sms" title="Kirim Pesan">${PhoneSvg.comment}</button>
+                        <button class="c-act-btn c-act-share" title="Bagikan Kontak ke Pemain Terdekat">
+                            <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92z"/></svg>
+                        </button>
                         <button class="c-act-btn c-act-del" title="Hapus">${PhoneSvg.trash}</button>
                     </div>
                 `;
@@ -920,6 +930,12 @@
                 row.querySelector('.c-act-sms').onclick = (e) => {
                     e.stopPropagation();
                     this.openConversation(contact.number, contact.name);
+                };
+
+                // Share Contact Action (Bagi Kontak ke Pemain Terdekat)
+                row.querySelector('.c-act-share').onclick = (e) => {
+                    e.stopPropagation();
+                    this.shareContact(contact.name, contact.number);
                 };
 
                 // Delete Action
@@ -947,6 +963,16 @@
             if (window.CefBridge) {
                 CefBridge.emit('cef_onPhoneAddContact', newContact.name, newContact.number);
             }
+        },
+
+        // Bagikan Kontak ke Pemain Terdekat (Nearby Player Share)
+        shareContact(name, number) {
+            if (!name || !number) return;
+            PhoneAudio.playClick();
+            if (window.CefBridge) {
+                CefBridge.emit('cef_onPhoneShareContact', name, number);
+            }
+            this.showNotification('Membagikan Kontak', `Mencari pemain terdekat untuk membagikan '${name}'...`, 'contacts');
         },
 
         deleteContact(identifier) {
@@ -1220,22 +1246,42 @@
             flash.style.background = '#ffffff';
             flash.style.zIndex = '999';
             flash.style.pointerEvents = 'none';
-            flash.style.transition = 'opacity 0.25s ease';
+            flash.style.transition = 'opacity 0.22s ease';
             this.screen.appendChild(flash);
 
             setTimeout(() => {
                 flash.style.opacity = '0';
-                setTimeout(() => flash.remove(), 250);
-            }, 50);
+                setTimeout(() => flash.remove(), 220);
+            }, 60);
 
-            // Add photo to gallery
-            PhoneState.photos.unshift({
+            // Daftar foto roleplay Los Santos berkualitas tinggi
+            const samplePhotos = [
+                'https://images.unsplash.com/photo-1508873696983-2df5703bc20d?w=600&auto=format&fit=crop&q=80',
+                'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=600&auto=format&fit=crop&q=80',
+                'https://images.unsplash.com/photo-1542281286-9e0a16bb7366?w=600&auto=format&fit=crop&q=80',
+                'https://images.unsplash.com/photo-1514565131-fce0801e5785?w=600&auto=format&fit=crop&q=80',
+                'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=600&auto=format&fit=crop&q=80'
+            ];
+            const randomUrl = samplePhotos[Math.floor(Math.random() * samplePhotos.length)];
+            const now = new Date();
+            const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+            const newPhoto = {
                 id: Date.now(),
-                url: 'https://images.unsplash.com/photo-1508873696983-2df5703bc20d?w=400&auto=format&fit=crop&q=80',
+                url: randomUrl,
+                title: 'Tangkapan Kamera',
+                location: 'Los Santos',
+                time: timeStr,
                 date: 'Hari ini'
-            });
+            };
+
+            PhoneState.photos.unshift(newPhoto);
+            try {
+                localStorage.setItem('kkrp_phone_gallery', JSON.stringify(PhoneState.photos.slice(0, 30)));
+            } catch (e) {}
 
             this.showNotification('Foto Disimpan', 'Tangkapan foto disimpan ke Galeri.', 'camera');
+            this.renderPhotosGrid();
         },
 
         renderPhotosGrid() {
@@ -1243,12 +1289,68 @@
             if (!grid) return;
 
             grid.innerHTML = '';
+            if (PhoneState.photos.length === 0) {
+                grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: var(--ios-text-muted); font-size: 12px; margin-top: 40px;">Belum ada foto di galeri.<br>Gunakan kamera untuk mengambil foto.</div>';
+                return;
+            }
+
             PhoneState.photos.forEach(photo => {
                 const thumb = document.createElement('div');
                 thumb.className = 'photo-thumb';
                 thumb.style.backgroundImage = `url(${photo.url})`;
+                thumb.innerHTML = `<span class="photo-thumb-tag">${photo.time || ''}</span>`;
+                thumb.onclick = () => {
+                    this.openPhotoViewer(photo);
+                };
                 grid.appendChild(thumb);
             });
+        },
+
+        // Penampil Foto Layar Penuh (Photo Viewer Modal)
+        openPhotoViewer(photo) {
+            PhoneAudio.playClick();
+            const modal = document.getElementById('modalPhotoView');
+            const imgBox = document.getElementById('photoModalImage');
+            const dateEl = document.getElementById('photoModalDate');
+            if (!modal || !imgBox) return;
+
+            if (dateEl) dateEl.textContent = `${photo.location || 'Los Santos'} • ${photo.time || photo.date || ''}`;
+            imgBox.style.backgroundImage = `url(${photo.url})`;
+
+            // Jadikan Wallpaper
+            const setWallBtn = document.getElementById('photoSetWallpaperBtn');
+            if (setWallBtn) {
+                setWallBtn.onclick = () => {
+                    PhoneAudio.playClick();
+                    if (this.screen) {
+                        this.screen.style.backgroundImage = `url(${photo.url})`;
+                        this.screen.style.backgroundSize = 'cover';
+                        this.screen.style.backgroundPosition = 'center';
+                    }
+                    modal.classList.remove('active');
+                    this.showNotification('Wallpaper', 'Foto berhasil dipasang sebagai wallpaper.', 'settings');
+                    if (window.CefBridge) {
+                        CefBridge.emit('cef_onPhoneSetWallpaper', photo.url);
+                    }
+                };
+            }
+
+            // Hapus Foto
+            const delBtn = document.getElementById('photoDeleteBtn');
+            if (delBtn) {
+                delBtn.onclick = () => {
+                    PhoneAudio.playClick();
+                    PhoneState.photos = PhoneState.photos.filter(p => p.id !== photo.id);
+                    try {
+                        localStorage.setItem('kkrp_phone_gallery', JSON.stringify(PhoneState.photos));
+                    } catch (e) {}
+                    this.renderPhotosGrid();
+                    modal.classList.remove('active');
+                    this.showNotification('Galeri', 'Foto telah dihapus dari galeri.', 'trash');
+                };
+            }
+
+            modal.classList.add('active');
         },
 
         // =====================================================================
@@ -1550,6 +1652,11 @@
             // Search Contacts
             document.getElementById('searchContactsInput')?.addEventListener('input', () => {
                 this.renderContactsList();
+            });
+
+            // Bagikan Nomor Saya ke Pemain Terdekat
+            document.getElementById('myCardShareBtn')?.addEventListener('click', () => {
+                this.shareContact(PhoneState.ownerName, PhoneState.phoneNumber);
             });
 
             // Modal: Add Contact
@@ -1929,6 +2036,13 @@
             } else if (PhoneState.currentView === 'viewAppMessages') {
                 PhoneUI.renderMessagesThreadList();
             }
+        });
+
+        // Add Contact Event dari Pemain Terdekat (Share Contact)
+        CefBridge.on('addContact', (name, number) => {
+            PhoneState.contacts.push({ id: Date.now(), name, number });
+            PhoneUI.renderContactsList();
+            PhoneUI.showNotification('Kontak Baru', `${name} (${number}) telah disimpan ke kontak.`, 'contacts');
         });
 
         // Update Bank Balance from Pawn
