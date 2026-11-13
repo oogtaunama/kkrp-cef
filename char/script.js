@@ -260,8 +260,13 @@ const CharApp = {
         console.log(`[CharApp] Memilih karakter slot ${slotIndex}: ${charName}`);
         this.showToast(`Memuat data karakter ${charName}...`, 'info');
 
-        // LEPAS FOKUS CEF SEGERA AGAR KURSOR HILANG SAAT SPAWN
+        // LEPAS FOKUS CEF SEGERA & SEMBUNYIKAN UI AGAR KURSOR HILANG SAAT SPAWN
         CefBridge.setFocus(false);
+        const root = document.getElementById('viewSelector') || document.body;
+        if (root) {
+            root.style.pointerEvents = 'none';
+            root.style.display = 'none';
+        }
 
         // Kirim event ke Pawn (akan menutup CEF dan memunculkan Dialog Pilihan Spawn)
         CefBridge.emit('cef_onPlayerSelectChar', slotIndex, charName);
