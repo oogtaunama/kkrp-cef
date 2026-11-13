@@ -362,9 +362,7 @@ body.browser-preview {
 
 /* App Screens Generic Header */
 .app-screen {
-    background: rgba(15, 23, 42, 0.92);
-    backdrop-filter: blur(25px);
-    -webkit-backdrop-filter: blur(25px);
+    background: rgba(15, 23, 42, 0.96);
 }
 
 .app-header {
@@ -411,8 +409,7 @@ body.browser-preview {
     justify-content: space-between;
     align-items: center;
     text-align: center;
-    background: rgba(0, 0, 0, 0.2);
-    backdrop-filter: blur(4px);
+    background: rgba(0, 0, 0, 0.4);
 }
 
 .lock-header {
@@ -476,11 +473,10 @@ body.browser-preview {
     width: 44px;
     height: 44px;
     border-radius: 50%;
-    background: rgba(30, 30, 35, 0.65);
+    background: rgba(30, 30, 35, 0.85);
     border: 1px solid rgba(255, 255, 255, 0.2);
     color: #ffffff;
     font-size: 16px;
-    backdrop-filter: blur(15px);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -534,8 +530,7 @@ body.browser-preview {
 }
 
 .date-weather-widget {
-    background: rgba(30, 41, 59, 0.55);
-    backdrop-filter: blur(25px);
+    background: rgba(30, 41, 59, 0.85);
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 20px;
     padding: 12px 14px;
@@ -664,9 +659,7 @@ body.browser-preview {
 /* iOS Frosted Glass Bottom Dock */
 .ios-dock {
     width: 100%;
-    background: rgba(255, 255, 255, 0.22);
-    backdrop-filter: blur(30px);
-    -webkit-backdrop-filter: blur(30px);
+    background: rgba(255, 255, 255, 0.28);
     border: 1px solid rgba(255, 255, 255, 0.18);
     border-radius: 28px;
     padding: 8px 14px;
@@ -2058,8 +2051,7 @@ input:checked + .slider:before { transform: translateX(18px); }
 }
 
 .notch-pill {
-    background: rgba(20, 20, 24, 0.92);
-    backdrop-filter: blur(25px);
+    background: rgba(20, 20, 24, 0.96);
     border: 1px solid rgba(255, 255, 255, 0.18);
     border-radius: 26px;
     padding: 8px 16px;
@@ -2097,8 +2089,7 @@ input:checked + .slider:before { transform: translateX(18px); }
 .modal-backdrop {
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0, 0, 0, 0.65);
-    backdrop-filter: blur(10px);
+    background: rgba(0, 0, 0, 0.8);
     z-index: 700;
     display: none;
     align-items: center;
