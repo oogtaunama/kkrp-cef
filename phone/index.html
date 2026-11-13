@@ -79,9 +79,11 @@
                 <!-- 1. LOCK SCREEN (Layar Kunci iOS)                            -->
                 <!-- ============================================================ -->
                 <div class="screen-view screen-lock active" id="viewLockScreen">
-                    <div class="lock-header">
-                        <svg class="lock-icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
-                        <span class="lock-swipe-hint">Buka Kunci</span>
+                    <div class="lock-header" id="lockHeaderBtn" title="Sentuh / Tarik untuk Membuka">
+                        <div class="lock-icon-wrap">
+                            <svg class="lock-icon" id="lockPadlockSvg" viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+                        </div>
+                        <span class="lock-swipe-hint">Tarik Ke Atas Untuk Buka</span>
                     </div>
                     <div class="lock-clock-wrap">
                         <div class="lock-date" id="lockDate">Kamis, 12 November</div>
@@ -94,14 +96,14 @@
                     <!-- Bottom Quick Actions: Flashlight & Camera -->
                     <div class="lock-bottom-actions">
                         <button class="lock-action-btn" id="lockFlashlightBtn" title="Senter">
-                            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M6 2h12v3l-4 4v11a2 2 0 0 1-2 2h0a2 2 0 0 1-2-2V9L6 5V2zm2 2v.67l3.33 3.33h1.34L16 4.67V4H8zm3 7v9h2v-9h-2z"/></svg>
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M6 2h12v3l-4 4v11a2 2 0 0 1-2 2h0a2 2 0 0 1-2-2V9L6 5V2zm2 2v.67l3.33 3.33h1.34L16 4.67V4H8zm3 7v9h2v-9h-2z"/></svg>
                         </button>
-                        <div class="unlock-swipe-pill" id="unlockSwipeBtn">
+                        <div class="unlock-swipe-pill" id="unlockSwipeBtn" title="Tarik atau Klik untuk membuka">
                             <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/></svg>
-                            <span>Sentuh Untuk Membuka</span>
+                            <span>Buka Menu</span>
                         </div>
                         <button class="lock-action-btn" id="lockCameraBtn" title="Kamera">
-                            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><circle cx="12" cy="12" r="3.2"/><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><circle cx="12" cy="12" r="3.2"/><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>
                         </button>
                     </div>
                 </div>
@@ -109,7 +111,7 @@
                 <!-- ============================================================ -->
                 <!-- 2. HOME SCREEN (Grid Aplikasi iOS)                           -->
                 <!-- ============================================================ -->
-                <div class="screen-view screen-home" id="viewHomeScreen">
+                <div class="screen-view screen-home active" id="viewHomeScreen">
                     
                     <!-- Date & Weather Widget -->
                     <div class="home-widget-row">

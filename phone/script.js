@@ -286,7 +286,7 @@
     const PhoneState = {
         isOpen: false,
         isLocked: true,
-        currentView: 'viewLockScreen', // or 'viewHomeScreen', 'viewAppPhone', etc.
+        currentView: 'viewHomeScreen', // Base active screen under lock screen
         historyStack: [],
         airplaneMode: false,
         soundMode: true,
@@ -363,8 +363,8 @@
             // Standalone Browser Detection (Preview Mode)
             if (!window.CefBridge || !CefBridge.isAvailable()) {
                 document.body.classList.add('browser-preview');
-                // Automatically open phone in preview mode for developer convenience
-                this.showPhone(true);
+                // Automatically open phone on Lock Screen in preview mode
+                this.showPhone(false);
             }
         },
 
@@ -396,9 +396,9 @@
             PhoneAudio.playClick();
 
             if (unlocked) {
-                this.unlockPhone();
+                this.unlockPhone(false);
             } else {
-                this.switchView('viewLockScreen');
+                this.lockPhone(false);
             }
         },
 
@@ -420,17 +420,37 @@
         },
 
         // Unlock Phone (From Lock Screen -> Home Screen)
-        unlockPhone() {
+        unlockPhone(playSound = true) {
             PhoneState.isLocked = false;
-            PhoneAudio.playClick();
-            this.switchView('viewHomeScreen');
+            if (playSound) PhoneAudio.playClick();
+
+            const lockEl = document.getElementById('viewLockScreen');
+            if (lockEl) {
+                lockEl.classList.add('unlocked');
+                lockEl.style.transform = '';
+                lockEl.style.opacity = '';
+            }
+
+            // Always reveal the home screen underneath
+            if (PhoneState.currentView === 'viewLockScreen' || !PhoneState.currentView) {
+                this.switchView('viewHomeScreen', false);
+            }
         },
 
         // Lock Phone (Go back to Lock Screen)
-        lockPhone() {
+        lockPhone(playSound = true) {
             PhoneState.isLocked = true;
-            PhoneAudio.playClick();
-            this.switchView('viewLockScreen');
+            if (playSound) PhoneAudio.playClick();
+
+            const lockEl = document.getElementById('viewLockScreen');
+            if (lockEl) {
+                lockEl.classList.remove('unlocked');
+                lockEl.style.transform = '';
+                lockEl.style.opacity = '';
+            }
+
+            // Reset home view underneath so next unlock reveals menu directly
+            this.switchView('viewHomeScreen', false);
         },
 
         // Switch Screen View
@@ -1386,15 +1406,20 @@
         // 16. BIND USER DOM EVENTS
         // =====================================================================
         bindEvents() {
+            // Setup Gestures Tarik / Geser Layar Kunci (Swipe Up to Unlock)
+            this.setupLockScreenGestures();
+
             // Unlock swipe / tap button
-            document.getElementById('unlockSwipeBtn')?.addEventListener('click', () => {
-                this.unlockPhone();
+            document.getElementById('unlockSwipeBtn')?.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.unlockPhone(true);
             });
 
-            // Bottom Home Indicator Bar (Click to Go Home / Minimize)
-            document.getElementById('homeIndicatorWrap')?.addEventListener('click', () => {
+            // Bottom Home Indicator Bar (Click to Go Home / Minimize / Unlock)
+            document.getElementById('homeIndicatorWrap')?.addEventListener('click', (e) => {
+                e.stopPropagation();
                 if (PhoneState.isLocked) {
-                    this.unlockPhone();
+                    this.unlockPhone(true);
                 } else if (PhoneState.currentView === 'viewHomeScreen') {
                     // Already at home -> Minimize / Close phone
                     this.hidePhone();
@@ -1406,9 +1431,9 @@
             // Physical Power Button -> Lock / Unlock
             document.getElementById('powerBtn')?.addEventListener('click', () => {
                 if (PhoneState.isLocked) {
-                    this.unlockPhone();
+                    this.unlockPhone(true);
                 } else {
-                    this.lockPhone();
+                    this.lockPhone(true);
                 }
             });
 
@@ -1668,6 +1693,108 @@
                     }
                 }
             });
+        },
+
+        // Setup Gestures: Tarik / Geser ke atas untuk membuka Lock Screen
+        setupLockScreenGestures() {
+            const lockEl = document.getElementById('viewLockScreen');
+            if (!lockEl) return;
+
+            let startY = 0;
+            let currentY = 0;
+            let isDragging = false;
+            let startTime = 0;
+
+            const onPointerDown = (e) => {
+                if (!PhoneState.isLocked) return;
+                // Jangan drag jika menekan tombol senter / kamera
+                if (e.target.closest('#lockFlashlightBtn') || e.target.closest('#lockCameraBtn')) {
+                    return;
+                }
+                isDragging = true;
+                startY = e.clientY || (e.touches && e.touches[0] ? e.touches[0].clientY : 0);
+                currentY = startY;
+                startTime = Date.now();
+                lockEl.classList.add('dragging');
+            };
+
+            const onPointerMove = (e) => {
+                if (!isDragging || !PhoneState.isLocked) return;
+                const clientY = e.clientY || (e.touches && e.touches[0] ? e.touches[0].clientY : 0);
+                const deltaY = clientY - startY;
+
+                // Hanya izinkan tarik ke atas (deltaY negatif)
+                if (deltaY < 0) {
+                    lockEl.style.transform = `translateY(${deltaY}px)`;
+                    const progress = Math.min(Math.abs(deltaY) / 320, 1);
+                    lockEl.style.opacity = `${1 - progress * 0.75}`;
+                } else {
+                    // Resistensi pegas jika ditarik ke bawah
+                    lockEl.style.transform = `translateY(${deltaY * 0.15}px)`;
+                    lockEl.style.opacity = '1';
+                }
+            };
+
+            const onPointerUp = (e) => {
+                if (!isDragging) return;
+                isDragging = false;
+                lockEl.classList.remove('dragging');
+
+                const clientY = e.clientY || (e.changedTouches && e.changedTouches[0] ? e.changedTouches[0].clientY : currentY);
+                const deltaY = clientY - startY;
+                const duration = Date.now() - startTime;
+                const velocity = Math.abs(deltaY) / Math.max(duration, 1);
+
+                // Jika ditarik ke atas lebih dari 50px atau diflick cepat
+                if (deltaY < -50 || (velocity > 0.35 && deltaY < -20)) {
+                    this.unlockPhone(true);
+                } else {
+                    // Kembali ke posisi lockscreen semula
+                    lockEl.style.transform = '';
+                    lockEl.style.opacity = '';
+                }
+            };
+
+            // Event Pointer Desktop & Sentuhan Touch Mobile
+            lockEl.addEventListener('mousedown', onPointerDown);
+            window.addEventListener('mousemove', onPointerMove);
+            window.addEventListener('mouseup', onPointerUp);
+
+            lockEl.addEventListener('touchstart', onPointerDown, { passive: true });
+            window.addEventListener('touchmove', onPointerMove, { passive: true });
+            window.addEventListener('touchend', onPointerUp);
+            window.addEventListener('touchcancel', onPointerUp);
+
+            // Senter (Flashlight) Toggle Button
+            const flashBtn = document.getElementById('lockFlashlightBtn');
+            if (flashBtn) {
+                flashBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    flashBtn.classList.toggle('active');
+                    PhoneAudio.playClick();
+                    const isOn = flashBtn.classList.contains('active');
+                    this.showNotification('Senter', isOn ? 'Senter Dinyalakan' : 'Senter Dimatikan', 'flashlight');
+                });
+            }
+
+            // Kamera Shortcut Button
+            const cameraBtn = document.getElementById('lockCameraBtn');
+            if (cameraBtn) {
+                cameraBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.unlockPhone(false);
+                    this.openApp('camera');
+                });
+            }
+
+            // Lock Header tap untuk membuka
+            const lockHeader = document.getElementById('lockHeaderBtn');
+            if (lockHeader) {
+                lockHeader.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.unlockPhone(true);
+                });
+            }
         },
 
         // =====================================================================
