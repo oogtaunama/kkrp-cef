@@ -59,7 +59,7 @@
             </div>
 
             <!-- Screen Viewport Inner -->
-            <div class="phone-screen" id="phoneScreen">
+            <div class="phone-screen is-locked" id="phoneScreen">
 
                 <!-- 0. iOS Top Notification Banner (Card di Bawah Notch persis FiveM iOS) -->
                 <div class="ios-notification-banner" id="notchNotification">
@@ -328,6 +328,13 @@
                 <!-- 4. ACTIVE CALL OVERLAY (Sedang Berlangsung)                   -->
                 <!-- ============================================================ -->
                 <div class="screen-view call-overlay" id="viewActiveCall">
+                    <header class="call-top-bar">
+                        <button class="call-minimize-btn" id="activeCallBackBtn" title="Kembali ke Layar Utama">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+                        </button>
+                        <span class="call-top-title">Panggilan Aktif</span>
+                        <div style="width: 28px;"></div>
+                    </header>
                     <div class="call-contact-card">
                         <div class="caller-avatar" id="callAvatar">
                             <svg viewBox="0 0 24 24" width="40" height="40" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
@@ -1054,15 +1061,15 @@
                     </div>
                 </div>
 
-                <!-- Modal: Konfirmasi Terima Kontak (Yes / No) di HP Target -->
-                <div class="modal-backdrop" id="modalConfirmShare">
-                    <div class="modal-card confirm-modal-card">
-                        <div class="modal-header">
+                <!-- Modal: Konfirmasi Terima Kontak (Yes / No Alert Dialog di HP Target) -->
+                <div class="modal-backdrop alert-dialog-backdrop" id="modalConfirmShare">
+                    <div class="modal-card confirm-modal-card alert-dialog-card">
+                        <div class="modal-header confirm-dialog-header">
                             <h3>Permintaan Kontak Masuk</h3>
                         </div>
                         <div class="modal-body confirm-modal-body">
                             <div class="confirm-share-icon">
-                                <svg viewBox="0 0 24 24" width="26" height="26" fill="#38bdf8"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm6 12H6v-1c0-2 4-3.1 6-3.1s6 1.1 6 3.1v1z"/></svg>
+                                <svg viewBox="0 0 24 24" width="28" height="28" fill="#38bdf8"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm6 12H6v-1c0-2 4-3.1 6-3.1s6 1.1 6 3.1v1z"/></svg>
                             </div>
                             <p class="confirm-sender-desc" id="confirmSenderInfo"><strong>Player</strong> ingin membagikan kontak:</p>
                             <div class="confirm-contact-box">
@@ -1072,8 +1079,8 @@
                             <p class="confirm-question-sub">Simpan kontak ini ke buku telepon Anda?</p>
                         </div>
                         <div class="modal-footer confirm-modal-footer">
-                            <button class="btn btn-danger" id="btnDeclineContactShare">Tolak (No)</button>
-                            <button class="btn btn-success" id="btnAcceptContactShare">Terima (Yes)</button>
+                            <button class="btn btn-danger btn-action-large" id="btnDeclineContactShare">Tolak (No)</button>
+                            <button class="btn btn-success btn-action-large" id="btnAcceptContactShare">Terima (Yes)</button>
                         </div>
                     </div>
                 </div>

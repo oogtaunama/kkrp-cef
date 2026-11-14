@@ -286,7 +286,7 @@
     const PhoneState = {
         isOpen: false,
         isLocked: true,
-        currentView: 'viewHomeScreen', // Base active screen under lock screen
+        currentView: 'viewLockScreen', // Base active screen starts at lock screen
         historyStack: [],
         airplaneMode: false,
         soundMode: true,
@@ -344,6 +344,11 @@
         screen: document.getElementById('phoneScreen'),
 
         init() {
+            // Ensure phone screen starts locked cleanly
+            if (this.screen) {
+                this.screen.classList.add('is-locked');
+            }
+
             // Set wallpaper from storage or state
             const savedWall = localStorage.getItem('kkrp_phone_wallpaper') || 'ios13-wave';
             PhoneState.wallpaper = savedWall;
@@ -431,6 +436,7 @@
             const lockEl = document.getElementById('viewLockScreen');
             if (lockEl) {
                 lockEl.classList.add('unlocked');
+                lockEl.classList.remove('active');
                 lockEl.style.transform = '';
                 lockEl.style.opacity = '';
             }
@@ -451,6 +457,7 @@
             const lockEl = document.getElementById('viewLockScreen');
             if (lockEl) {
                 lockEl.classList.remove('unlocked');
+                lockEl.classList.add('active');
                 lockEl.style.transform = '';
                 lockEl.style.opacity = '';
             }
@@ -1716,7 +1723,11 @@
                 });
             });
 
-            // Call Overlays: Hangup, Accept, Decline
+            // Call Overlays: Minimize, Hangup, Accept, Decline
+            document.getElementById('activeCallBackBtn')?.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.goHome();
+            });
             document.getElementById('hangupCallBtn')?.addEventListener('click', (e) => {
                 e.stopPropagation();
                 this.hangupCall();

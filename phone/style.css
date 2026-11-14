@@ -4,10 +4,10 @@
    ========================================================================== */
 
 :root {
-    --phone-width: 360px;
-    --phone-height: 730px;
-    --phone-radius: 46px;
-    --screen-radius: 38px;
+    --phone-width: min(350px, calc(92vh * (350 / 710)));
+    --phone-height: min(710px, 92vh);
+    --phone-radius: 44px;
+    --screen-radius: 36px;
     
     /* iOS Colors */
     --ios-blue: #007aff;
@@ -306,9 +306,14 @@ body.browser-preview {
     flex-direction: column;
 }
 
-/* KETIKA LAYAR TERKUNCI (LOCKSCREEN): SEMBUNYIKAN SELURUH APLIKASI & WIDGET */
+/* KETIKA LAYAR TERKUNCI (LOCKSCREEN): SEMBUNYIKAN SELURUH APLIKASI, WIDGET, DAN DOCK AGAR LOCKSCREEN MURNI */
 .phone-screen.is-locked .screen-view:not(.screen-lock),
-.phone-screen.is-locked .screen-home {
+.phone-screen.is-locked .screen-home,
+.phone-screen.is-locked .home-widget-row,
+.phone-screen.is-locked .app-grid,
+.phone-screen.is-locked .ios-dock,
+#viewLockScreen.active ~ .screen-home,
+#viewLockScreen:not(.unlocked) ~ .screen-home {
     display: none !important;
     visibility: hidden !important;
     opacity: 0 !important;
@@ -2551,14 +2556,88 @@ input:checked + .slider:before { transform: translateX(18px); }
     font-size: 10.5px;
     color: var(--ios-text-muted);
 }
-.confirm-modal-footer {
-    display: flex;
-    justify-content: space-around;
-    gap: 10px;
+/* Alert Dialog Modal (Center Screen) */
+.alert-dialog-backdrop {
+    display: none;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 16px !important;
+    z-index: 9999 !important;
 }
-.confirm-modal-footer .btn {
-    flex: 1;
-    padding: 8px 12px;
+.alert-dialog-backdrop.active {
+    display: flex !important;
+}
+.alert-dialog-card {
+    margin: auto !important;
+    max-height: none !important;
+    width: 90% !important;
+    max-width: 310px !important;
+    border-radius: 22px !important;
+    padding: 16px 14px !important;
+    background: rgba(26, 26, 30, 0.98) !important;
+    border: 1px solid rgba(255, 255, 255, 0.22) !important;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8) !important;
+}
+.confirm-dialog-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    padding-bottom: 8px !important;
+    text-align: center !important;
+    justify-content: center !important;
+}
+.confirm-modal-footer {
+    display: flex !important;
+    justify-content: space-around !important;
+    gap: 12px !important;
+    margin-top: 10px !important;
+    width: 100% !important;
+}
+.btn-action-large {
+    flex: 1 !important;
+    padding: 10px 14px !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    border-radius: 12px !important;
+    text-align: center !important;
+    cursor: pointer !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Call Overlay Top Bar & Controls */
+.call-top-bar {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 16px 0;
+    z-index: 999;
+}
+.call-minimize-btn {
+    background: rgba(255, 255, 255, 0.16);
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+.call-minimize-btn:hover { background: rgba(255, 255, 255, 0.3); }
+.call-top-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.8);
+}
+.call-bottom-action {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 16px;
+    width: 100%;
+    z-index: 999;
 }
 
 /* SVG Icon Consistency */
@@ -2682,4 +2761,63 @@ svg {
     width: 12px;
     height: 12px;
     fill: currentColor;
+}
+
+/* ==========================================================================
+   RESPONSIVE SCALING UNTUK ANDROID / RESOLUSI LAYAR RENDAH (ANTI-TERPOTONG)
+   ========================================================================== */
+@media (max-height: 768px) {
+    :root {
+        --phone-height: 91vh;
+        --phone-width: calc(91vh * (340 / 700));
+        --phone-radius: 36px;
+        --screen-radius: 30px;
+    }
+    .phone-device-wrapper {
+        right: 18px !important;
+        bottom: 8px !important;
+        max-height: 94vh !important;
+    }
+    .phone-top-notch {
+        height: 22px !important;
+        width: 120px !important;
+    }
+    .phone-status-bar {
+        padding: 4px 16px 0 !important;
+        height: 32px !important;
+    }
+    .status-clock { font-size: 11px !important; }
+    .status-net, .battery-percent { font-size: 10px !important; }
+    .ios-notification-banner,
+    .notch-notification {
+        top: 36px !important;
+        padding: 8px 12px !important;
+    }
+}
+
+@media (max-height: 580px) {
+    :root {
+        --phone-height: 93vh;
+        --phone-width: calc(93vh * (330 / 690));
+        --phone-radius: 28px;
+        --screen-radius: 22px;
+    }
+    .phone-device-wrapper {
+        right: 10px !important;
+        bottom: 4px !important;
+        max-height: 96vh !important;
+    }
+    .phone-top-notch {
+        height: 18px !important;
+        width: 100px !important;
+    }
+    .phone-status-bar {
+        padding: 2px 12px 0 !important;
+        height: 26px !important;
+    }
+    .app-header {
+        height: 38px !important;
+        padding: 0 10px !important;
+    }
+    .app-header-title { font-size: 14px !important; }
 }
