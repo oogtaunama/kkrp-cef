@@ -1,5 +1,5 @@
 /**
- * CEF Frameless Progress Bar Controller
+ * CEF Frameless Chevron Progress Bar Controller
  * Kota Kecilku Roleplay / open.mp CEF Interface
  */
 
@@ -10,8 +10,12 @@ const ProgressApp = {
     percentEl: null,
     boxEl: null,
     segments: [],
+    
+    // Smooth Animation State
+    currentPercent: 0,
+    targetPercent: 0,
     animFrameId: null,
-    currentActionKey: '',
+    activityTitle: 'MEMPROSES...',
 
     init() {
         this.trackEl = document.getElementById('progTrack');
@@ -19,74 +23,135 @@ const ProgressApp = {
         this.percentEl = document.getElementById('progPercent');
         this.boxEl = document.getElementById('progBox');
 
-        // Render segment chevron
-        this.trackEl.innerHTML = '';
-        this.segments = [];
-        for (let i = 0; i < this.totalSegments; i++) {
-            const seg = document.createElement('div');
-            seg.className = 'chevron-item';
-            this.trackEl.appendChild(seg);
-            this.segments.push(seg);
+        // Render 22 Chevron segments
+        if (this.trackEl) {
+            this.trackEl.innerHTML = '';
+            this.segments = [];
+            for (let i = 0; i < this.totalSegments; i++) {
+                const seg = document.createElement('div');
+                seg.className = 'chevron-item';
+                this.trackEl.appendChild(seg);
+                this.segments.push(seg);
+            }
         }
 
         this.bindEvents();
+        this.startSmoothLoop();
 
-        // Tampilkan tombol tes hanya jika dibuka di luar game (browser dev)
         if (typeof CefBridge !== 'undefined' && !CefBridge.isAvailable()) {
             const devBar = document.getElementById('devTestBar');
             if (devBar) devBar.style.display = 'block';
         }
 
-        console.log('[ProgressApp] Progress Bar CEF module ready.');
+        console.log('[ProgressApp] Ultra Smooth Progress Bar ready.');
+    },
+
+    cleanText(str) {
+        if (!str) return '';
+        let text = String(str);
+        // Hapus kode warna SA-MP {RRGGBB}
+        text = text.replace(/\{[A-Fa-f0-9]{6}\}/g, '');
+        // Hapus kode format GTA ~r~, ~g~, ~b~, ~w~, ~y~, ~h~ dll.
+        text = text.replace(/~[a-z0-9]~/gi, '');
+        // Hapus tag literal jika bocor
+        text = text.replace(/oogtaunama/gi, '');
+        text = text.trim();
+        if (text === '_' || text.toLowerCase() === 'none') return '';
+        return text;
     },
 
     bindEvents() {
-        // 1. Integrasi CefBridge (Pawn -> JS)
         if (typeof CefBridge !== 'undefined') {
-            CefBridge.on('cef:showProgress', (text, durationMs, actionKey) => {
-                this.showProgress(text, durationMs, actionKey);
+            // Buka progress bar di awal aktivitas
+            CefBridge.on('cef:openProgress', (text) => {
+                this.openProgress(text);
             });
 
+            // Update persentase & teks secara dinamis dari timer server
             CefBridge.on('cef:setProgress', (percent, text) => {
-                this.setProgress(percent, text);
+                this.setTargetProgress(percent, text);
             });
 
+            // Sembunyikan progress bar
             CefBridge.on('cef:hideProgress', () => {
                 this.hideProgress();
             });
+
+            // Auto-timer animasi progress jika dipanggil dengan durasi
+            CefBridge.on('cef:showProgress', (text, durationMs, actionKey) => {
+                this.showProgressWithDuration(text, durationMs, actionKey);
+            });
         }
 
-        // 2. Direct window.cef hook (jika plugin memanggil langsung)
+        // Direct window.cef hook
         if (typeof window !== 'undefined' && window.cef && typeof window.cef.on === 'function') {
             try {
-                window.cef.on('showProgress', (text, duration, actionKey) => this.showProgress(text, duration, actionKey));
-                window.cef.on('setProgress', (pct, text) => this.setProgress(pct, text));
+                window.cef.on('openProgress', (text) => this.openProgress(text));
+                window.cef.on('setProgress', (pct, text) => this.setTargetProgress(pct, text));
                 window.cef.on('hideProgress', () => this.hideProgress());
-            } catch (e) {
-                // Abaikan jika sudah di-handle CefBridge
-            }
+            } catch (e) {}
         }
-
-        // 3. Fallback PostMessage
-        window.addEventListener('message', (event) => {
-            const data = event.data;
-            if (!data) return;
-            if (data.action === 'showProgress') {
-                this.showProgress(data.text || 'Memproses...', data.duration || 3000, data.actionKey || '');
-            } else if (data.action === 'setProgress') {
-                this.setProgress(data.percent, data.text);
-            } else if (data.action === 'hideProgress') {
-                this.hideProgress();
-            }
-        });
     },
 
-    setProgress(percent, text) {
-        if (text && this.textEl) {
-            this.textEl.textContent = text;
+    openProgress(text) {
+        const title = this.cleanText(text) || 'MEMPROSES...';
+        this.activityTitle = title;
+        if (this.textEl) this.textEl.textContent = title;
+        
+        this.currentPercent = 0;
+        this.targetPercent = 0;
+        this.renderVisuals(0);
+
+        if (this.boxEl) this.boxEl.style.display = 'block';
+    },
+
+    setTargetProgress(percent, text) {
+        if (text) {
+            const clean = this.cleanText(text);
+            if (clean && clean !== 'MEMPROSES...') {
+                this.activityTitle = clean;
+                if (this.textEl) this.textEl.textContent = clean;
+            } else if (clean && (!this.activityTitle || this.activityTitle === 'MEMPROSES...')) {
+                this.activityTitle = clean;
+                if (this.textEl) this.textEl.textContent = clean;
+            }
         }
 
-        const clamped = Math.max(0, Math.min(100, Number(percent) || 0));
+        const num = Number(percent);
+        if (!isNaN(num) && num >= 0) {
+            this.targetPercent = Math.max(0, Math.min(100, num));
+        }
+
+        if (this.boxEl) this.boxEl.style.display = 'block';
+    },
+
+    hideProgress() {
+        this.currentPercent = 0;
+        this.targetPercent = 0;
+        if (this.boxEl) this.boxEl.style.display = 'none';
+        this.renderVisuals(0);
+    },
+
+    startSmoothLoop() {
+        const loop = () => {
+            if (this.boxEl && this.boxEl.style.display !== 'none') {
+                const diff = this.targetPercent - this.currentPercent;
+                if (Math.abs(diff) > 0.05) {
+                    // Fluid lerp transisi halus mengikuti tick server
+                    this.currentPercent += diff * 0.08;
+                    this.renderVisuals(this.currentPercent);
+                } else if (this.currentPercent !== this.targetPercent) {
+                    this.currentPercent = this.targetPercent;
+                    this.renderVisuals(this.currentPercent);
+                }
+            }
+            this.animFrameId = requestAnimationFrame(loop);
+        };
+        this.animFrameId = requestAnimationFrame(loop);
+    },
+
+    renderVisuals(percent) {
+        const clamped = Math.max(0, Math.min(100, percent));
         if (this.percentEl) {
             this.percentEl.textContent = Math.round(clamped) + '%';
         }
@@ -99,73 +164,44 @@ const ProgressApp = {
                 this.segments[i].classList.remove('active');
             }
         }
-
-        if (this.boxEl) {
-            this.boxEl.style.display = 'block';
-        }
     },
 
-    showProgress(text, durationMs = 3000, actionKey = '') {
-        if (this.animFrameId) {
-            cancelAnimationFrame(this.animFrameId);
-            this.animFrameId = null;
-        }
-
-        this.currentActionKey = actionKey || '';
-        this.setProgress(0, text || 'Memproses...');
-
+    showProgressWithDuration(text, durationMs = 3000, actionKey = '') {
+        this.openProgress(text);
+        const duration = Math.max(300, Number(durationMs) || 3000);
         const startTime = performance.now();
-        const duration = Math.max(200, Number(durationMs) || 3000);
 
-        const frame = (now) => {
+        const animStep = (now) => {
+            if (!this.boxEl || this.boxEl.style.display === 'none') return;
             const elapsed = now - startTime;
-            const progressPct = Math.min(100, (elapsed / duration) * 100);
+            const pct = Math.min(100, (elapsed / duration) * 100);
 
-            this.setProgress(progressPct);
+            this.targetPercent = pct;
 
-            if (progressPct < 100) {
-                this.animFrameId = requestAnimationFrame(frame);
+            if (pct < 100) {
+                requestAnimationFrame(animStep);
             } else {
-                this.setProgress(100);
-                this.animFrameId = null;
-
-                // Beritahu Pawn bahwa progress selesai
-                if (typeof CefBridge !== 'undefined') {
-                    CefBridge.emit('cef_onProgressComplete', this.currentActionKey);
-                }
-
-                // Sembunyikan setelah jeda sedikit
+                this.targetPercent = 100;
+                this.currentPercent = 100;
+                this.renderVisuals(100);
                 setTimeout(() => {
                     this.hideProgress();
-                }, 350);
+                    if (typeof CefBridge !== 'undefined') {
+                        CefBridge.emit('cef_onProgressComplete', actionKey);
+                    }
+                }, 300);
             }
         };
-
-        this.animFrameId = requestAnimationFrame(frame);
-    },
-
-    hideProgress() {
-        if (this.animFrameId) {
-            cancelAnimationFrame(this.animFrameId);
-            this.animFrameId = null;
-        }
-        if (this.boxEl) {
-            this.boxEl.style.display = 'none';
-        }
-        // Emit ke Pawn bahwa progress ditutup
-        if (typeof CefBridge !== 'undefined') {
-            CefBridge.emit('cef_onProgressHidden');
-        }
+        requestAnimationFrame(animStep);
     },
 
     startTestAnimation() {
-        this.showProgress('Memperbaiki Mesin Kendaraan...', 4500, 'repair_veh');
+        this.showProgressWithDuration('MENAMBANG', 5000, 'miner');
     }
 };
 
-// Global exports untuk kompatibilitas
-window.setProgress = (pct, text) => ProgressApp.setProgress(pct, text);
-window.showProgress = (text, duration, key) => ProgressApp.showProgress(text, duration, key);
+window.setProgress = (pct, text) => ProgressApp.setTargetProgress(pct, text);
+window.showProgress = (text, duration, key) => ProgressApp.showProgressWithDuration(text, duration, key);
 window.hideProgress = () => ProgressApp.hideProgress();
 
 document.addEventListener('DOMContentLoaded', () => {
