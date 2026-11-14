@@ -104,6 +104,62 @@
             } else {
                 console.warn('%c[CEF BRIDGE] Standalone Browser Mode (Mock Engine Active)%c', 'color: #f59e0b; font-weight: bold;', 'color: inherit;');
             }
+
+            // 3. Keamanan CEF GTA SA: Blokir menu klik kanan default (View Source/Print/Back) & shortcut developer
+            this._applySecurityProtections();
+        }
+
+        /**
+         * Mengamankan antarmuka CEF dari context menu dan inspection shortcut
+         * @private
+         */
+        _applySecurityProtections() {
+            // Blokir menu klik kanan (context menu default CEF/Chromium)
+            window.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+                return false;
+            }, { capture: true });
+
+            // Blokir shortcut browser umum (F12, Inspect Element, View Source, Print, Refresh)
+            window.addEventListener('keydown', (e) => {
+                // F12 (DevTools)
+                if (e.key === 'F12' || e.keyCode === 123) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                }
+                // Ctrl+Shift+I / J / C (DevTools & Console)
+                if (e.ctrlKey && e.shiftKey && ['I', 'i', 'J', 'j', 'C', 'c'].includes(e.key)) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                }
+                // Ctrl+U (View Page Source)
+                if (e.ctrlKey && (e.key === 'U' || e.key === 'u')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                }
+                // Ctrl+P (Print)
+                if (e.ctrlKey && (e.key === 'P' || e.key === 'p')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                }
+                // Ctrl+S (Save Page)
+                if (e.ctrlKey && (e.key === 'S' || e.key === 's')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                }
+            }, { capture: true });
+
+            // Cegah drag-and-drop elemen yang tidak sengaja
+            window.addEventListener('dragstart', (e) => {
+                if (e.target.tagName === 'IMG' || e.target.tagName === 'A') {
+                    e.preventDefault();
+                }
+            });
         }
 
         /**
