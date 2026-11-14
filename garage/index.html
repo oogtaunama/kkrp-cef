@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KKRP - Personal Garage CEF</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="../common/common.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="garage-body">
+
+    <!-- Transparent in-game backdrop / Ambient sparks canvas -->
+    <div class="backdrop-wrapper">
+        <canvas id="garageCanvas" class="ambient-canvas"></canvas>
+    </div>
+
+    <!-- Main Container Layout -->
+    <div class="garage-container" id="garageContainer">
+        
+        <!-- ============================================================ -->
+        <!-- HEADER BAR                                                    -->
+        <!-- ============================================================ -->
+        <header class="garage-header">
+            <div class="header-branding">
+                <div class="header-icon-box">
+                    <i class="fa-solid fa-warehouse"></i>
+                </div>
+                <div class="header-text">
+                    <h1 class="header-title">GARASI KENDARAAN</h1>
+                    <p class="header-subtitle">Pilih kendaraan untuk dikeluarkan dari garasi ke jalan.</p>
+                </div>
+            </div>
+
+            <button type="button" class="btn-close" onclick="GarageApp.close()" title="Tutup Garasi (ESC)">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </header>
+
+        <!-- ============================================================ -->
+        <!-- MAIN CONTENT (GRID: PREVIEW & LIST)                          -->
+        <!-- ============================================================ -->
+        <main class="garage-grid">
+            
+            <!-- LEFT PANEL: VEHICLE PREVIEW & ACTIONS -->
+            <section class="preview-panel glass-panel">
+                <div class="accent-top-bar"></div>
+
+                <div class="preview-header">
+                    <span id="previewCategory" class="badge-category">Sports Sedan</span>
+                    <h2 id="previewName" class="preview-title">Karin Sultan RS</h2>
+                    <p id="previewPlate" class="preview-plate">POLISI • B 8888 SLS</p>
+                </div>
+
+                <!-- Graphic Box -->
+                <div class="preview-graphic-box">
+                    <div class="preview-icon-wrapper">
+                        <i id="previewIcon" class="fa-solid fa-car-rear"></i>
+                    </div>
+                </div>
+
+                <!-- Quick Stats / Engine Info -->
+                <div class="preview-meta">
+                    <div class="meta-item">
+                        <span class="meta-label">Kondisi Mesin</span>
+                        <span id="previewHealthText" class="meta-value">100%</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Lokasi Garasi</span>
+                        <span id="previewLocation" class="meta-value">Los Santos Public</span>
+                    </div>
+                </div>
+
+                <!-- Spawn Action Button -->
+                <button type="button" id="btnSpawn" class="btn-orange" onclick="GarageApp.actionSpawn()">
+                    <i class="fa-solid fa-key"></i>
+                    <span id="btnSpawnText">KELUARKAN KENDARAAN</span>
+                </button>
+            </section>
+
+            <!-- RIGHT PANEL: VEHICLE LIST WITH HEALTH BARS -->
+            <section class="list-panel glass-panel">
+                <div class="list-header">
+                    <div>
+                        <h3 class="list-title">Daftar Kendaraan Tersedia</h3>
+                        <p class="list-subtitle">Status kesehatan mesin & nomor plat kendaraan.</p>
+                    </div>
+                    <div class="badge-total">
+                        Total: <span id="totalCount">0</span> Unit
+                    </div>
+                </div>
+
+                <!-- Vehicle Items Scroll Container -->
+                <div class="vehicle-scroll-list" id="vehicleList">
+                    <!-- Populated via script.js -->
+                </div>
+            </section>
+
+        </main>
+
+        <!-- FOOTER SHORTCUT HINT -->
+        <footer class="garage-footer">
+            <div class="footer-hint">
+                <span class="kbd">ESC</span> Tutup Garasi
+            </div>
+            <div class="footer-hint">
+                <span class="kbd">KLIK KENDARAAN</span> Pilih & Periksa Kondisi
+            </div>
+            <div class="footer-brand">KOTA KECILKU ROLEPLAY</div>
+        </footer>
+
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="garage-toast">
+        <div class="toast-card glass-panel">
+            <div class="toast-icon">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <div class="toast-content">
+                <h4 id="toastTitle">Berhasil</h4>
+                <p id="toastDesc">Kendaraan berhasil diproses.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../common/cef-bridge.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

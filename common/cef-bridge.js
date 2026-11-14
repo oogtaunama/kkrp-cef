@@ -39,42 +39,6 @@
         }
 
         /**
-         * Set input & mouse focus pada browser CEF
-         * @param {boolean} focused - true untuk menangkap kursor mouse & keyboard, false untuk mengembalikan kontrol ke game GTA
-         */
-        setFocus(focused = true) {
-            try {
-                const api = this.getCefApi();
-                if (api && typeof api.set_focus === 'function') {
-                    api.set_focus(focused);
-                    if (this.debugMode) {
-                        console.log(`[CEF BRIDGE] cef.set_focus(${focused}) executed.`);
-                    }
-                    return true;
-                }
-            } catch (e) {
-                console.error('[CEF BRIDGE] setFocus error:', e);
-            }
-            return false;
-        }
-
-        /**
-         * Keluar dari game langsung via CEF
-         */
-        exitGame() {
-            try {
-                const api = this.getCefApi();
-                if (api && typeof api.exitGame === 'function') {
-                    api.exitGame();
-                    return true;
-                }
-            } catch (e) {
-                console.error('[CEF BRIDGE] exitGame error:', e);
-            }
-            return false;
-        }
-
-        /**
          * Inisialisasi listener bawaan browser & event adapter
          * @private
          */
@@ -116,19 +80,14 @@
                 console.log(`%c[CEF TX]%c ${eventName}`, 'color: #10b981; font-weight: bold;', 'color: inherit;', args);
             }
 
-            try {
-                const api = this.getCefApi();
-                if (api && typeof api.emit === 'function') {
-                    api.emit(eventName, ...args);
-                    return;
+            const cefApi = this.getCefApi();
+            if (cefApi && typeof cefApi.emit === 'function') {
+                cefApi.emit(eventName, ...args);
+            } else {
+                // Fallback / Preview Mode di Browser Standalone
+                if (this.mockServerEnabled) {
+                    this._handleMockEmit(eventName, args);
                 }
-            } catch (e) {
-                console.error('[CEF BRIDGE] emit error:', e);
-            }
-
-            // Fallback / Preview Mode di Browser Standalone
-            if (this.mockServerEnabled) {
-                this._handleMockEmit(eventName, args);
             }
         }
 
@@ -212,22 +171,89 @@
         _handleMockEmit(eventName, args) {
             console.info(`%c[MOCK SERVER]%c Memproses panggilan '${eventName}'...`, 'color: #8b5cf6;', 'color: inherit;');
 
-            if (eventName === 'cef_onPlayerLoginSubmit' || eventName === 'client:onLoginSubmit') {
-                const pass = args[args.length - 1];
-                setTimeout(() => {
-                    if (pass === 'dinar123') {
-                        this.trigger('loginSuccess');
-                    } else {
-                        this.trigger('loginError', 'Kata sandi tidak sesuai!');
+            setTimeout(() => {
+                switch (eventName) {
+                    case 'client:onLoginSubmit': {
+                        const [username, password] = args;
+                        if (password === 'salah') {
+                            this._dispatch('server:onLoginResponse', [{
+                                success: false,
+                                message: 'Password yang Anda masukkan salah! (Coba password lain)'
+                            }]);
+                        } else {
+                            this._dispatch('server:onLoginResponse', [{
+                                success: true,
+                                ucpName: username || 'Arya_Pratama',
+                                message: 'Login berhasil! Memuat karakter...'
+                            }]);
+
+                            // Simulasi pengiriman data karakter setelah login berhasil
+                            setTimeout(() => {
+                                this._dispatch('server:onLoadCharacters', [{
+                                    characters: [
+                                        {
+                                            id: 1,
+                                            name: 'Arya Pratama',
+                                            level: 12,
+                                            job: 'Mechanic Specialist',
+                                            money: 24500,
+                                            bank: 150000,
+                                            skinId: 294,
+                                            gender: 'male',
+                                            status: 'active',
+                                            lastPlayed: 'Hari ini, 14:20'
+                                        },
+                                        {
+                                            id: 2,
+                                            name: 'Sarah Jenkins',
+                                            level: 5,
+                                            job: 'Paramedic EMT',
+                                            money: 8200,
+                                            bank: 45000,
+                                            skinId: 91,
+                                            gender: 'female',
+                                            status: 'active',
+                                            lastPlayed: 'Kemarin, 21:05'
+                                        }
+                                    ],
+                                    maxSlots: 3
+                                }]);
+                            }, 600);
+                        }
+                        break;
                     }
-                }, 600);
-            } else if (eventName === 'cef_onPlayerSelectChar') {
-                console.info('[MOCK SERVER] Karakter dipilih:', args);
-            } else if (eventName === 'cef_onPlayerCreateChar') {
-                setTimeout(() => {
-                    this.trigger('charCreateSuccess', `${args[0]}_${args[1]}`);
-                }, 600);
-            }
+
+                    case 'client:onRegisterSubmit': {
+                        const [data] = args;
+                        this._dispatch('server:onRegisterResponse', [{
+                            success: true,
+                            message: `Pendaftaran akun ${data.username} berhasil! Silakan login.`
+                        }]);
+                        break;
+                    }
+
+                    case 'client:onSelectCharacter': {
+                        const [charId] = args;
+                        console.info(`%c[MOCK SERVER]%c Karakter ID: ${charId} dipilih untuk spawn di open.mp world.`, 'color: #10b981; font-weight: bold;', 'color: inherit;');
+                        this._dispatch('server:onSpawnSuccess', [{ charId }]);
+                        break;
+                    }
+
+                    case 'client:onForgotPassword': {
+                        const [emailOrUcp] = args;
+                        this._dispatch('server:onForgotResponse', [{
+                            success: true,
+                            message: `Kode pemulihan telah dikirim ke email/Discord terhubung untuk '${emailOrUcp}'.`
+                        }]);
+                        break;
+                    }
+
+                    case 'client:onQuitGame': {
+                        alert('[MOCK SERVER] Game akan ditutup (OnPlayerQuitGame)');
+                        break;
+                    }
+                }
+            }, 600);
         }
     }
 
