@@ -97,13 +97,42 @@ body.browser-preview .phone-device-wrapper {
     opacity: 1;
 }
 
-/* HP Peek Mode (Naik Sedikit dari Bawah Layar Saat HP Tertutup Ada Notifikasi) */
+/* HP Peek Mode (Naik Sedikit dari Bawah Layar Saat HP Tertutup Ada Notifikasi Sesuai Referensi FiveM) */
 .phone-device-wrapper.phone-peek {
-    transform: translateY(66%) !important;
+    transform: translateY(calc(100% - 130px)) !important;
     opacity: 1 !important;
-    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease !important;
-    pointer-events: auto !important;
-    cursor: pointer !important;
+    transition: transform 0.38s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.28s ease !important;
+    pointer-events: none !important;
+    cursor: default !important;
+}
+
+.phone-device-wrapper.phone-peek * {
+    pointer-events: none !important;
+    cursor: default !important;
+}
+
+/* Saat Peek Mode, sembunyikan seluruh elemen layar kunci & aplikasi di dalam layar HP agar hanya tampil wallpaper + status bar + notifikasi persis referensi FiveM */
+.phone-device-wrapper.phone-peek .lock-header,
+.phone-device-wrapper.phone-peek .lock-clock-wrap,
+.phone-device-wrapper.phone-peek .lock-bottom-actions,
+.phone-device-wrapper.phone-peek .lock-notifs-container,
+.phone-device-wrapper.phone-peek .phone-home-indicator-wrap,
+.phone-device-wrapper.phone-peek .screen-home,
+.phone-device-wrapper.phone-peek .screen-view {
+    opacity: 0 !important;
+    visibility: hidden !important;
+}
+
+.phone-device-wrapper.phone-peek .ios-notification-banner {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateY(0) !important;
+    pointer-events: none !important;
+}
+
+/* Hilangkan notifikasi duplikat di bawah dock */
+.bottom-notification-card {
+    display: none !important;
 }
 
 /* Physical Side Buttons */

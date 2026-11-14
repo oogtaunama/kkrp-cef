@@ -606,6 +606,9 @@
                     this._peekTimeout = setTimeout(() => {
                         this.wrapper.classList.remove('phone-peek');
                         notif.classList.remove('show');
+                        if (window.CefBridge) {
+                            CefBridge.emit('cef_onPhonePeekDismissed');
+                        }
                     }, 4500);
                 } else {
                     this._notifTimeout = setTimeout(() => {
@@ -613,19 +616,16 @@
                     }, 4500);
                 }
 
-                // Click banner to open target app or active action screen
+                // Click banner: Hanya berfungsi saat HP sedang dibuka (jika peek mode, player membuka via /hp)
                 notif.onclick = () => {
-                    notif.classList.remove('show');
-                    clearTimeout(this._peekTimeout);
-                    this.wrapper.classList.remove('phone-peek');
+                    if (!PhoneState.isOpen) return;
 
-                    // Buka HP penuh
-                    if (!PhoneState.isOpen) {
-                        this.showPhone(true);
-                    } else if (PhoneState.isLocked) {
+                    notif.classList.remove('show');
+                    clearTimeout(this._notifTimeout);
+
+                    if (PhoneState.isLocked) {
                         PhoneUI.unlockPhone(false);
                     }
-
                     if (PhoneState.incomingCall.isActive) {
                         PhoneUI.switchView('viewIncomingCall', false);
                         return;
