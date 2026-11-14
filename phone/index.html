@@ -16,20 +16,6 @@
     <!-- Game Viewport Backdrop (Transparent for GTA 3D View) -->
     <div class="phone-viewport-backdrop" id="backdrop"></div>
 
-    <!-- Top Dynamic Island Notification Banner -->
-    <div class="notch-notification" id="notchNotification">
-        <div class="notch-pill">
-            <div class="notch-icon" id="notifIcon">
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
-            </div>
-            <div class="notch-content">
-                <div class="notch-title" id="notifTitle">Pemberitahuan</div>
-                <div class="notch-desc" id="notifDesc">Pesan baru diterima</div>
-            </div>
-            <div class="notch-time" id="notifTime">Sekarang</div>
-        </div>
-    </div>
-
     <!-- Phone Wrapper Frame (iPhone iOS Style) -->
     <div class="phone-device-wrapper" id="phoneWrapper">
         
@@ -74,6 +60,22 @@
 
             <!-- Screen Viewport Inner -->
             <div class="phone-screen" id="phoneScreen">
+
+                <!-- 0. iOS Top Notification Banner (Card di Bawah Notch persis FiveM iOS) -->
+                <div class="ios-notification-banner" id="notchNotification">
+                    <div class="ios-notif-header">
+                        <div class="ios-notif-app-icon" id="notifIconBox">
+                            <span id="notifIcon"></span>
+                        </div>
+                        <span class="ios-notif-app-name" id="notifAppName">Aplikasi</span>
+                        <span class="ios-notif-dot">•</span>
+                        <span class="ios-notif-time">sekarang</span>
+                    </div>
+                    <div class="ios-notif-body">
+                        <div class="ios-notif-sender" id="notifTitle">Pengirim</div>
+                        <div class="ios-notif-message" id="notifDesc">Pesan baru</div>
+                    </div>
+                </div>
 
                 <!-- ============================================================ -->
                 <!-- 1. LOCK SCREEN (Layar Kunci iOS)                            -->
@@ -1022,7 +1024,7 @@
                     </div>
                 </div>
 
-                <!-- Modal: Bagikan Kontak (Pilih ID Pemain Terdekat) -->
+                <!-- Modal: Bagikan Kontak (Pilih Pemain Terdekat Saja) -->
                 <div class="modal-backdrop" id="modalShareContact">
                     <div class="modal-card">
                         <div class="modal-header">
@@ -1036,15 +1038,11 @@
                                 <strong id="shareContactNameDisplay">Nama Kontak</strong>
                                 <span id="shareContactNumDisplay">0812-xxxx</span>
                             </div>
-                            <div class="form-group" style="margin-top: 6px;">
-                                <label>Kirim Langsung ke ID Pemain:</label>
-                                <div class="id-input-group">
-                                    <input type="number" class="form-input id-number-input" id="shareTargetIdInput" placeholder="Ketik ID (misal: 1, 27, 18)" min="0">
-                                    <button class="btn btn-primary" id="btnSubmitShareTargetId">Kirim</button>
-                                </div>
-                            </div>
-                            <div class="nearby-section" style="margin-top: 6px;">
-                                <label class="nearby-label">Atau Pilih Pemain di Dekat Anda:</label>
+                            <div class="nearby-section" style="margin-top: 10px;">
+                                <label class="nearby-label" style="display:flex; align-items:center; gap:5px;">
+                                    <svg viewBox="0 0 24 24" width="13" height="13" fill="#38bdf8"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg>
+                                    Pilih Pemain di Sekitar Anda (Jarak Dekat):
+                                </label>
                                 <div class="nearby-players-list" id="nearbyPlayersList">
                                     <!-- Populated by JS -->
                                 </div>

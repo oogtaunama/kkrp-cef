@@ -2214,56 +2214,106 @@ input:checked + .slider:before { transform: translateX(18px); }
 .settings-info-row strong { color: #ffffff; }
 
 /* ==========================================================================
-   TOP DYNAMIC ISLAND NOTIFICATION BANNER
+   TOP iOS NOTIFICATION BANNER (Card di Bawah Notch persis FiveM iOS)
    ========================================================================== */
+.ios-notification-banner,
 .notch-notification {
-    position: fixed;
-    top: 15px;
-    left: 50%;
-    transform: translateX(-50%) translateY(-100px);
-    z-index: 10000;
-    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    position: absolute;
+    top: 42px;
+    left: 10px;
+    right: 10px;
+    background: rgba(244, 246, 249, 0.96);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border-radius: 18px;
+    padding: 10px 14px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35), 0 2px 8px rgba(0, 0, 0, 0.15);
+    z-index: 99999;
+    transform: translateY(-140px);
+    opacity: 0;
     pointer-events: none;
+    transition: transform 0.42s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
+    cursor: pointer;
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
 }
 
+.ios-notification-banner.show,
 .notch-notification.show {
-    transform: translateX(-50%) translateY(0);
+    transform: translateY(0);
+    opacity: 1;
     pointer-events: auto;
 }
 
-.notch-pill {
-    background: rgba(20, 20, 24, 0.92);
-    backdrop-filter: blur(25px);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    border-radius: 26px;
-    padding: 8px 16px;
+.ios-notif-header {
     display: flex;
     align-items: center;
-    gap: 12px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    min-width: 280px;
-    max-width: 340px;
-    cursor: pointer;
+    gap: 7px;
 }
 
-.notch-icon {
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    background: var(--ios-blue);
+.ios-notif-app-icon {
+    width: 20px;
+    height: 20px;
+    border-radius: 5px;
+    background: #1d9bf0;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 14px;
     color: #ffffff;
+    flex-shrink: 0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
-.notch-content {
-    flex: 1;
+.ios-notif-app-icon svg {
+    width: 12px;
+    height: 12px;
+    fill: #ffffff;
 }
-.notch-title { font-size: 12px; font-weight: 700; }
-.notch-desc { font-size: 11px; color: var(--ios-text-sub); }
-.notch-time { font-size: 10px; color: var(--ios-text-muted); }
+
+.ios-notif-app-name {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #4b5563;
+    letter-spacing: -0.1px;
+}
+
+.ios-notif-dot {
+    font-size: 9px;
+    color: #9ca3af;
+}
+
+.ios-notif-time {
+    font-size: 10.5px;
+    color: #9ca3af;
+    margin-left: auto;
+}
+
+.ios-notif-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.ios-notif-sender {
+    font-size: 13px;
+    font-weight: 700;
+    color: #111827;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    letter-spacing: -0.2px;
+}
+
+.ios-notif-message {
+    font-size: 12px;
+    color: #374151;
+    line-height: 1.35;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 
 /* ==========================================================================
    GENERIC MODAL WINDOWS (Tersimpan Simpel & Rapi di Dalam Layar HP)

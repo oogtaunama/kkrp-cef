@@ -503,54 +503,76 @@
             }
         },
 
-        // Top Dynamic Island Notification
+        // iOS Top Notification Banner (Persis FiveM iOS Card di Bawah Notch)
         showNotification(title, desc, iconSvg = 'bell', appTarget = null) {
             PhoneAudio.playNotification();
             const notif = document.getElementById('notchNotification');
             const notifTitle = document.getElementById('notifTitle');
             const notifDesc = document.getElementById('notifDesc');
             const notifIcon = document.getElementById('notifIcon');
+            const notifAppName = document.getElementById('notifAppName');
+            const notifIconBox = document.getElementById('notifIconBox');
 
-            if (notifTitle) notifTitle.textContent = title;
-            if (notifDesc) notifDesc.textContent = desc;
-            if (notifIcon) notifIcon.innerHTML = PhoneSvg[iconSvg] || iconSvg || PhoneSvg.bell;
+            // Tentukan App Name & Warna Ikon iOS
+            let appName = 'Kota Kecilku';
+            let iconBg = '#0284c7';
+            let iconCode = PhoneSvg[iconSvg] || iconSvg || PhoneSvg.bell;
 
-            notif.classList.add('show');
-            clearTimeout(this._notifTimeout);
+            if (appTarget === 'twitter' || iconSvg === 'xTwitter' || (title && title.includes('Chirper')) || (title && title.includes('@'))) {
+                appName = 'Twitter';
+                iconBg = '#1d9bf0';
+                iconCode = PhoneSvg.xTwitter;
+                appTarget = 'twitter';
+            } else if (appTarget === 'messages' || iconSvg === 'comment' || (title && title.toLowerCase().includes('pesan'))) {
+                appName = 'Pesan';
+                iconBg = '#34c759';
+                iconCode = PhoneSvg.comment;
+                appTarget = 'messages';
+            } else if (appTarget === 'phone' || iconSvg === 'phone' || (title && title.toLowerCase().includes('panggilan'))) {
+                appName = 'Telepon';
+                iconBg = '#30d158';
+                iconCode = PhoneSvg.phone;
+                appTarget = 'phone';
+            } else if (appTarget === 'contacts' || (title && title.toLowerCase().includes('kontak'))) {
+                appName = 'Kontak';
+                iconBg = '#6366f1';
+                iconCode = PhoneSvg.contacts;
+                appTarget = 'contacts';
+            } else if (appTarget === 'bank' || (title && title.toLowerCase().includes('bank'))) {
+                appName = 'Fleeca Bank';
+                iconBg = '#10b981';
+                iconCode = PhoneSvg.bank;
+                appTarget = 'bank';
+            }
 
-            // Click banner to open target app
-            notif.onclick = () => {
-                notif.classList.remove('show');
-                if (appTarget) {
-                    if (PhoneState.isLocked) PhoneUI.unlockPhone();
-                    PhoneUI.openApp(appTarget);
-                }
-            };
+            if (notifAppName) notifAppName.textContent = appName;
+            if (notifIconBox) notifIconBox.style.backgroundColor = iconBg;
+            if (notifIcon) notifIcon.innerHTML = iconCode;
+            if (notifTitle) notifTitle.textContent = title || appName;
+            if (notifDesc) notifDesc.textContent = desc || '';
 
-            this._notifTimeout = setTimeout(() => {
-                notif.classList.remove('show');
-            }, 4000);
+            if (notif) {
+                notif.classList.add('show');
+                clearTimeout(this._notifTimeout);
+
+                // Click banner to open target app
+                notif.onclick = () => {
+                    notif.classList.remove('show');
+                    if (appTarget) {
+                        if (PhoneState.isLocked) PhoneUI.unlockPhone();
+                        PhoneUI.openApp(appTarget);
+                    }
+                };
+
+                this._notifTimeout = setTimeout(() => {
+                    notif.classList.remove('show');
+                }, 4500);
+            }
         },
 
-        // Floating Bottom Pop-up Notification (Slide up above dock, 4s auto-dismiss)
+        // Floating Bottom Pop-up Notification (Tetap didukung & sinkron)
         showBottomNotification(title, message, iconSvg = 'bell') {
-            PhoneAudio.playNotification();
-            const card = document.getElementById('bottomNotificationCard');
-            const titleEl = document.getElementById('bottomNotifTitle');
-            const msgEl = document.getElementById('bottomNotifMsg');
-            const iconEl = document.getElementById('bottomNotifIcon');
-
-            if (titleEl) titleEl.textContent = title || 'Notifikasi';
-            if (msgEl) msgEl.textContent = message || '';
-            if (iconEl) iconEl.innerHTML = PhoneSvg[iconSvg] || iconSvg || PhoneSvg.bell;
-
-            if (card) {
-                card.classList.add('show');
-                clearTimeout(this._bottomNotifTimeout);
-                this._bottomNotifTimeout = setTimeout(() => {
-                    card.classList.remove('show');
-                }, 4000);
-            }
+            this.showNotification(title, message, iconSvg);
         },
 
         // Open App by Name
@@ -698,6 +720,10 @@
             if (window.CefBridge) {
                 CefBridge.emit('cef_onPhoneHangup');
             }
+
+            // Bersihkan input angka dialer
+            const disp = document.getElementById('dialerNumberText');
+            if (disp) disp.textContent = '';
 
             this.switchView('viewAppPhone', false);
         },
@@ -1636,20 +1662,40 @@
             });
 
             // Dialer Backspace
-            document.getElementById('dialerBackspaceBtn')?.addEventListener('click', () => {
-                PhoneAudio.playClick();
-                const disp = document.getElementById('dialerNumberText');
-                if (disp && disp.textContent.length > 0) {
-                    disp.textContent = disp.textContent.slice(0, -1);
+            const dialerBackBtn = document.getElementById('dialerBackspaceBtn');
+            if (dialerBackBtn) {
+                dialerBackBtn.addEventListener('click', () => {
+                    PhoneAudio.playClick();
+                    const disp = document.getElementById('dialerNumberText');
+                    if (disp && disp.textContent.length > 0) {
+                        disp.textContent = disp.textContent.slice(0, -1);
+                    }
+                });
+                // Double click / Long click to clear all digits
+                dialerBackBtn.addEventListener('dblclick', () => {
+                    const disp = document.getElementById('dialerNumberText');
+                    if (disp) disp.textContent = '';
+                });
+            }
+
+            // Dialer Call / Hangup Button
+            document.getElementById('startCallBtn')?.addEventListener('click', () => {
+                if (PhoneState.activeCall.isActive) {
+                    // Jika sedang dalam panggilan aktif, tombol ini berfungsi menutup panggilan
+                    this.hangupCall();
+                } else {
+                    const disp = document.getElementById('dialerNumberText');
+                    if (disp && disp.textContent && disp.textContent.trim() !== '') {
+                        this.startCall(disp.textContent.trim());
+                    }
                 }
             });
 
-            // Dialer Call Button
-            document.getElementById('startCallBtn')?.addEventListener('click', () => {
-                const disp = document.getElementById('dialerNumberText');
-                if (disp && disp.textContent) {
-                    this.startCall(disp.textContent);
-                }
+            // Active Call Screen Tool Buttons
+            document.getElementById('callKeypadBtn')?.addEventListener('click', () => {
+                PhoneAudio.playClick();
+                // Beralih ke layar dialer untuk input angka tanpa memutus panggilan
+                this.switchView('viewAppPhone', false);
             });
 
             // Dialer Tabs (Keypad vs Recents)
@@ -1671,9 +1717,18 @@
             });
 
             // Call Overlays: Hangup, Accept, Decline
-            document.getElementById('hangupCallBtn')?.addEventListener('click', () => this.hangupCall());
-            document.getElementById('acceptCallBtn')?.addEventListener('click', () => this.acceptCall());
-            document.getElementById('declineCallBtn')?.addEventListener('click', () => this.declineCall());
+            document.getElementById('hangupCallBtn')?.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.hangupCall();
+            });
+            document.getElementById('acceptCallBtn')?.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.acceptCall();
+            });
+            document.getElementById('declineCallBtn')?.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.declineCall();
+            });
 
             // Chat Input & Send
             const sendBtn = document.getElementById('sendMsgBtn');
@@ -1715,17 +1770,9 @@
                 this.renderContactsList();
             });
 
-            // Bagikan Nomor Saya ke Pemain Terdekat
+            // Bagikan Nomor Saya ke Pemain Terdekat (Nearby Only)
             document.getElementById('myCardShareBtn')?.addEventListener('click', () => {
                 this.shareContact(PhoneState.ownerName, PhoneState.phoneNumber);
-            });
-
-            // Submit Kirim ke ID Player (Input Manual)
-            document.getElementById('btnSubmitShareTargetId')?.addEventListener('click', () => {
-                const targetId = document.getElementById('shareTargetIdInput')?.value;
-                if (targetId) {
-                    this.sendContactToTargetId(targetId);
-                }
             });
 
             // Target Player: Terima Kontak (Yes)
@@ -1733,10 +1780,19 @@
                 if (PhoneState.incomingShare) {
                     const { fromPlayerId, contactName, contactNumber } = PhoneState.incomingShare;
                     PhoneAudio.playClick();
+
+                    // Langsung simpan ke daftar kontak lokal agar kontak 100% langsung muncul tanpa delay
+                    const alreadyExists = PhoneState.contacts.some(c => c.number === contactNumber);
+                    if (!alreadyExists) {
+                        PhoneState.contacts.push({ id: Date.now(), name: contactName, number: contactNumber });
+                        PhoneUI.renderContactsList();
+                    }
+
                     if (window.CefBridge) {
-                        CefBridge.emit('cef_onPhoneAcceptContactShare', fromPlayerId, contactName, contactNumber);
+                        CefBridge.emit('cef_onPhoneAcceptContactShare', Number(fromPlayerId), contactName, contactNumber);
                     }
                     document.getElementById('modalConfirmShare')?.classList.remove('active');
+                    PhoneUI.showNotification('Kontak Disimpan', `${contactName} (${contactNumber}) berhasil disimpan ke buku telepon.`, 'contacts');
                     PhoneState.incomingShare = null;
                 }
             });
@@ -1747,7 +1803,7 @@
                     const { fromPlayerId, contactName } = PhoneState.incomingShare;
                     PhoneAudio.playClick();
                     if (window.CefBridge) {
-                        CefBridge.emit('cef_onPhoneDeclineContactShare', fromPlayerId, contactName);
+                        CefBridge.emit('cef_onPhoneDeclineContactShare', Number(fromPlayerId), contactName);
                     }
                     document.getElementById('modalConfirmShare')?.classList.remove('active');
                     PhoneState.incomingShare = null;
