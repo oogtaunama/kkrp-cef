@@ -532,6 +532,27 @@
             }, 4000);
         },
 
+        // Floating Bottom Pop-up Notification (Slide up above dock, 4s auto-dismiss)
+        showBottomNotification(title, message, iconSvg = 'bell') {
+            PhoneAudio.playNotification();
+            const card = document.getElementById('bottomNotificationCard');
+            const titleEl = document.getElementById('bottomNotifTitle');
+            const msgEl = document.getElementById('bottomNotifMsg');
+            const iconEl = document.getElementById('bottomNotifIcon');
+
+            if (titleEl) titleEl.textContent = title || 'Notifikasi';
+            if (msgEl) msgEl.textContent = message || '';
+            if (iconEl) iconEl.innerHTML = PhoneSvg[iconSvg] || iconSvg || PhoneSvg.bell;
+
+            if (card) {
+                card.classList.add('show');
+                clearTimeout(this._bottomNotifTimeout);
+                this._bottomNotifTimeout = setTimeout(() => {
+                    card.classList.remove('show');
+                }, 4000);
+            }
+        },
+
         // Open App by Name
         openApp(appName) {
             PhoneAudio.playClick();
@@ -969,10 +990,39 @@
         shareContact(name, number) {
             if (!name || !number) return;
             PhoneAudio.playClick();
-            if (window.CefBridge) {
-                CefBridge.emit('cef_onPhoneShareContact', name, number);
+            PhoneState.pendingShare = { name, number };
+
+            const nameEl = document.getElementById('shareContactNameDisplay');
+            const numEl = document.getElementById('shareContactNumDisplay');
+            if (nameEl) nameEl.textContent = name;
+            if (numEl) numEl.textContent = number;
+
+            const inputEl = document.getElementById('shareTargetIdInput');
+            if (inputEl) inputEl.value = '';
+
+            const listEl = document.getElementById('nearbyPlayersList');
+            if (listEl) {
+                listEl.innerHTML = '<div style="font-size: 10.5px; color: var(--ios-text-muted); padding: 4px;">Mendeteksi pemain terdekat...</div>';
             }
-            this.showNotification('Membagikan Kontak', `Mencari pemain terdekat untuk membagikan '${name}'...`, 'contacts');
+
+            document.getElementById('modalShareContact')?.classList.add('active');
+
+            if (window.CefBridge) {
+                CefBridge.emit('cef_onPhoneRequestNearbyPlayers', name, number);
+            }
+        },
+
+        // Kirim kontak ke Target Player ID yang dipilih
+        sendContactToTargetId(targetId) {
+            if (!PhoneState.pendingShare || !targetId) return;
+            const { name, number } = PhoneState.pendingShare;
+            PhoneAudio.playClick();
+
+            if (window.CefBridge) {
+                CefBridge.emit('cef_onPhoneSendContactToTarget', Number(targetId), name, number);
+            }
+            document.getElementById('modalShareContact')?.classList.remove('active');
+            this.showNotification('Membagikan Kontak', `Permintaan dikirim ke ID ${targetId}...`, 'contacts');
         },
 
         deleteContact(identifier) {
@@ -1082,6 +1132,10 @@
                     chirp.likes = (chirp.likes || 0) + (chirp.isLiked ? 1 : -1);
                     PhoneAudio.playClick();
                     PhoneUI.renderTwitterFeed();
+
+                    if (window.CefBridge && chirp.id) {
+                        CefBridge.emit('cef_onPhoneLikeTweet', Number(chirp.id));
+                    }
                 };
 
                 feedEl.appendChild(card);
@@ -1517,6 +1571,13 @@
                 this.unlockPhone(true);
             });
 
+            // Close Bottom Pop-up Notification
+            document.getElementById('bottomNotifCloseBtn')?.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const card = document.getElementById('bottomNotificationCard');
+                if (card) card.classList.remove('show');
+            });
+
             // Bottom Home Indicator Bar (Click to Go Home / Minimize / Unlock)
             document.getElementById('homeIndicatorWrap')?.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -1657,6 +1718,40 @@
             // Bagikan Nomor Saya ke Pemain Terdekat
             document.getElementById('myCardShareBtn')?.addEventListener('click', () => {
                 this.shareContact(PhoneState.ownerName, PhoneState.phoneNumber);
+            });
+
+            // Submit Kirim ke ID Player (Input Manual)
+            document.getElementById('btnSubmitShareTargetId')?.addEventListener('click', () => {
+                const targetId = document.getElementById('shareTargetIdInput')?.value;
+                if (targetId) {
+                    this.sendContactToTargetId(targetId);
+                }
+            });
+
+            // Target Player: Terima Kontak (Yes)
+            document.getElementById('btnAcceptContactShare')?.addEventListener('click', () => {
+                if (PhoneState.incomingShare) {
+                    const { fromPlayerId, contactName, contactNumber } = PhoneState.incomingShare;
+                    PhoneAudio.playClick();
+                    if (window.CefBridge) {
+                        CefBridge.emit('cef_onPhoneAcceptContactShare', fromPlayerId, contactName, contactNumber);
+                    }
+                    document.getElementById('modalConfirmShare')?.classList.remove('active');
+                    PhoneState.incomingShare = null;
+                }
+            });
+
+            // Target Player: Tolak Kontak (No)
+            document.getElementById('btnDeclineContactShare')?.addEventListener('click', () => {
+                if (PhoneState.incomingShare) {
+                    const { fromPlayerId, contactName } = PhoneState.incomingShare;
+                    PhoneAudio.playClick();
+                    if (window.CefBridge) {
+                        CefBridge.emit('cef_onPhoneDeclineContactShare', fromPlayerId, contactName);
+                    }
+                    document.getElementById('modalConfirmShare')?.classList.remove('active');
+                    PhoneState.incomingShare = null;
+                }
             });
 
             // Modal: Add Contact
@@ -2045,6 +2140,56 @@
             PhoneUI.showNotification('Kontak Baru', `${name} (${number}) telah disimpan ke kontak.`, 'contacts');
         });
 
+        // Tampilkan Daftar Pemain Terdekat untuk Share Contact
+        CefBridge.on('showNearbyShareList', (name, number, playersJson) => {
+            const listEl = document.getElementById('nearbyPlayersList');
+            if (!listEl) return;
+
+            let players = [];
+            try {
+                players = typeof playersJson === 'string' ? JSON.parse(playersJson) : playersJson;
+            } catch (e) {
+                players = [];
+            }
+
+            if (!Array.isArray(players) || players.length === 0) {
+                listEl.innerHTML = '<div style="font-size: 10.5px; color: var(--ios-text-muted); padding: 4px;">Tidak ada pemain lain di sekitar Anda (radius 5m).</div>';
+                return;
+            }
+
+            listEl.innerHTML = '';
+            players.forEach(p => {
+                const item = document.createElement('div');
+                item.className = 'nearby-player-item';
+                item.innerHTML = `
+                    <span><strong class="nearby-player-id">[ID: ${p.id}]</strong> ${p.name}</span>
+                    <span class="nearby-player-dist">${p.dist || '1.0'}m</span>
+                `;
+                item.onclick = () => {
+                    PhoneUI.sendContactToTargetId(p.id);
+                };
+                listEl.appendChild(item);
+            });
+        });
+
+        // Event Permintaan Kontak Masuk (Target Screen: Yes / No)
+        CefBridge.on('incomingContactShare', (fromPlayerId, fromName, contactName, contactNumber) => {
+            PhoneState.incomingShare = { fromPlayerId, fromName, contactName, contactNumber };
+            PhoneAudio.playNotif();
+
+            const senderEl = document.getElementById('confirmSenderInfo');
+            const nameEl = document.getElementById('confirmContactName');
+            const numEl = document.getElementById('confirmContactNumber');
+
+            if (senderEl) senderEl.innerHTML = `<strong>${fromName} (ID: ${fromPlayerId})</strong> ingin membagikan kontak:`;
+            if (nameEl) nameEl.textContent = contactName;
+            if (numEl) numEl.textContent = contactNumber;
+
+            // Buka HP dan tampilkan modal konfirmasi
+            PhoneUI.showPhone(true);
+            document.getElementById('modalConfirmShare')?.classList.add('active');
+        });
+
         // Update Bank Balance from Pawn
         CefBridge.on('updateBankBalance', (newBalance) => {
             PhoneState.bankBalance = newBalance;
@@ -2082,11 +2227,95 @@
                 PhoneUI.renderYellowpagesFeed();
             }
         });
+
+        // Bottom Pop-up Notification from Pawn / mp.trigger
+        CefBridge.on('client:showNotification', (title, msg, icon) => {
+            PhoneUI.showBottomNotification(title, msg, icon || 'bell');
+        });
+        CefBridge.on('showBottomNotification', (title, msg, icon) => {
+            PhoneUI.showBottomNotification(title, msg, icon || 'bell');
+        });
+
+        // Load Call Logs from Pawn (MySQL phone_calls)
+        CefBridge.on('loadCallLogs', (jsonLogs) => {
+            try {
+                const logs = typeof jsonLogs === 'string' ? JSON.parse(jsonLogs) : jsonLogs;
+                if (Array.isArray(logs)) {
+                    PhoneState.recents = logs;
+                    if (PhoneState.currentView === 'viewAppPhone') {
+                        PhoneUI.renderRecentsList();
+                    }
+                }
+            } catch (e) {
+                console.error('[CEF Phone] Gagal parse call logs:', e);
+            }
+        });
+
+        // Load Messages from Pawn (MySQL phone_messages)
+        CefBridge.on('loadMessages', (jsonMsgs) => {
+            try {
+                const msgs = typeof jsonMsgs === 'string' ? JSON.parse(jsonMsgs) : jsonMsgs;
+                if (Array.isArray(msgs)) {
+                    PhoneState.messages = msgs;
+                    if (PhoneState.currentView === 'viewAppMessages') {
+                        PhoneUI.renderMessagesThreadList();
+                    } else if (PhoneState.currentView === 'viewChatConversation') {
+                        PhoneUI.renderChatMessages();
+                    }
+                }
+            } catch (e) {
+                console.error('[CEF Phone] Gagal parse messages:', e);
+            }
+        });
+
+        // Load Chirper Tweets from Pawn (MySQL chirper_tweets)
+        CefBridge.on('loadTweets', (jsonTweets) => {
+            try {
+                const tweets = typeof jsonTweets === 'string' ? JSON.parse(jsonTweets) : jsonTweets;
+                if (Array.isArray(tweets)) {
+                    PhoneState.twitterFeed = tweets;
+                    if (PhoneState.currentView === 'viewAppTwitter') {
+                        PhoneUI.renderTwitterFeed();
+                    }
+                }
+            } catch (e) {
+                console.error('[CEF Phone] Gagal parse tweets:', e);
+            }
+        });
+
+        // Update Likes on Chirper
+        CefBridge.on('updateTweetLikes', (tweetId, likes) => {
+            const tweet = PhoneState.twitterFeed.find(t => Number(t.id) === Number(tweetId));
+            if (tweet) {
+                tweet.likes = Number(likes);
+                if (PhoneState.currentView === 'viewAppTwitter') {
+                    PhoneUI.renderTwitterFeed();
+                }
+            }
+        });
     }
 
     // =========================================================================
     // 19. STARTUP & GLOBAL EXPORT
     // =========================================================================
+    // Adapter mp.trigger & mp.events untuk kompatibilitas framework OMP/RAGE
+    if (!window.mp) {
+        window.mp = {
+            trigger: function(eventName, ...args) {
+                if (eventName === 'client:showNotification') {
+                    PhoneUI.showBottomNotification(args[0], args[1], args[2] || 'bell');
+                } else if (window.CefBridge) {
+                    CefBridge.emit(eventName, ...args);
+                }
+            },
+            events: {
+                add: function(name, fn) {
+                    if (window.CefBridge) CefBridge.on(name, fn);
+                }
+            }
+        };
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
         PhoneUI.init();
     });

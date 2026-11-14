@@ -858,6 +858,242 @@
                     </div>
                 </div>
 
+                <!-- ============================================================ -->
+                <!-- MODALS (Tersimpan rapi di dalam layar HP, tidak menimpa)    -->
+                <!-- ============================================================ -->
+
+                <!-- Modal: Tambah Kontak -->
+                <div class="modal-backdrop" id="modalAddContact">
+                    <div class="modal-card">
+                        <div class="modal-header">
+                            <h3>Tambah Kontak Baru</h3>
+                            <button class="modal-close-btn" data-close="modalAddContact">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label>Nama Kontak</label>
+                                <input type="text" class="form-input" id="newContactNameInput" placeholder="Nama kontak...">
+                            </div>
+                            <div class="form-group">
+                                <label>Nomor Telepon</label>
+                                <input type="text" class="form-input" id="newContactPhoneInput" placeholder="Nomor telepon...">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary" data-close="modalAddContact">Batal</button>
+                            <button class="btn btn-primary" id="saveContactSubmitBtn">Simpan</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal: Transfer Bank -->
+                <div class="modal-backdrop" id="modalBankTransfer">
+                    <div class="modal-card">
+                        <div class="modal-header">
+                            <h3>Transfer Fleeca Bank</h3>
+                            <button class="modal-close-btn" data-close="modalBankTransfer">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label>Tujuan (ID Player / Rekening)</label>
+                                <input type="text" class="form-input" id="transferTargetInput" placeholder="Ketik ID atau No Rekening...">
+                            </div>
+                            <div class="form-group">
+                                <label>Nominal Transfer ($)</label>
+                                <input type="number" class="form-input" id="transferAmountInput" placeholder="Contoh: 1500" min="1">
+                            </div>
+                            <div class="form-group">
+                                <label>Catatan (Opsional)</label>
+                                <input type="text" class="form-input" id="transferNoteInput" placeholder="Catatan singkat...">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary" data-close="modalBankTransfer">Batal</button>
+                            <button class="btn btn-primary" id="submitBankTransferBtn">Kirim</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal: Buat Tweet / Chirp -->
+                <div class="modal-backdrop" id="modalNewTweet">
+                    <div class="modal-card">
+                        <div class="modal-header">
+                            <h3>Buat Kicauan Baru</h3>
+                            <button class="modal-close-btn" data-close="modalNewTweet">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <textarea class="form-input form-textarea" id="newTweetContentInput" maxlength="140" placeholder="Apa yang sedang terjadi hari ini?"></textarea>
+                                <div class="char-count" id="tweetCharCount">140 karakter tersisa</div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary" data-close="modalNewTweet">Batal</button>
+                            <button class="btn btn-primary" id="submitTweetBtn">Posting</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal: Pasang Iklan -->
+                <div class="modal-backdrop" id="modalPostAd">
+                    <div class="modal-card">
+                        <div class="modal-header">
+                            <h3>Pasang Iklan Kota</h3>
+                            <button class="modal-close-btn" data-close="modalPostAd">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label>Kategori</label>
+                                <select class="form-input" id="adCategorySelect">
+                                    <option value="Kendaraan">Jual / Beli Kendaraan</option>
+                                    <option value="Properti">Properti & Rumah</option>
+                                    <option value="Jasa">Jasa & Lowongan</option>
+                                    <option value="Umum">Umum / Lainnya</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Isi Iklan</label>
+                                <textarea class="form-input form-textarea" id="adDescriptionInput" maxlength="180" placeholder="Jelaskan penawaran Anda..."></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary" data-close="modalPostAd">Batal</button>
+                            <button class="btn btn-primary" id="submitAdBtn">Pasang</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal: Kirim Laporan Darurat 911 -->
+                <div class="modal-backdrop" id="modalDispatchReport">
+                    <div class="modal-card">
+                        <div class="modal-header">
+                            <h3 id="dispatchModalTitle">Layanan Darurat</h3>
+                            <button class="modal-close-btn" data-close="modalDispatchReport">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label>Keterangan Darurat</label>
+                                <textarea class="form-input form-textarea" id="dispatchMessageInput" placeholder="Jelaskan situasi darurat Anda..."></textarea>
+                            </div>
+                            <p class="dispatch-gps-notice">
+                                <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" style="vertical-align: -1px;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                                Titik GPS otomatis dilampirkan.
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary" data-close="modalDispatchReport">Batal</button>
+                            <button class="btn btn-primary" id="submitDispatchReportBtn">Kirim</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal: Penampil Foto Galeri (Photo Viewer) -->
+                <div class="modal-backdrop" id="modalPhotoView">
+                    <div class="modal-card photo-modal-card">
+                        <div class="modal-header">
+                            <h3 id="photoModalDate">Detail Foto</h3>
+                            <button class="modal-close-btn" data-close="modalPhotoView">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+                            </button>
+                        </div>
+                        <div class="modal-body photo-modal-body">
+                            <div class="photo-preview-box" id="photoModalImage"></div>
+                        </div>
+                        <div class="modal-footer photo-modal-footer">
+                            <button class="btn btn-secondary" id="photoSetWallpaperBtn">
+                                <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" style="vertical-align: -2px; margin-right: 3px;"><path d="M4 4h7V2H4c-1.1 0-2 .9-2 2v7h2V4zm6 9l-4 5h12l-3-4-2.03 2.71L10 13zm7-9h-7V2h7c1.1 0 2 .9 2 2v7h-2V4zm0 16h-7v2h7c1.1 0 2-.9 2-2v-7h-2v7zM4 13H2v7c0 1.1.9 2 2 2h7v-2H4v-7z"/></svg>
+                                Jadikan Wallpaper
+                            </button>
+                            <button class="btn btn-danger" id="photoDeleteBtn">
+                                <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" style="vertical-align: -2px; margin-right: 3px;"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                                Hapus
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal: Bagikan Kontak (Pilih ID Pemain Terdekat) -->
+                <div class="modal-backdrop" id="modalShareContact">
+                    <div class="modal-card">
+                        <div class="modal-header">
+                            <h3>Bagikan Kontak</h3>
+                            <button class="modal-close-btn" data-close="modalShareContact">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="share-contact-badge">
+                                <strong id="shareContactNameDisplay">Nama Kontak</strong>
+                                <span id="shareContactNumDisplay">0812-xxxx</span>
+                            </div>
+                            <div class="form-group" style="margin-top: 6px;">
+                                <label>Kirim Langsung ke ID Pemain:</label>
+                                <div class="id-input-group">
+                                    <input type="number" class="form-input id-number-input" id="shareTargetIdInput" placeholder="Ketik ID (misal: 1, 27, 18)" min="0">
+                                    <button class="btn btn-primary" id="btnSubmitShareTargetId">Kirim</button>
+                                </div>
+                            </div>
+                            <div class="nearby-section" style="margin-top: 6px;">
+                                <label class="nearby-label">Atau Pilih Pemain di Dekat Anda:</label>
+                                <div class="nearby-players-list" id="nearbyPlayersList">
+                                    <!-- Populated by JS -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary" data-close="modalShareContact">Batal</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal: Konfirmasi Terima Kontak (Yes / No) di HP Target -->
+                <div class="modal-backdrop" id="modalConfirmShare">
+                    <div class="modal-card confirm-modal-card">
+                        <div class="modal-header">
+                            <h3>Permintaan Kontak Masuk</h3>
+                        </div>
+                        <div class="modal-body confirm-modal-body">
+                            <div class="confirm-share-icon">
+                                <svg viewBox="0 0 24 24" width="26" height="26" fill="#38bdf8"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm6 12H6v-1c0-2 4-3.1 6-3.1s6 1.1 6 3.1v1z"/></svg>
+                            </div>
+                            <p class="confirm-sender-desc" id="confirmSenderInfo"><strong>Player</strong> ingin membagikan kontak:</p>
+                            <div class="confirm-contact-box">
+                                <h4 id="confirmContactName">Nama</h4>
+                                <span id="confirmContactNumber">0812-xxxx</span>
+                            </div>
+                            <p class="confirm-question-sub">Simpan kontak ini ke buku telepon Anda?</p>
+                        </div>
+                        <div class="modal-footer confirm-modal-footer">
+                            <button class="btn btn-danger" id="btnDeclineContactShare">Tolak (No)</button>
+                            <button class="btn btn-success" id="btnAcceptContactShare">Terima (Yes)</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 16. FLOATING BOTTOM NOTIFICATION POP-UP (Slide Up Above Dock) -->
+                <div class="bottom-notification-card" id="bottomNotificationCard">
+                    <div class="bottom-notif-icon" id="bottomNotifIcon">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/></svg>
+                    </div>
+                    <div class="bottom-notif-content">
+                        <div class="bottom-notif-title" id="bottomNotifTitle">Notifikasi</div>
+                        <div class="bottom-notif-msg" id="bottomNotifMsg">Pesan notifikasi</div>
+                    </div>
+                    <button class="bottom-notif-close" id="bottomNotifCloseBtn" title="Tutup">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+                    </button>
+                </div>
+
             </div> <!-- /.phone-screen -->
 
             <!-- Bottom Home Indicator Bar (iOS Style) -->
@@ -867,170 +1103,6 @@
 
         </div> <!-- /.phone-body -->
     </div> <!-- /.phone-device-wrapper -->
-
-    <!-- ============================================================ -->
-    <!-- MODALS: Add Contact, Transfer Money, Post Tweet, Post Ad     -->
-    <!-- ============================================================ -->
-
-    <!-- Modal: Tambah Kontak -->
-    <div class="modal-backdrop" id="modalAddContact">
-        <div class="modal-card">
-            <div class="modal-header">
-                <h3>Tambah Kontak Baru</h3>
-                <button class="modal-close-btn" data-close="modalAddContact">
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label>Nama Kontak</label>
-                    <input type="text" class="form-input" id="newContactNameInput" placeholder="Contoh: Franklin Clinton">
-                </div>
-                <div class="form-group">
-                    <label>Nomor Telepon</label>
-                    <input type="text" class="form-input" id="newContactPhoneInput" placeholder="Contoh: 5550192">
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" data-close="modalAddContact">Batal</button>
-                <button class="btn btn-primary" id="saveContactSubmitBtn">Simpan Kontak</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal: Transfer Bank -->
-    <div class="modal-backdrop" id="modalBankTransfer">
-        <div class="modal-card">
-            <div class="modal-header">
-                <h3>Transfer Dana M-Banking</h3>
-                <button class="modal-close-btn" data-close="modalBankTransfer">
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label>Tujuan (ID Player / No. Rekening / No. HP)</label>
-                    <input type="text" class="form-input" id="transferTargetInput" placeholder="ID Player atau Rekening">
-                </div>
-                <div class="form-group">
-                    <label>Jumlah Nominal ($)</label>
-                    <input type="number" class="form-input" id="transferAmountInput" placeholder="Contoh: 1500" min="1">
-                </div>
-                <div class="form-group">
-                    <label>Catatan Transfer (Opsional)</label>
-                    <input type="text" class="form-input" id="transferNoteInput" placeholder="Contoh: Bayar sewa flat">
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" data-close="modalBankTransfer">Batal</button>
-                <button class="btn btn-primary" id="submitBankTransferBtn">Kirim Uang</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal: Buat Tweet / Chirp -->
-    <div class="modal-backdrop" id="modalNewTweet">
-        <div class="modal-card">
-            <div class="modal-header">
-                <h3>Buat Kicauan Baru</h3>
-                <button class="modal-close-btn" data-close="modalNewTweet">
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <textarea class="form-input form-textarea" id="newTweetContentInput" maxlength="140" placeholder="Apa yang sedang terjadi di Los Santos hari ini?"></textarea>
-                    <div class="char-count" id="tweetCharCount">140 karakter tersisa</div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" data-close="modalNewTweet">Batal</button>
-                <button class="btn btn-primary" id="submitTweetBtn">Posting Tweet</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal: Pasang Iklan -->
-    <div class="modal-backdrop" id="modalPostAd">
-        <div class="modal-card">
-            <div class="modal-header">
-                <h3>Pasang Iklan Kota (Yellow Pages)</h3>
-                <button class="modal-close-btn" data-close="modalPostAd">
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label>Kategori Iklan</label>
-                    <select class="form-input" id="adCategorySelect">
-                        <option value="Kendaraan">Jual / Beli Kendaraan</option>
-                        <option value="Properti">Properti & Rumah</option>
-                        <option value="Jasa">Jasa & Lowongan Kerja</option>
-                        <option value="Umum">Umum / Barang Lainnya</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Deskripsi Iklan</label>
-                    <textarea class="form-input form-textarea" id="adDescriptionInput" maxlength="180" placeholder="Jelaskan barang atau jasa yang ditawarkan..."></textarea>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" data-close="modalPostAd">Batal</button>
-                <button class="btn btn-primary" id="submitAdBtn">Pasang Iklan</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal: Kirim Laporan Darurat 911 -->
-    <div class="modal-backdrop" id="modalDispatchReport">
-        <div class="modal-card">
-            <div class="modal-header">
-                <h3 id="dispatchModalTitle">Layanan Darurat</h3>
-                <button class="modal-close-btn" data-close="modalDispatchReport">
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label>Pesan / Keterangan Darurat</label>
-                    <textarea class="form-input form-textarea" id="dispatchMessageInput" placeholder="Jelaskan situasi darurat Anda secara singkat..."></textarea>
-                </div>
-                <p class="dispatch-gps-notice">
-                    <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" style="vertical-align: -1px;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
-                    Koordinat lokasi Anda akan otomatis dilampirkan ke panggilan ini.
-                </p>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" data-close="modalDispatchReport">Batal</button>
-                <button class="btn btn-primary" id="submitDispatchReportBtn">Kirim Panggilan</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal: Penampil Foto Galeri (Photo Viewer) -->
-    <div class="modal-backdrop" id="modalPhotoView">
-        <div class="modal-card photo-modal-card">
-            <div class="modal-header">
-                <h3 id="photoModalDate">Detail Foto</h3>
-                <button class="modal-close-btn" data-close="modalPhotoView">
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-                </button>
-            </div>
-            <div class="modal-body photo-modal-body">
-                <div class="photo-preview-box" id="photoModalImage"></div>
-            </div>
-            <div class="modal-footer photo-modal-footer">
-                <button class="btn btn-secondary" id="photoSetWallpaperBtn">
-                    <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" style="vertical-align: -2px; margin-right: 4px;"><path d="M4 4h7V2H4c-1.1 0-2 .9-2 2v7h2V4zm6 9l-4 5h12l-3-4-2.03 2.71L10 13zm7-9h-7V2h7c1.1 0 2 .9 2 2v7h-2V4zm0 16h-7v2h7c1.1 0 2-.9 2-2v-7h-2v7zM4 13H2v7c0 1.1.9 2 2 2h7v-2H4v-7z"/></svg>
-                    Jadikan Wallpaper
-                </button>
-                <button class="btn btn-danger" id="photoDeleteBtn">
-                    <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" style="vertical-align: -2px; margin-right: 4px;"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
-                    Hapus
-                </button>
-            </div>
-        </div>
-    </div>
 
     <!-- Scripts: CEF Bridge & Phone Controller -->
     <script src="../common/cef-bridge.js"></script>
