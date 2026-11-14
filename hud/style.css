@@ -607,225 +607,161 @@ body {
 }
 
 /* ==========================================================================
-   4. FIVEM CEF NOTIFICATION SYSTEM (Safe-Zone: Posisi di Bawah Server Info)
-   Dijamin TIDAK NABRAK / BERTABRAKAN dengan Server Info & Weapon HUD
+   4. FIVEM MODERN NOTIFICATION & INTERACTION SYSTEM
+   Sesuai Template FiveM Modern Notification System (User Request)
    ========================================================================== */
-.fivem-notify-stack {
+
+/* Container Notifikasi di Pojok Kanan Atas (Aman di bawah Server Info KKRP) */
+#notification-container, .fivem-notify-stack {
     position: fixed;
-    top: 235px; /* Aman di bawah Server Info & Weapon HUD */
+    top: 135px;
     right: 24px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    z-index: 999999;
+    gap: 12px;
+    z-index: 99999;
+    max-width: 340px;
+    width: 100%;
     pointer-events: none;
-    width: 340px;
-    max-width: 90vw;
 }
 
-.fivem-notify {
+/* Kartu Notifikasi Utama */
+.notif-card {
+    background: rgba(14, 16, 22, 0.9);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-radius: 10px;
+    padding: 14px 16px;
     position: relative;
-    display: flex;
-    align-items: stretch;
-    background: rgba(15, 23, 42, 0.95);
-    border-radius: 8px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.65), 0 0 1px rgba(255, 255, 255, 0.1);
     overflow: hidden;
-    transform: translateX(120%);
-    opacity: 0;
-    transition: transform 0.35s cubic-bezier(0.18, 0.89, 0.32, 1.28), opacity 0.25s ease;
-    backdrop-filter: blur(10px);
-    border-left: 4px solid #64748b;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    animation: slideIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    pointer-events: none;
 }
 
-.fivem-notify.show {
-    transform: translateX(0);
-    opacity: 1;
+.notif-card.fade-out {
+    animation: slideOut 0.3s ease-in forwards;
 }
 
-.fivem-notify.hide {
-    transform: translateX(120%);
-    opacity: 0;
+@keyframes slideIn {
+    from { opacity: 0; transform: translateX(50px); }
+    to { opacity: 1; transform: translateX(0); }
 }
 
-.notify-badge {
-    width: 44px;
+@keyframes slideOut {
+    from { opacity: 1; transform: translateX(0); }
+    to { opacity: 0; transform: translateX(50px); }
+}
+
+/* Ikon Di Sisi Kiri */
+.notif-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 18px;
-    color: #ffffff;
     flex-shrink: 0;
+    font-size: 16px;
+    border: 1.5px solid currentColor;
+    font-weight: 700;
 }
 
-.notify-body {
-    padding: 10px 14px 10px 2px;
+/* Teks Judul & Deskripsi */
+.notif-content {
+    flex: 1;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    gap: 3px;
+    min-width: 0;
 }
 
-.notify-title {
-    font-size: 13px;
-    font-weight: 800;
-    letter-spacing: 0.5px;
-    margin-bottom: 2px;
-    text-transform: uppercase;
+.notif-title {
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.notify-msg {
+.notif-desc {
+    color: #9da3af;
     font-size: 12px;
-    font-weight: 500;
-    line-height: 1.4;
-    color: #cbd5e1;
+    line-height: 1.35;
     word-break: break-word;
 }
 
-.notify-progress {
+/* Garis Progres Waktu di Bawah */
+.notif-progress-track {
     position: absolute;
     bottom: 0;
     left: 0;
-    height: 3px;
     width: 100%;
-    background: currentColor;
-    opacity: 0.7;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.05);
 }
 
-/* Warna Notifikasi FiveM */
-.notify-warning {
-    border-left-color: #f59e0b;
-}
-.notify-warning .notify-badge {
-    background: rgba(245, 158, 11, 0.15);
-    color: #f59e0b;
-}
-.notify-warning .notify-title {
-    color: #fbbf24;
-}
-.notify-warning .notify-progress {
-    color: #f59e0b;
+.notif-progress-bar {
+    height: 100%;
+    width: 100%;
+    transform-origin: left;
+    animation: progressShrink linear forwards;
 }
 
-.notify-error {
-    border-left-color: #ef4444;
-}
-.notify-error .notify-badge {
-    background: rgba(239, 68, 68, 0.15);
-    color: #ef4444;
-}
-.notify-error .notify-title {
-    color: #f87171;
-}
-.notify-error .notify-progress {
-    color: #ef4444;
+@keyframes progressShrink {
+    from { transform: scaleX(1); }
+    to { transform: scaleX(0); }
 }
 
-.notify-success {
-    border-left-color: #10b981;
-}
-.notify-success .notify-badge {
-    background: rgba(16, 185, 129, 0.15);
-    color: #10b981;
-}
-.notify-success .notify-title {
-    color: #34d399;
-}
-.notify-success .notify-progress {
-    color: #10b981;
-}
+/* --- VARIASI WARNA & EFEK GLOW --- */
 
-.notify-info {
-    border-left-color: #f97316; /* Orange server theme */
+/* 1. Success (Hijau) */
+.notif-card.success {
+    border: 1px solid rgba(46, 213, 115, 0.35);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6), 0 0 20px rgba(46, 213, 115, 0.2);
 }
-.notify-info .notify-badge {
-    background: rgba(249, 115, 22, 0.15);
-    color: #f97316;
-}
-.notify-info .notify-title {
-    color: #fbbf24;
-}
-.notify-info .notify-progress {
-    color: #f97316;
-}
+.notif-card.success .notif-icon { color: #2ed573; background: rgba(46, 213, 115, 0.12); }
+.notif-card.success .notif-progress-bar { background: #2ed573; }
 
-.notify-syntax {
-    border-left-color: #38bdf8;
+/* 2. Info (Biru) */
+.notif-card.info {
+    border: 1px solid rgba(52, 152, 219, 0.35);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6), 0 0 20px rgba(52, 152, 219, 0.2);
 }
-.notify-syntax .notify-badge {
-    background: rgba(56, 189, 248, 0.15);
-    color: #38bdf8;
-}
-.notify-syntax .notify-title {
-    color: #7dd3fc;
-}
-.notify-syntax .notify-progress {
-    color: #38bdf8;
-}
+.notif-card.info .notif-icon { color: #3498db; background: rgba(52, 152, 219, 0.12); }
+.notif-card.info .notif-progress-bar { background: #3498db; }
 
-/* ==========================================================================
-   5. FIVEM PROXIMITY INTERACTION PROMPT (ALT)
-   ========================================================================== */
-.target-proximity-prompt {
-    position: fixed;
-    top: 50%;
-    left: calc(50% + 45px);
-    transform: translateY(-50%) scale(0.9);
-    opacity: 0;
-    pointer-events: none;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: rgba(15, 23, 42, 0.92);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    padding: 8px 14px;
-    backdrop-filter: blur(8px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
-    transition: all 0.25s cubic-bezier(0.18, 0.89, 0.32, 1.28);
-    z-index: 9999;
+/* 3. Warning (Kuning/Oranye) */
+.notif-card.warning {
+    border: 1px solid rgba(255, 165, 2, 0.35);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6), 0 0 20px rgba(255, 165, 2, 0.2);
 }
+.notif-card.warning .notif-icon { color: #ffa502; background: rgba(255, 165, 2, 0.12); }
+.notif-card.warning .notif-progress-bar { background: #ffa502; }
 
-.target-proximity-prompt.show {
-    opacity: 1;
-    transform: translateY(-50%) scale(1);
+/* 4. Error / Danger (Merah) */
+.notif-card.error {
+    border: 1px solid rgba(255, 71, 87, 0.35);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6), 0 0 20px rgba(255, 71, 87, 0.2);
 }
+.notif-card.error .notif-icon { color: #ff4757; background: rgba(255, 71, 87, 0.12); }
+.notif-card.error .notif-progress-bar { background: #ff4757; }
 
-.prompt-icon-box {
-    width: 28px;
-    height: 28px;
-    border-radius: 6px;
-    background: rgba(249, 115, 22, 0.2);
-    color: #f97316;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+/* 5. Target / Proximity Interaction (ALT / H / Y - Tema Oranye FiveM) */
+.notif-card.target, .notif-card.interaction {
+    border: 1px solid rgba(255, 122, 24, 0.45);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6), 0 0 20px rgba(255, 122, 24, 0.25);
 }
-
-.prompt-content {
-    display: flex;
-    flex-direction: column;
-}
-
-.prompt-title {
-    font-size: 10px;
-    font-weight: 800;
-    color: #94a3b8;
-    letter-spacing: 0.5px;
-}
-
-.prompt-desc {
+.notif-card.target .notif-icon, .notif-card.interaction .notif-icon { 
+    color: #ff7a18; 
+    background: rgba(255, 122, 24, 0.15); 
     font-size: 13px;
-    font-weight: 700;
-    color: #ffffff;
-}
-
-.prompt-keycap {
-    background: #334155;
-    color: #ffffff;
-    font-size: 11px;
     font-weight: 800;
-    padding: 3px 7px;
-    border-radius: 4px;
-    border-bottom: 2px solid #1e293b;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+.notif-card.target .notif-progress-bar, .notif-card.interaction .notif-progress-bar { 
+    background: #ff7a18; 
 }

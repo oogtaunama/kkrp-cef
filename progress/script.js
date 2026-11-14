@@ -49,19 +49,26 @@ const ProgressApp = {
     cleanText(str) {
         if (!str) return '';
         let text = String(str);
+        if (text.startsWith('{') && text.endsWith('}')) {
+            try {
+                const parsed = JSON.parse(text);
+                text = parsed.text || parsed.title || parsed.label || text;
+            } catch (e) {}
+        }
         // Hapus kode warna SA-MP {RRGGBB}
         text = text.replace(/\{[A-Fa-f0-9]{6}\}/g, '');
         // Hapus kode format GTA ~r~, ~g~, ~b~, ~w~, ~y~, ~h~ dll.
         text = text.replace(/~[a-z0-9]~/gi, '');
         // Hapus tag literal jika bocor
         text = text.replace(/oogtaunama/gi, '');
+        text = text.replace(/adminname/gi, '');
         text = text.trim();
-        if (text === '_' || text.toLowerCase() === 'none') return '';
+        if (text === '_' || text.toLowerCase() === 'none' || text === '-' || text.toLowerCase() === 'null') return '';
         return text;
     },
 
     bindEvents() {
-        const handleOpen = (text) => this.openProgress(text);
+        const handleOpen = (payload) => this.openProgress(payload);
         const handleSet = (pct, text) => this.setTargetProgress(pct, text);
         const handleHide = () => this.hideProgress();
 
@@ -96,7 +103,17 @@ const ProgressApp = {
         }
     },
 
-    openProgress(text) {
+    openProgress(payload) {
+        let text = payload;
+        if (typeof payload === 'string' && (payload.startsWith('{') || payload.startsWith('['))) {
+            try {
+                const parsed = JSON.parse(payload);
+                text = parsed.text || parsed.title || parsed.label || payload;
+            } catch (e) {}
+        } else if (typeof payload === 'object' && payload !== null) {
+            text = payload.text || payload.title || payload.label || 'MEMPROSES...';
+        }
+
         const title = this.cleanText(text) || 'MEMPROSES...';
         this.activityTitle = title;
         if (this.textEl) this.textEl.textContent = title;
@@ -112,10 +129,17 @@ const ProgressApp = {
         let p = percent;
         let t = text;
 
+        if (typeof p === 'string' && (p.startsWith('{') || p.startsWith('['))) {
+            try {
+                const parsed = JSON.parse(p);
+                p = parsed;
+            } catch (e) {}
+        }
+
         if (typeof p === 'object' && p !== null) {
-            if (p.percent !== undefined) {
-                t = p.text || t;
-                p = p.percent;
+            if (p.percent !== undefined || p.pct !== undefined || p.progress !== undefined) {
+                t = p.text || p.title || p.label || t;
+                p = p.percent ?? p.pct ?? p.progress;
             } else if (Array.isArray(p)) {
                 t = p[1] || t;
                 p = p[0];
@@ -136,6 +160,10 @@ const ProgressApp = {
         const num = parseFloat(p);
         if (!isNaN(num) && num >= 0) {
             this.targetPercent = Math.max(0, Math.min(100, num));
+            if (num === 0) {
+                this.currentPercent = 0;
+                this.renderVisuals(0);
+            }
         }
 
         if (this.boxEl) this.boxEl.style.display = 'block';
@@ -154,7 +182,7 @@ const ProgressApp = {
                 const diff = this.targetPercent - this.currentPercent;
                 if (Math.abs(diff) > 0.05) {
                     // Fluid lerp transisi halus mengikuti tick server
-                    this.currentPercent += diff * 0.12;
+                    this.currentPercent += diff * 0.15;
                     this.renderVisuals(this.currentPercent);
                 } else if (this.currentPercent !== this.targetPercent) {
                     this.currentPercent = this.targetPercent;

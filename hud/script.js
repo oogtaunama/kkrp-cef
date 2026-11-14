@@ -443,7 +443,7 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 
     // ============================================================
-    // 5. FIVEM NOTIFICATION SYSTEM (AUDIO & SAFE STACK)
+    // 5. FIVEM MODERN NOTIFICATION & TARGET PROMPT SYSTEM
     // ============================================================
     const NotifyAudio = {
         ctx: null,
@@ -459,9 +459,7 @@ window.addEventListener('DOMContentLoaded', () => {
             try {
                 this.init();
                 if (!this.ctx) return;
-                if (this.ctx.state === 'suspended') {
-                    this.ctx.resume();
-                }
+                if (this.ctx.state === 'suspended') this.ctx.resume();
 
                 const now = this.ctx.currentTime;
                 const osc = this.ctx.createOscillator();
@@ -477,10 +475,10 @@ window.addEventListener('DOMContentLoaded', () => {
                     gain.connect(this.ctx.destination);
                     osc.start(now);
                     osc.stop(now + 0.25);
-                } else if (type === 'warning') {
+                } else if (type === 'warning' || type === 'target' || type === 'interaction') {
                     osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(540, now);
-                    osc.frequency.setValueAtTime(680, now + 0.08);
+                    osc.frequency.setValueAtTime(580, now);
+                    osc.frequency.setValueAtTime(740, now + 0.08);
                     gain.gain.setValueAtTime(0.1, now);
                     gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
                     osc.connect(gain);
@@ -504,98 +502,145 @@ window.addEventListener('DOMContentLoaded', () => {
     };
 
     const NotifyIcons = {
+        success: 'fa-check',
+        info: 'fa-info',
         warning: 'fa-triangle-exclamation',
-        error: 'fa-circle-xmark',
-        success: 'fa-circle-check',
-        info: 'fa-circle-info',
-        syntax: 'fa-terminal',
-        default: 'fa-comment'
+        error: 'fa-xmark',
+        target: 'fa-hand',
+        interaction: 'fa-hand',
+        default: 'fa-bell'
     };
 
-    function showFivemNotification(data) {
-        if (!data) return;
-        const stack = document.getElementById('notifyStack');
-        if (!stack) return;
+    // State untuk debounce prompt interaksi dekat (ALT)
+    let currentPromptIdentity = null;
+    let activePromptCard = null;
 
-        const type = (data.type || 'info').toLowerCase();
-        const title = data.title || (type.toUpperCase());
-        const message = data.message || '';
-        const duration = Math.max(1500, Number(data.duration) || 4500);
-        const iconClass = NotifyIcons[type] || NotifyIcons.default;
+    function showNotification(type = 'info', title = '', message = '', duration = 4000, key = null, isPrompt = false) {
+        const container = document.getElementById('notification-container');
+        if (!container) return null;
+
+        const normType = (type || 'info').toLowerCase();
+        const displayTitle = title || (normType.toUpperCase());
+        const displayMsg = message || '';
+        const dur = Math.max(1500, Number(duration) || 3500);
 
         const card = document.createElement('div');
-        card.className = `fivem-notify notify-${type}`;
+        card.className = `notif-card ${normType}`;
+
+        const iconClass = NotifyIcons[normType] || NotifyIcons.default;
+        const iconHtml = key ? `<span style="font-size: 13px; font-weight: 800;">${key}</span>` : `<i class="fa-solid ${iconClass}"></i>`;
 
         card.innerHTML = `
-            <div class="notify-badge">
-                <i class="fa-solid ${iconClass}"></i>
+            <div class="notif-icon">
+                ${iconHtml}
             </div>
-            <div class="notify-body">
-                <div class="notify-title">${title}</div>
-                <div class="notify-msg">${message}</div>
+            <div class="notif-content">
+                <div class="notif-title">${displayTitle}</div>
+                <div class="notif-desc">${displayMsg}</div>
             </div>
-            <div class="notify-progress"></div>
+            <div class="notif-progress-track">
+                <div class="notif-progress-bar"></div>
+            </div>
         `;
 
-        stack.appendChild(card);
-        NotifyAudio.play(type);
+        container.appendChild(card);
+        NotifyAudio.play(normType);
 
-        requestAnimationFrame(() => {
-            card.classList.add('show');
-            const progress = card.querySelector('.notify-progress');
-            if (progress) {
-                progress.style.transition = `width ${duration}ms linear`;
-                requestAnimationFrame(() => {
-                    progress.style.width = '0%';
-                });
-            }
-        });
+        const progressBar = card.querySelector('.notif-progress-bar');
+        if (progressBar) {
+            progressBar.style.animation = `shrink ${dur}ms linear forwards`;
+        }
 
-        setTimeout(() => {
-            card.classList.remove('show');
-            card.classList.add('hide');
+        const dismissTimeout = setTimeout(() => {
+            dismiss();
+        }, dur);
+
+        function dismiss() {
+            clearTimeout(dismissTimeout);
+            card.classList.add('fade-out');
             setTimeout(() => {
-                if (card.parentNode) {
-                    card.parentNode.removeChild(card);
-                }
-            }, 350);
-        }, duration);
+                if (card.parentNode) card.parentNode.removeChild(card);
+                if (activePromptCard === card) activePromptCard = null;
+            }, 300);
+        }
+
+        card.dismiss = dismiss;
+        return card;
     }
 
+    function handleTargetPrompt(data) {
+        if (!data) return;
+        const key = data.key || 'ALT';
+        const title = data.title || `INTERAKSI [${key}]`;
+        const msg = data.message || data.desc || data.text || 'Tekan tombol untuk berinteraksi';
+        const identity = `${title}_${msg}`;
+
+        // Jika pemain masih di dekat target yang sama, jangan munculkan ulang terus menerus
+        if (currentPromptIdentity === identity) return;
+        currentPromptIdentity = identity;
+
+        if (activePromptCard) {
+            activePromptCard.dismiss();
+        }
+
+        activePromptCard = showNotification('target', title, msg, 3500, key, true);
+    }
+
+    function hideTargetPrompt() {
+        // Pemain menjauh dari target - reset identity sehingga saat mendekat lagi bisa muncul 3-4 detik
+        currentPromptIdentity = null;
+        if (activePromptCard) {
+            activePromptCard.dismiss();
+            activePromptCard = null;
+        }
+    }
+
+    // Listener Notifikasi Umum
     CefBridge.on('notify:show', (payload) => {
         let data = payload;
         if (typeof payload === 'string') {
             try {
                 data = JSON.parse(payload);
             } catch (e) {
-                data = { type: 'info', title: 'INFORMASI', message: payload, duration: 4500 };
+                data = { type: 'info', title: 'INFORMASI', message: payload, duration: 4000 };
             }
         }
-        showFivemNotification(data);
+        if (data) {
+            if (data.isPrompt || data.type === 'target' || data.type === 'interaction') {
+                handleTargetPrompt(data);
+            } else {
+                showNotification(data.type, data.title, data.message, data.duration, data.key);
+            }
+        }
     });
 
-    // Proximity Prompt Mata ALT
-    const targetPrompt = document.getElementById('targetPrompt');
-    const targetPromptDesc = document.getElementById('targetPromptDesc');
-
+    // Listener Proximity Prompt Target / Area Interaksi
     CefBridge.on('target:promptShow', (payload) => {
-        let text = 'Target Interaktif';
+        let data = payload;
         if (typeof payload === 'string') {
             try {
-                const parsed = JSON.parse(payload);
-                text = parsed.title || parsed.desc || payload;
+                data = JSON.parse(payload);
             } catch (e) {
-                text = payload;
+                data = { message: payload, key: 'ALT' };
             }
-        } else if (payload && typeof payload === 'object') {
-            text = payload.title || payload.desc || 'Target Interaktif';
         }
-
-        if (targetPromptDesc) targetPromptDesc.textContent = text;
-        if (targetPrompt) targetPrompt.classList.add('show');
+        handleTargetPrompt(data);
     });
 
     CefBridge.on('target:promptHide', () => {
-        if (targetPrompt) targetPrompt.classList.remove('show');
+        hideTargetPrompt();
+    });
+
+    // Listen postMessage fallback
+    window.addEventListener('message', (event) => {
+        if (!event.data) return;
+        const d = event.data;
+        if (d.action === 'notify' || d.type === 'notify') {
+            showNotification(d.notifType || d.type, d.title, d.message, d.duration, d.key);
+        } else if (d.action === 'targetPrompt') {
+            handleTargetPrompt(d);
+        } else if (d.action === 'hideTargetPrompt') {
+            hideTargetPrompt();
+        }
     });
 });
