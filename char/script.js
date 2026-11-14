@@ -6,11 +6,9 @@
 const CharApp = {
     state: {
         characters: [],
-        skins: [],
         maxChars: 3,
         ucpName: '',
         selectedGender: 'Male',
-        selectedSlot: 0,
         targetSlot: 0,
         isLoading: false
     },
@@ -19,13 +17,15 @@ const CharApp = {
         console.log('[CharApp] Inisialisasi Modul Character Selector & Creator.');
 
         // Minta CEF focus & cursor aktif untuk pemilihan karakter
-        CefBridge.setFocus(true);
+        if (typeof CefBridge !== 'undefined' && typeof CefBridge.setFocus === 'function') {
+            CefBridge.setFocus(true);
+        }
 
         this.bindBridgeEvents();
         this.bindStaticEvents();
 
         // Mode Dev Preview di luar game
-        if (!CefBridge.isAvailable()) {
+        if (typeof CefBridge !== 'undefined' && !CefBridge.isAvailable()) {
             this.loadMockData();
         }
     },
@@ -33,7 +33,6 @@ const CharApp = {
     loadMockData() {
         this.renderCharacterList({
             characters: ['Xyper_William'],
-            skins: [250],
             maxChars: 3,
             ucp: 'oogtaunama'
         });
@@ -105,32 +104,17 @@ const CharApp = {
      */
     renderCharacterList(data) {
         const characters = data.characters || [];
-        const skins = data.skins || [];
         const maxChars = data.maxChars || 3;
         const ucp = data.ucp || '';
 
         this.state.characters = characters;
-        this.state.skins = skins;
         this.state.maxChars = maxChars;
         this.state.ucpName = ucp;
-
-        // Cari slot pertama yang terisi sebagai default preview
-        let firstFilled = -1;
-        for (let s = 0; s < maxChars; s++) {
-            if (characters[s] && characters[s].trim() !== '') {
-                firstFilled = s;
-                break;
-            }
-        }
-        if (firstFilled !== -1) {
-            this.state.selectedSlot = firstFilled;
-        }
 
         // Update Counter Label
         const charCountLabel = document.getElementById('charCountLabel');
         if (charCountLabel) {
-            const filledCount = characters.filter(c => c && c.trim() !== '').length;
-            charCountLabel.innerText = `${filledCount} / ${maxChars} characters`;
+            charCountLabel.innerText = `${characters.length} / ${maxChars} characters`;
         }
 
         const grid = document.getElementById('cardsGrid');
@@ -140,14 +124,11 @@ const CharApp = {
         for (let i = 0; i < maxChars; i++) {
             const charName = characters[i];
             const card = document.createElement('div');
-            const isFilled = (charName && charName.trim() !== '');
-            const isSelected = (isFilled && i === this.state.selectedSlot);
 
-            if (isFilled) {
-                card.className = `char-card filled-card ${isSelected ? 'selected' : ''}`;
-                card.dataset.slot = i;
+            if (charName && charName.trim() !== '') {
+                // KARTU TERISI KARAKTER (HANYA TOMBOL SPAWN, TOMBOL HAPUS SUDAH DIHAPUS)
+                card.className = 'char-card filled-card';
                 card.innerHTML = `
-                    <span class="selected-badge">TERPILIH</span>
                     <div class="card-top">
                         <div class="card-emblem">
                             <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="2">
@@ -164,22 +145,12 @@ const CharApp = {
                     </div>
                     <div class="card-actions">
                         <button type="button" class="btn btn-primary btn-spawn" data-slot="${i}" data-name="${charName}" style="width: 100%; flex: 1;">
-                            SPAWN
+                            Spawn
                         </button>
                     </div>
                 `;
 
-                // Klik kartu untuk memicu 3D character preview di GTA San Andreas
-                card.addEventListener('click', (e) => {
-                    if (e.target.closest('.btn-spawn')) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        this.selectCharacter(i, charName);
-                        return;
-                    }
-                    this.previewCharacter(i);
-                });
-
+                // Pasang event listener langsung pada tombol Spawn
                 const btnSpawn = card.querySelector('.btn-spawn');
                 if (btnSpawn) {
                     btnSpawn.addEventListener('click', (e) => {
@@ -190,8 +161,8 @@ const CharApp = {
                 }
 
             } else {
+                // KARTU SLOT KOSONG / CREATE NEW
                 card.className = 'char-card empty-card';
-                card.dataset.slot = i;
                 card.innerHTML = `
                     <div class="card-top">
                         <div class="pattern-plus-wrap">
@@ -209,15 +180,10 @@ const CharApp = {
                     </div>
                     <div class="card-actions">
                         <button type="button" class="btn btn-outline btn-select" data-slot="${i}" style="width: 100%; flex: 1;">
-                            + Buat Karakter
+                            Select
                         </button>
                     </div>
                 `;
-
-                card.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    this.openCreateChar(i);
-                });
 
                 const btnSelect = card.querySelector('.btn-select');
                 if (btnSelect) {
@@ -234,41 +200,16 @@ const CharApp = {
     },
 
     /**
-     * Preview Karakter 3D Ped di Game
-     */
-    previewCharacter(slotIndex) {
-        this.state.selectedSlot = slotIndex;
-
-        // Update highlight visual kartu
-        const allCards = document.querySelectorAll('.char-card.filled-card');
-        allCards.forEach(c => {
-            if (parseInt(c.dataset.slot, 10) === slotIndex) {
-                c.classList.add('selected');
-            } else {
-                c.classList.remove('selected');
-            }
-        });
-
-        console.log(`[CharApp] Mengirim permintaan 3D Preview untuk Slot ${slotIndex}`);
-        CefBridge.emit('cef_onPlayerPreviewChar', slotIndex);
-    },
-
-    /**
      * Pilih Karakter untuk Spawn
      */
     selectCharacter(slotIndex, charName) {
         console.log(`[CharApp] Memilih karakter slot ${slotIndex}: ${charName}`);
         this.showToast(`Memuat data karakter ${charName}...`, 'info');
 
-        // LEPAS FOKUS CEF SEGERA & SEMBUNYIKAN UI AGAR KURSOR HILANG SAAT SPAWN
+        // LEPAS FOKUS CEF SEGERA AGAR KURSOR HILANG SAAT SPAWN
         CefBridge.setFocus(false);
-        const root = document.getElementById('viewSelector') || document.body;
-        if (root) {
-            root.style.pointerEvents = 'none';
-            root.style.display = 'none';
-        }
 
-        // Kirim event ke Pawn (akan menutup CEF dan memunculkan Dialog Pilihan Spawn)
+        // Kirim event ke Pawn
         CefBridge.emit('cef_onPlayerSelectChar', slotIndex, charName);
     },
 
