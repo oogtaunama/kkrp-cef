@@ -344,32 +344,40 @@
         screen: document.getElementById('phoneScreen'),
 
         init() {
-            // Ensure phone screen starts locked cleanly
-            if (this.screen) {
-                this.screen.classList.add('is-locked');
+            try {
+                this.wrapper = this.wrapper || document.getElementById('phoneWrapper');
+                this.screen = this.screen || document.getElementById('phoneScreen');
+
+                // Ensure phone screen starts locked cleanly
+                if (this.screen) {
+                    this.screen.classList.add('is-locked');
+                }
+
+                // Set wallpaper from storage or state
+                const savedWall = localStorage.getItem('kkrp_phone_wallpaper') || 'ios13-wave';
+                PhoneState.wallpaper = savedWall;
+                this.setWallpaper(savedWall);
+
+                this.updateClock();
+                setInterval(() => this.updateClock(), 1000);
+
+                this.bindEvents();
+                this.loadInitialMockData();
+
+                // Notify CEF / Pawn that Phone UI is Ready
+                if (window.CefBridge && typeof CefBridge.emit === 'function') {
+                    CefBridge.emit('cef_onPhoneReady');
+                }
+            } catch (err) {
+                console.error('[PhoneUI] Error during init:', err);
             }
 
-            // Set wallpaper from storage or state
-            const savedWall = localStorage.getItem('kkrp_phone_wallpaper') || 'ios13-wave';
-            PhoneState.wallpaper = savedWall;
-            this.setWallpaper(savedWall);
-
-            this.updateClock();
-            setInterval(() => this.updateClock(), 1000);
-
-            this.bindEvents();
-            this.loadInitialMockData();
-
-            // Notify CEF / Pawn that Phone UI is Ready
-            if (window.CefBridge) {
-                CefBridge.emit('cef_onPhoneReady');
-            }
-
-            // Standalone Browser Detection (Preview Mode)
-            if (!window.CefBridge || !CefBridge.isAvailable()) {
+            // Standalone Browser Detection (Preview Mode di Chrome / Edge)
+            const isCef = window.CefBridge && typeof CefBridge.isAvailable === 'function' && CefBridge.isAvailable();
+            if (!isCef) {
                 document.body.classList.add('browser-preview');
-                // Automatically open phone on Lock Screen in preview mode
-                this.showPhone(false);
+                // Buka HP langsung ke Homescreen di browser preview agar user bisa langsung klik dan coba semua aplikasi
+                this.showPhone(true);
             }
         },
 
@@ -1171,14 +1179,6 @@
 
             if (window.CefBridge) {
                 CefBridge.emit('cef_onPhoneSendContactToTarget', Number(targetId), pending.name, pending.number);
-            }
-            document.getElementById('modalShareContact')?.classList.remove('active');
-            this.showNotification('Membagikan Kontak', `Permintaan dikirim ke ID ${targetId}...`, 'contacts');
-        },
-            PhoneAudio.playClick();
-
-            if (window.CefBridge) {
-                CefBridge.emit('cef_onPhoneSendContactToTarget', Number(targetId), name, number);
             }
             document.getElementById('modalShareContact')?.classList.remove('active');
             this.showNotification('Membagikan Kontak', `Permintaan dikirim ke ID ${targetId}...`, 'contacts');
@@ -2677,11 +2677,16 @@
         };
     }
 
-    window.addEventListener('DOMContentLoaded', () => {
-        PhoneUI.init();
-    });
-
     window.PhoneUI = PhoneUI;
     window.PhoneState = PhoneState;
+
+    // Inisialisasi otomatis jika DOM sudah selesai dimuat (interactive/complete) atau saat DOMContentLoaded
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+            PhoneUI.init();
+        });
+    } else {
+        PhoneUI.init();
+    }
 
 })();

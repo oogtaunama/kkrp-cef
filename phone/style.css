@@ -53,6 +53,16 @@ html, body {
 /* Standalone Browser Preview Background */
 body.browser-preview {
     background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+body.browser-preview .phone-device-wrapper {
+    position: relative !important;
+    right: auto !important;
+    bottom: auto !important;
+    transform: translateY(0) !important;
+    opacity: 1 !important;
 }
 
 .phone-viewport-backdrop {
