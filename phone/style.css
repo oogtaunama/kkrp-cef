@@ -307,7 +307,7 @@ body.browser-preview {
 }
 
 /* KETIKA LAYAR TERKUNCI (LOCKSCREEN): SEMBUNYIKAN SELURUH APLIKASI, WIDGET, DAN DOCK AGAR LOCKSCREEN MURNI */
-.phone-screen.is-locked .screen-view:not(.screen-lock),
+.phone-screen.is-locked .screen-view:not(.screen-lock):not(.call-overlay):not(.incoming-call-overlay),
 .phone-screen.is-locked .screen-home,
 .phone-screen.is-locked .home-widget-row,
 .phone-screen.is-locked .app-grid,
@@ -318,6 +318,28 @@ body.browser-preview {
     visibility: hidden !important;
     opacity: 0 !important;
     pointer-events: none !important;
+}
+
+/* OVERLAY PANGGILAN & MODAL: SELALU TAMPIL DAN PRIORITAS TERTINGGI MESKIPUN SCREEN TERKUNCI */
+.phone-screen .call-overlay.active,
+.phone-screen .incoming-call-overlay.active,
+.phone-screen.is-locked .call-overlay.active,
+.phone-screen.is-locked .incoming-call-overlay.active {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 9999 !important;
+    pointer-events: auto !important;
+}
+
+.phone-screen .modal-backdrop.active,
+.phone-screen.is-locked .modal-backdrop.active,
+.alert-dialog-backdrop.active {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 99999 !important;
+    pointer-events: auto !important;
 }
 
 /* Dynamic Wallpapers */
@@ -412,7 +434,7 @@ body.browser-preview {
 }
 
 .nav-back-btn, .app-header-action {
-    background: transparent;
+    background: rgba(255, 255, 255, 0.12);
     border: none;
     color: var(--ios-blue);
     font-size: 16px;
@@ -420,13 +442,19 @@ body.browser-preview {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
-    transition: background 0.15s ease;
+    transition: background 0.15s ease, transform 0.15s ease;
+    z-index: 20;
+    pointer-events: auto !important;
 }
 .nav-back-btn:hover, .app-header-action:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.25);
+    color: #ffffff;
+}
+.nav-back-btn:active, .app-header-action:active {
+    transform: scale(0.92);
 }
 
 /* ==========================================================================

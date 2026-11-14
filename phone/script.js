@@ -418,6 +418,9 @@
                 this.declineCall();
             }
 
+            // Kembalikan ke Homescreen bersih agar buka HP berikutnya langsung normal
+            this.goHome();
+
             // Emit close to server
             if (window.CefBridge) {
                 CefBridge.emit('cef_onPhoneClose');
@@ -469,7 +472,6 @@
 
         // Switch Screen View
         switchView(viewId, pushHistory = true) {
-            const currentEl = document.getElementById(PhoneState.currentView);
             const targetEl = document.getElementById(viewId);
             if (!targetEl) return;
 
@@ -477,7 +479,13 @@
                 PhoneState.historyStack.push(PhoneState.currentView);
             }
 
-            if (currentEl) currentEl.classList.remove('active');
+            // Hapus class .active dari SELURUH screen-view untuk memastikan tidak ada screen yang tertinggal/stuck
+            document.querySelectorAll('.screen-view').forEach(el => {
+                if (el.id !== viewId) {
+                    el.classList.remove('active');
+                }
+            });
+
             targetEl.classList.add('active');
             PhoneState.currentView = viewId;
         },
@@ -562,11 +570,24 @@
                 notif.classList.add('show');
                 clearTimeout(this._notifTimeout);
 
-                // Click banner to open target app
+                // Click banner to open target app or active action screen
                 notif.onclick = () => {
                     notif.classList.remove('show');
+                    if (PhoneState.isLocked) PhoneUI.unlockPhone(false);
+
+                    if (PhoneState.incomingCall.isActive) {
+                        PhoneUI.switchView('viewIncomingCall', false);
+                        return;
+                    }
+                    if (PhoneState.activeCall.isActive) {
+                        PhoneUI.switchView('viewActiveCall', false);
+                        return;
+                    }
+                    if (PhoneState.incomingShare) {
+                        document.getElementById('modalConfirmShare')?.classList.add('active');
+                        return;
+                    }
                     if (appTarget) {
-                        if (PhoneState.isLocked) PhoneUI.unlockPhone();
                         PhoneUI.openApp(appTarget);
                     }
                 };
@@ -580,6 +601,20 @@
         // Floating Bottom Pop-up Notification (Tetap didukung & sinkron)
         showBottomNotification(title, message, iconSvg = 'bell') {
             this.showNotification(title, message, iconSvg);
+            const bottomCard = document.getElementById('bottomNotificationCard');
+            const bottomTitle = document.getElementById('bottomNotifTitle');
+            const bottomMsg = document.getElementById('bottomNotifMsg');
+            const bottomIcon = document.getElementById('bottomNotifIcon');
+            if (bottomCard) {
+                if (bottomTitle) bottomTitle.textContent = title || 'Notifikasi';
+                if (bottomMsg) bottomMsg.textContent = message || '';
+                if (bottomIcon && PhoneSvg[iconSvg]) bottomIcon.innerHTML = PhoneSvg[iconSvg];
+                bottomCard.classList.add('show');
+                clearTimeout(this._bottomNotifTimeout);
+                this._bottomNotifTimeout = setTimeout(() => {
+                    bottomCard.classList.remove('show');
+                }, 4500);
+            }
         },
 
         // Open App by Name
@@ -732,7 +767,8 @@
             const disp = document.getElementById('dialerNumberText');
             if (disp) disp.textContent = '';
 
-            this.switchView('viewAppPhone', false);
+            // Kembalikan ke Beranda bersih (tidak stuck di keypad)
+            this.goHome();
         },
 
         // Trigger Incoming Call
@@ -749,6 +785,16 @@
             const incNumEl = document.getElementById('incomingNumber');
             if (incNameEl) incNameEl.textContent = PhoneState.incomingCall.fromName;
             if (incNumEl) incNumEl.textContent = fromNumber;
+
+            // Pastikan screen tidak terhalang lockscreen saat ada panggilan masuk
+            if (this.screen) {
+                this.screen.classList.remove('is-locked');
+            }
+            const lockEl = document.getElementById('viewLockScreen');
+            if (lockEl) {
+                lockEl.classList.remove('active');
+                lockEl.classList.add('unlocked');
+            }
 
             this.switchView('viewIncomingCall', false);
             PhoneAudio.startRingtone();
@@ -1604,11 +1650,23 @@
                 this.unlockPhone(true);
             });
 
-            // Close Bottom Pop-up Notification
+            // Close / Click Bottom Pop-up Notification
             document.getElementById('bottomNotifCloseBtn')?.addEventListener('click', (e) => {
                 e.stopPropagation();
                 const card = document.getElementById('bottomNotificationCard');
                 if (card) card.classList.remove('show');
+            });
+            document.getElementById('bottomNotificationCard')?.addEventListener('click', (e) => {
+                if (e.target.closest('#bottomNotifCloseBtn')) return;
+                const card = document.getElementById('bottomNotificationCard');
+                if (card) card.classList.remove('show');
+                if (PhoneState.incomingCall.isActive) {
+                    this.switchView('viewIncomingCall', false);
+                } else if (PhoneState.activeCall.isActive) {
+                    this.switchView('viewActiveCall', false);
+                } else if (PhoneState.incomingShare) {
+                    document.getElementById('modalConfirmShare')?.classList.add('active');
+                }
             });
 
             // Bottom Home Indicator Bar (Click to Go Home / Minimize / Unlock)
@@ -1645,7 +1703,14 @@
 
             // Back button on all apps
             document.querySelectorAll('[data-action="go-home"]').forEach(btn => {
-                btn.addEventListener('click', () => this.goHome());
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.goHome();
+                });
+            });
+            document.getElementById('phoneBackBtn')?.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.goHome();
             });
 
             // App Icons click (Homescreen & Dock)
@@ -2156,7 +2221,7 @@
 
         // Incoming Call Event from Pawn
         CefBridge.on('incomingCall', (fromNumber, fromName) => {
-            PhoneUI.showPhone(false);
+            PhoneUI.showPhone(true);
             PhoneUI.triggerIncomingCall(fromNumber, fromName);
         });
 
@@ -2242,7 +2307,7 @@
         // Event Permintaan Kontak Masuk (Target Screen: Yes / No)
         CefBridge.on('incomingContactShare', (fromPlayerId, fromName, contactName, contactNumber) => {
             PhoneState.incomingShare = { fromPlayerId, fromName, contactName, contactNumber };
-            PhoneAudio.playNotif();
+            PhoneAudio.playNotification();
 
             const senderEl = document.getElementById('confirmSenderInfo');
             const nameEl = document.getElementById('confirmContactName');
@@ -2252,9 +2317,15 @@
             if (nameEl) nameEl.textContent = contactName;
             if (numEl) numEl.textContent = contactNumber;
 
-            // Buka HP dan tampilkan modal konfirmasi
+            // Buka HP dalam mode aktif dan tampilkan alert konfirmasi
             PhoneUI.showPhone(true);
-            document.getElementById('modalConfirmShare')?.classList.add('active');
+            if (PhoneUI.screen) {
+                PhoneUI.screen.classList.remove('is-locked');
+            }
+            const modalEl = document.getElementById('modalConfirmShare');
+            if (modalEl) {
+                modalEl.classList.add('active');
+            }
         });
 
         // Update Bank Balance from Pawn
