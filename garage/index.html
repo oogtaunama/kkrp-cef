@@ -14,15 +14,15 @@
     <link rel="stylesheet" href="../common/common.css">
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="garage-body">
+<body class="garage-body" style="background: transparent !important; display: none;">
 
     <!-- Transparent in-game backdrop / Ambient sparks canvas -->
-    <div class="backdrop-wrapper">
+    <div class="backdrop-wrapper" id="garageBackdrop" style="display: none;">
         <canvas id="garageCanvas" class="ambient-canvas"></canvas>
     </div>
 
     <!-- Main Container Layout -->
-    <div class="garage-container" id="garageContainer">
+    <div class="garage-container" id="garageContainer" style="display: none;">
         
         <!-- ============================================================ -->
         <!-- HEADER BAR                                                    -->

@@ -16,10 +16,33 @@ const GarageApp = {
         this.initCanvasSparks();
         this.bindEvents();
 
-        // Mode Dev Preview di luar game
-        if (typeof CefBridge !== 'undefined' && !CefBridge.isAvailable()) {
-            this.loadMockData();
+        if (typeof CefBridge !== 'undefined') {
+            if (CefBridge.isAvailable()) {
+                CefBridge.emit('cef_onGarageReady');
+            } else {
+                // Mode Dev Preview di browser desktop luar game
+                this.showUI();
+                this.loadMockData();
+            }
         }
+    },
+
+    showUI() {
+        document.body.classList.add('active');
+        document.body.style.display = 'flex';
+        const backdrop = document.getElementById('garageBackdrop');
+        if (backdrop) backdrop.style.display = 'block';
+        const container = document.getElementById('garageContainer');
+        if (container) container.style.display = 'flex';
+    },
+
+    hideUI() {
+        document.body.classList.remove('active');
+        document.body.style.display = 'none';
+        const backdrop = document.getElementById('garageBackdrop');
+        if (backdrop) backdrop.style.display = 'none';
+        const container = document.getElementById('garageContainer');
+        if (container) container.style.display = 'none';
     },
 
     loadMockData() {
@@ -86,6 +109,7 @@ const GarageApp = {
     },
 
     setVehicles(vehicleList, garageName) {
+        this.showUI();
         this.state.vehicles = Array.isArray(vehicleList) ? vehicleList : [];
         if (garageName) {
             this.state.garageName = garageName;
@@ -217,6 +241,7 @@ const GarageApp = {
 
     close() {
         console.log('[GarageApp] Closing garage...');
+        this.hideUI();
         // Beritahu Pawn server untuk sembunyikan browser dan lepas fokus kursor
         if (typeof CefBridge !== 'undefined') {
             CefBridge.emit('cef_onGarageClose');
