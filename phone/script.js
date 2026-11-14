@@ -775,7 +775,9 @@
             }, 1000);
         },
 
-        hangupCall() {
+        hangupCall(notifyServer = true) {
+            const wasActive = PhoneState.activeCall.isActive || PhoneState.incomingCall.isActive;
+
             PhoneAudio.stopRingback();
             PhoneAudio.stopRingtone();
             PhoneAudio.playClick();
@@ -801,7 +803,7 @@
             // Record to recents
             if (PhoneState.activeCall.targetNumber) {
                 PhoneState.recents.unshift({
-                    name: PhoneState.activeCall.targetName,
+                    name: PhoneState.activeCall.targetName || PhoneState.activeCall.targetNumber,
                     number: PhoneState.activeCall.targetNumber,
                     type: 'outgoing',
                     time: 'Baru saja'
@@ -818,7 +820,7 @@
             document.getElementById('viewIncomingCall')?.classList.remove('active');
             document.getElementById('viewActiveCall')?.classList.remove('active');
 
-            if (window.CefBridge) {
+            if (notifyServer && wasActive && window.CefBridge) {
                 CefBridge.emit('cef_onPhoneHangup');
             }
 
@@ -880,14 +882,15 @@
             }
         },
 
-        declineCall() {
+        declineCall(notifyServer = true) {
+            const wasActive = PhoneState.incomingCall.isActive;
             PhoneAudio.stopRingtone();
             PhoneState.incomingCall.isActive = false;
 
             // Record missed call
             if (PhoneState.incomingCall.fromNumber) {
                 PhoneState.recents.unshift({
-                    name: PhoneState.incomingCall.fromName,
+                    name: PhoneState.incomingCall.fromName || PhoneState.incomingCall.fromNumber,
                     number: PhoneState.incomingCall.fromNumber,
                     type: 'missed',
                     time: 'Baru saja'
@@ -895,10 +898,11 @@
                 this.renderRecentsList();
             }
 
-            if (window.CefBridge) {
+            document.getElementById('viewIncomingCall')?.classList.remove('active');
+
+            if (notifyServer && wasActive && window.CefBridge) {
                 CefBridge.emit('cef_onPhoneHangup');
             }
-
             this.goHome();
         },
 
@@ -1749,9 +1753,9 @@
                 }
             });
 
-            // Bottom Home Indicator Bar (Click to Go Home / Minimize / Unlock)
-            document.getElementById('homeIndicatorWrap')?.addEventListener('click', (e) => {
-                e.stopPropagation();
+            // Bottom Home Indicator Bar (Click / Touch to Go Home / Minimize / Unlock)
+            const handleHomeIndicator = (e) => {
+                if (e) { e.preventDefault(); e.stopPropagation(); }
                 if (PhoneState.isLocked) {
                     this.unlockPhone(true);
                 } else if (PhoneState.currentView === 'viewHomeScreen') {
@@ -1760,7 +1764,10 @@
                 } else {
                     this.goHome();
                 }
-            });
+            };
+            const homeIndicator = document.getElementById('homeIndicatorWrap');
+            homeIndicator?.addEventListener('click', handleHomeIndicator);
+            homeIndicator?.addEventListener('touchend', handleHomeIndicator);
 
             // Physical Power Button -> Lock / Unlock
             document.getElementById('powerBtn')?.addEventListener('click', () => {
@@ -1781,48 +1788,67 @@
                 this.showNotification('Volume', 'Volume Diturunkan (50%)', 'volume');
             });
 
-            // Back button on all apps
-            document.querySelectorAll('[data-action="go-home"]').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    this.goHome();
-                });
-            });
-            document.getElementById('phoneBackBtn')?.addEventListener('click', (e) => {
-                e.stopPropagation();
+            // Back button on all apps (Support Touch Android & Desktop)
+            const handleGoHome = (e) => {
+                if (e) { e.preventDefault(); e.stopPropagation(); }
                 this.goHome();
+            };
+            document.querySelectorAll('[data-action="go-home"]').forEach(btn => {
+                btn.addEventListener('click', handleGoHome);
+                btn.addEventListener('touchend', handleGoHome);
             });
+            const phoneBackBtn = document.getElementById('phoneBackBtn');
+            phoneBackBtn?.addEventListener('click', handleGoHome);
+            phoneBackBtn?.addEventListener('touchend', handleGoHome);
 
-            // App Icons click (Homescreen & Dock)
+            // App Icons click (Homescreen & Dock - Dual Click & Touchend)
             document.querySelectorAll('[data-app]').forEach(appEl => {
-                appEl.addEventListener('click', () => {
+                const handleOpenApp = (e) => {
+                    if (e) {
+                        if (e.type === 'touchend') e.preventDefault();
+                        e.stopPropagation();
+                    }
                     const app = appEl.getAttribute('data-app');
-                    this.openApp(app);
-                });
+                    if (app) this.openApp(app);
+                };
+                appEl.addEventListener('click', handleOpenApp);
+                appEl.addEventListener('touchend', handleOpenApp);
             });
 
             // Phone Dialer Keypad
             document.querySelectorAll('.key-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
+                const handleKey = (e) => {
+                    if (e) {
+                        if (e.type === 'touchend') e.preventDefault();
+                        e.stopPropagation();
+                    }
                     const key = btn.getAttribute('data-key');
                     PhoneAudio.playDTMF(key);
                     const disp = document.getElementById('dialerNumberText');
                     if (disp && disp.textContent.length < 16) {
                         disp.textContent += key;
                     }
-                });
+                };
+                btn.addEventListener('click', handleKey);
+                btn.addEventListener('touchend', handleKey);
             });
 
             // Dialer Backspace
             const dialerBackBtn = document.getElementById('dialerBackspaceBtn');
             if (dialerBackBtn) {
-                dialerBackBtn.addEventListener('click', () => {
+                const handleBack = (e) => {
+                    if (e) {
+                        if (e.type === 'touchend') e.preventDefault();
+                        e.stopPropagation();
+                    }
                     PhoneAudio.playClick();
                     const disp = document.getElementById('dialerNumberText');
                     if (disp && disp.textContent.length > 0) {
                         disp.textContent = disp.textContent.slice(0, -1);
                     }
-                });
+                };
+                dialerBackBtn.addEventListener('click', handleBack);
+                dialerBackBtn.addEventListener('touchend', handleBack);
                 // Double click / Long click to clear all digits
                 dialerBackBtn.addEventListener('dblclick', () => {
                     const disp = document.getElementById('dialerNumberText');
@@ -1830,18 +1856,25 @@
                 });
             }
 
-            // Dialer Call / Hangup Button
-            document.getElementById('startCallBtn')?.addEventListener('click', () => {
+            // Dialer Call / Hangup Button (Dual Click & Touchend)
+            const handleCallBtn = (e) => {
+                if (e) {
+                    if (e.type === 'touchend') e.preventDefault();
+                    e.stopPropagation();
+                }
                 if (PhoneState.activeCall.isActive) {
                     // Jika sedang dalam panggilan aktif, tombol ini berfungsi menutup panggilan
-                    this.hangupCall();
+                    this.hangupCall(true);
                 } else {
                     const disp = document.getElementById('dialerNumberText');
                     if (disp && disp.textContent && disp.textContent.trim() !== '') {
                         this.startCall(disp.textContent.trim());
                     }
                 }
-            });
+            };
+            const startCallBtn = document.getElementById('startCallBtn');
+            startCallBtn?.addEventListener('click', handleCallBtn);
+            startCallBtn?.addEventListener('touchend', handleCallBtn);
 
             // Active Call Screen Tool Buttons
             // 1. Mute Button
@@ -2434,7 +2467,7 @@
 
         // Call Ended / Hung Up by Remote Player
         CefBridge.on('callEnded', () => {
-            PhoneUI.hangupCall();
+            PhoneUI.hangupCall(false);
         });
 
         // Receive SMS Event from Pawn
