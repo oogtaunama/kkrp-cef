@@ -61,24 +61,24 @@ const ProgressApp = {
     },
 
     bindEvents() {
+        const handleOpen = (text) => this.openProgress(text);
+        const handleSet = (pct, text) => this.setTargetProgress(pct, text);
+        const handleHide = () => this.hideProgress();
+
         if (typeof CefBridge !== 'undefined') {
-            // Buka progress bar di awal aktivitas
-            CefBridge.on('cef:openProgress', (text) => {
-                this.openProgress(text);
-            });
+            CefBridge.on('cef:openProgress', handleOpen);
+            CefBridge.on('openProgress', handleOpen);
 
-            // Update persentase & teks secara dinamis dari timer server
-            CefBridge.on('cef:setProgress', (percent, text) => {
-                this.setTargetProgress(percent, text);
-            });
+            CefBridge.on('cef:setProgress', handleSet);
+            CefBridge.on('setProgress', handleSet);
 
-            // Sembunyikan progress bar
-            CefBridge.on('cef:hideProgress', () => {
-                this.hideProgress();
-            });
+            CefBridge.on('cef:hideProgress', handleHide);
+            CefBridge.on('hideProgress', handleHide);
 
-            // Auto-timer animasi progress jika dipanggil dengan durasi
             CefBridge.on('cef:showProgress', (text, durationMs, actionKey) => {
+                this.showProgressWithDuration(text, durationMs, actionKey);
+            });
+            CefBridge.on('showProgress', (text, durationMs, actionKey) => {
                 this.showProgressWithDuration(text, durationMs, actionKey);
             });
         }
@@ -86,9 +86,12 @@ const ProgressApp = {
         // Direct window.cef hook
         if (typeof window !== 'undefined' && window.cef && typeof window.cef.on === 'function') {
             try {
-                window.cef.on('openProgress', (text) => this.openProgress(text));
-                window.cef.on('setProgress', (pct, text) => this.setTargetProgress(pct, text));
-                window.cef.on('hideProgress', () => this.hideProgress());
+                window.cef.on('cef:openProgress', handleOpen);
+                window.cef.on('openProgress', handleOpen);
+                window.cef.on('cef:setProgress', handleSet);
+                window.cef.on('setProgress', handleSet);
+                window.cef.on('cef:hideProgress', handleHide);
+                window.cef.on('hideProgress', handleHide);
             } catch (e) {}
         }
     },
@@ -106,8 +109,21 @@ const ProgressApp = {
     },
 
     setTargetProgress(percent, text) {
-        if (text) {
-            const clean = this.cleanText(text);
+        let p = percent;
+        let t = text;
+
+        if (typeof p === 'object' && p !== null) {
+            if (p.percent !== undefined) {
+                t = p.text || t;
+                p = p.percent;
+            } else if (Array.isArray(p)) {
+                t = p[1] || t;
+                p = p[0];
+            }
+        }
+
+        if (t) {
+            const clean = this.cleanText(t);
             if (clean && clean !== 'MEMPROSES...') {
                 this.activityTitle = clean;
                 if (this.textEl) this.textEl.textContent = clean;
@@ -117,7 +133,7 @@ const ProgressApp = {
             }
         }
 
-        const num = Number(percent);
+        const num = parseFloat(p);
         if (!isNaN(num) && num >= 0) {
             this.targetPercent = Math.max(0, Math.min(100, num));
         }
@@ -138,7 +154,7 @@ const ProgressApp = {
                 const diff = this.targetPercent - this.currentPercent;
                 if (Math.abs(diff) > 0.05) {
                     // Fluid lerp transisi halus mengikuti tick server
-                    this.currentPercent += diff * 0.08;
+                    this.currentPercent += diff * 0.12;
                     this.renderVisuals(this.currentPercent);
                 } else if (this.currentPercent !== this.targetPercent) {
                     this.currentPercent = this.targetPercent;
