@@ -1,63 +1,31 @@
 /**
- * CEF Garage Module Controller
+ * Simple Orange Garage Controller (FiveM Style Context Menu)
  * Kota Kecilku Roleplay / open.mp CEF Interface
  */
 
 const GarageApp = {
     state: {
         vehicles: [],
-        selectedId: null,
         garageName: 'Garasi Publik',
         isLoading: false
     },
 
     init() {
-        console.log('[GarageApp] Initializing Garage CEF module...');
-        this.initCanvasSparks();
+        console.log('[GarageApp] Simple Orange Garage module initialized.');
         this.bindEvents();
 
         if (typeof CefBridge !== 'undefined') {
             if (CefBridge.isAvailable()) {
                 CefBridge.emit('cef_onGarageReady');
             } else {
-                // Mode Dev Preview di browser desktop luar game
-                this.showUI();
+                // Mode Dev Preview di luar game
                 this.loadMockData();
             }
         }
     },
 
-    showUI() {
-        document.body.classList.add('active');
-        document.body.style.display = 'flex';
-        const backdrop = document.getElementById('garageBackdrop');
-        if (backdrop) backdrop.style.display = 'block';
-        const container = document.getElementById('garageContainer');
-        if (container) container.style.display = 'flex';
-    },
-
-    hideUI() {
-        document.body.classList.remove('active');
-        document.body.style.display = 'none';
-        const backdrop = document.getElementById('garageBackdrop');
-        if (backdrop) backdrop.style.display = 'none';
-        const container = document.getElementById('garageContainer');
-        if (container) container.style.display = 'none';
-    },
-
-    loadMockData() {
-        const mockList = [
-            { id: 1, name: "Karin Sultan RS", category: "Sports Sedan", plate: "POLISI • B 8888 SLS", health: 98, status: "garage", icon: "fa-car-rear", location: "Los Santos Downtown" },
-            { id: 2, name: "Annis Elegy Retro", category: "Sports Drift", plate: "DRIFT • F 777 DRI", health: 82, status: "garage", icon: "fa-car-side", location: "Los Santos Downtown" },
-            { id: 3, name: "Dinka Jester Classic", category: "Sports Coupe", plate: "SPEED • D 1234 JST", health: 100, status: "garage", icon: "fa-car", location: "Los Santos Downtown" },
-            { id: 4, name: "Grotti Turismo R", category: "Hypercar", plate: "LUXE • B 999 TRM", health: 45, status: "garage", icon: "fa-gauge-high", location: "Los Santos Downtown" },
-            { id: 5, name: "Pegassi NRG-500", category: "Racing Bike", plate: "MOTO • B 69 NRG", health: 95, status: "garage", icon: "fa-motorcycle", location: "Los Santos Downtown" }
-        ];
-        this.setVehicles(mockList, 'Garasi Publik Los Santos');
-    },
-
     bindEvents() {
-        // 1. ESC Key to close
+        // 1. ESC to close
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' || e.code === 'Escape') {
                 e.preventDefault();
@@ -65,7 +33,7 @@ const GarageApp = {
             }
         });
 
-        // 2. CefBridge listener (Pawn -> JS)
+        // 2. CefBridge listeners
         if (typeof CefBridge !== 'undefined') {
             // Menerima data daftar kendaraan dari Pawn
             CefBridge.on('cef:setGarageVehicles', (dataJson, garageName) => {
@@ -78,56 +46,52 @@ const GarageApp = {
                 this.setVehicles(parsedList, garageName);
             });
 
-            // Respon spawn sukses / gagal dari server
+            // Tutup dari server
+            CefBridge.on('cef:closeGarageUI', () => {
+                this.hideUI();
+            });
+
+            // Respon spawn dari server
             CefBridge.on('cef:onSpawnResult', (success, message) => {
                 this.state.isLoading = false;
-                const btn = document.getElementById('btnSpawn');
-                if (btn) btn.disabled = false;
-
+                this.showToast(message || (success ? 'Kendaraan dikeluarkan.' : 'Gagal mengeluarkan kendaraan.'));
                 if (success) {
-                    this.showToast('Berhasil', message || 'Kendaraan telah dikeluarkan dari garasi.');
                     setTimeout(() => {
-                        this.close();
-                    }, 1200);
-                } else {
-                    this.showToast('Gagal', message || 'Kendaraan gagal dikeluarkan.', true);
+                        this.hideUI();
+                    }, 400);
                 }
             });
         }
+    },
 
-        // 3. Direct window.cef hook jika ada
-        if (typeof window !== 'undefined' && window.cef && typeof window.cef.on === 'function') {
-            try {
-                window.cef.on('setVehicles', (data, gName) => {
-                    const parsed = typeof data === 'string' ? JSON.parse(data) : data;
-                    this.setVehicles(parsed, gName);
-                });
-            } catch (e) {
-                // Abaikan jika sudah di-handle CefBridge
-            }
-        }
+    showUI() {
+        document.body.classList.add('active');
+        document.body.style.display = 'flex';
+        const container = document.getElementById('garageContainer');
+        if (container) container.style.display = 'flex';
+    },
+
+    hideUI() {
+        document.body.classList.remove('active');
+        document.body.style.display = 'none';
+        const container = document.getElementById('garageContainer');
+        if (container) container.style.display = 'none';
+        this.state.isLoading = false;
     },
 
     setVehicles(vehicleList, garageName) {
-        this.showUI();
         this.state.vehicles = Array.isArray(vehicleList) ? vehicleList : [];
         if (garageName) {
             this.state.garageName = garageName;
-            const locEl = document.getElementById('previewLocation');
-            if (locEl) locEl.textContent = garageName;
+            const subtitle = document.getElementById('garageSubtitle');
+            if (subtitle) subtitle.textContent = garageName;
         }
 
         const totalEl = document.getElementById('totalCount');
-        if (totalEl) totalEl.textContent = this.state.vehicles.length;
+        if (totalEl) totalEl.textContent = `${this.state.vehicles.length} Unit`;
 
-        if (this.state.vehicles.length > 0) {
-            // Pilih item pertama jika belum ada yang terpilih atau yang terpilih tidak ada di list
-            const exists = this.state.vehicles.some(v => v.id === this.state.selectedId);
-            this.selectVehicle(exists ? this.state.selectedId : this.state.vehicles[0].id);
-        } else {
-            this.state.selectedId = null;
-            this.renderEmpty();
-        }
+        this.renderVehicles();
+        this.showUI();
     },
 
     renderVehicles() {
@@ -136,180 +100,82 @@ const GarageApp = {
 
         listEl.innerHTML = '';
 
-        this.state.vehicles.forEach(v => {
-            const isSelected = v.id === this.state.selectedId;
-
-            // Health color indicator
-            const health = Math.max(0, Math.min(100, Math.round(Number(v.health) || 0)));
-            let healthGradient = 'linear-gradient(90deg, #FF7A18, #FFB347)';
-            if (health < 40) {
-                healthGradient = 'linear-gradient(90deg, #ef4444, #f97316)';
-            } else if (health < 75) {
-                healthGradient = 'linear-gradient(90deg, #f59e0b, #fbbf24)';
-            }
-
-            const item = document.createElement('div');
-            item.className = `vehicle-item ${isSelected ? 'active' : ''}`;
-            item.onclick = () => this.selectVehicle(v.id);
-
-            const iconClass = v.icon || 'fa-car';
-
-            item.innerHTML = `
-                <div class="item-left">
-                    <div class="item-icon-box">
-                        <i class="fa-solid ${iconClass}"></i>
-                    </div>
-                    <div class="item-info">
-                        <div class="item-info-top">
-                            <span class="item-name">${this.escapeHtml(v.name)}</span>
-                            <span class="item-health-pct">${health}%</span>
-                        </div>
-                        <div class="health-track">
-                            <div class="health-fill" style="width: ${health}%; background: ${healthGradient};"></div>
-                        </div>
-                    </div>
+        if (this.state.vehicles.length === 0) {
+            listEl.innerHTML = `
+                <div class="empty-card">
+                    <i class="fa-solid fa-car-burst" style="font-size: 24px; margin-bottom: 6px; color: #6b7280;"></i>
+                    <div>Tidak ada kendaraan di garasi ini.</div>
                 </div>
-                <div class="item-arrow">
-                    <i class="fa-solid fa-chevron-right"></i>
+            `;
+            return;
+        }
+
+        this.state.vehicles.forEach(v => {
+            const health = Math.max(0, Math.min(100, Math.round(Number(v.health) || 0)));
+            const gLoc = v.location || this.state.garageName || 'Garasi';
+
+            const card = document.createElement('div');
+            card.className = 'vehicle-card';
+            card.onclick = () => this.actionSpawn(v.id, v.plate, v.name);
+
+            // Format card sesuai gambar referensi:
+            // Line 1: Title (Vehicle Name)
+            // Line 2: Name : ... | Plate : ... | Fuel/Health : ...% | Garage : ... | State : in
+            card.innerHTML = `
+                <div class="card-title">${this.escapeHtml(v.name)}</div>
+                <div class="card-details">
+                    Name : <span class="val">${this.escapeHtml(v.name)}</span> | 
+                    Plate : <span class="highlight">${this.escapeHtml(v.plate)}</span> | 
+                    Condition : <span class="val">${health}%</span> | 
+                    Garage : <span class="val">${this.escapeHtml(gLoc)}</span> | 
+                    State : <span class="highlight">in</span>
                 </div>
             `;
 
-            listEl.appendChild(item);
+            listEl.appendChild(card);
         });
     },
 
-    renderEmpty() {
-        const listEl = document.getElementById('vehicleList');
-        if (listEl) {
-            listEl.innerHTML = `
-                <div class="empty-state">
-                    <i class="fa-solid fa-car-burst"></i>
-                    <p>Tidak ada kendaraan di garasi ini.</p>
-                </div>
-            `;
-        }
-
-        document.getElementById('previewName').textContent = '-';
-        document.getElementById('previewCategory').textContent = 'KOSONG';
-        document.getElementById('previewPlate').textContent = '-';
-        document.getElementById('previewHealthText').textContent = '-';
-        
-        const btn = document.getElementById('btnSpawn');
-        if (btn) btn.disabled = true;
-    },
-
-    selectVehicle(id) {
-        this.state.selectedId = id;
-        const v = this.state.vehicles.find(item => item.id === id);
-        if (!v) return;
-
-        document.getElementById('previewName').textContent = v.name || 'Kendaraan';
-        document.getElementById('previewCategory').textContent = v.category || 'Kendaraan Pribadi';
-        document.getElementById('previewPlate').textContent = v.plate || '-';
-
-        const health = Math.max(0, Math.min(100, Math.round(Number(v.health) || 0)));
-        document.getElementById('previewHealthText').textContent = health + '%';
-
-        const iconEl = document.getElementById('previewIcon');
-        if (iconEl) {
-            iconEl.className = `fa-solid ${v.icon || 'fa-car'}`;
-        }
-
-        const btn = document.getElementById('btnSpawn');
-        if (btn) btn.disabled = false;
-
-        this.renderVehicles();
-    },
-
-    actionSpawn() {
-        if (this.state.isLoading || !this.state.selectedId) return;
-
-        const v = this.state.vehicles.find(item => item.id === this.state.selectedId);
-        if (!v) return;
-
+    actionSpawn(vehId, plate, name) {
+        if (this.state.isLoading) return;
         this.state.isLoading = true;
-        const btn = document.getElementById('btnSpawn');
-        if (btn) btn.disabled = true;
 
-        this.showToast('Memproses...', `Mengeluarkan ${v.name}...`);
+        this.showToast(`Mengeluarkan ${name}...`);
 
-        // Emit ke Pawn server
         if (typeof CefBridge !== 'undefined') {
-            CefBridge.emit('cef_onGarageSpawn', Number(v.id), String(v.plate || ''));
+            CefBridge.emit('cef_onGarageSpawn', Number(vehId), String(plate || ''));
         }
     },
 
     close() {
-        console.log('[GarageApp] Closing garage...');
         this.hideUI();
-        // Beritahu Pawn server untuk sembunyikan browser dan lepas fokus kursor
         if (typeof CefBridge !== 'undefined') {
             CefBridge.emit('cef_onGarageClose');
         }
     },
 
-    showToast(title, desc, isError = false) {
+    showToast(message) {
         const toast = document.getElementById('toast');
-        if (!toast) return;
+        const msgEl = document.getElementById('toastMsg');
+        if (!toast || !msgEl) return;
 
-        document.getElementById('toastTitle').textContent = title;
-        document.getElementById('toastDesc').textContent = desc;
-
-        const iconBox = toast.querySelector('.toast-icon i');
-        if (iconBox) {
-            iconBox.className = isError ? 'fa-solid fa-circle-exclamation' : 'fa-solid fa-circle-check';
-        }
-
+        msgEl.textContent = message;
         toast.classList.add('active');
+
         clearTimeout(this.toastTimer);
         this.toastTimer = setTimeout(() => {
             toast.classList.remove('active');
-        }, 3200);
+        }, 2200);
     },
 
-    initCanvasSparks() {
-        const canvas = document.getElementById('garageCanvas');
-        if (!canvas) return;
-        const ctx = canvas.getContext('2d');
-        let width = 0, height = 0;
-
-        function resize() {
-            width = window.innerWidth;
-            height = window.innerHeight;
-            canvas.width = width;
-            canvas.height = height;
-        }
-        window.addEventListener('resize', resize);
-        resize();
-
-        // 16 spark particles ringan untuk performa 60FPS stabil di SA-MP
-        const sparks = Array.from({ length: 16 }, () => ({
-            x: Math.random() * width,
-            y: Math.random() * height,
-            r: 0.8 + Math.random() * 1.2,
-            vx: -0.1 + Math.random() * 0.2,
-            vy: -0.3 - Math.random() * 0.7,
-            alpha: 0.15 + Math.random() * 0.35
-        }));
-
-        function draw() {
-            ctx.clearRect(0, 0, width, height);
-            for (let i = 0; i < sparks.length; i++) {
-                const s = sparks[i];
-                s.x += s.vx;
-                s.y += s.vy;
-                if (s.y < 0) {
-                    s.y = height + 10;
-                    s.x = Math.random() * width;
-                }
-                ctx.fillStyle = `rgba(255, 122, 24, ${s.alpha})`;
-                ctx.beginPath();
-                ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-                ctx.fill();
-            }
-            requestAnimationFrame(draw);
-        }
-        requestAnimationFrame(draw);
+    loadMockData() {
+        const sampleVehicles = [
+            { id: 1, name: "amg g65", category: "SUV", plate: "QZYX3149", health: 70, location: "F" },
+            { id: 2, name: "Toyota Supra a90e", category: "Sports Coupe", plate: "RZXN6531", health: 22, location: "F" },
+            { id: 3, name: "Karin Sultan RS", category: "Sports Sedan", plate: "SLS 8888", health: 98, location: "Public" },
+            { id: 4, name: "Annis Elegy Retro", category: "Drift", plate: "DRIFT 77", health: 85, location: "Public" }
+        ];
+        this.setVehicles(sampleVehicles, 'Garasi Publik Los Santos');
     },
 
     escapeHtml(str) {
