@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boss Desk - Faction & Family Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../common/common.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        body, html {
+            width: 100vw;
+            height: 100vh;
+            background: transparent !important;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* Container Utama */
+        .bossdesk-container {
+            width: 980px;
+            height: 590px;
+            background: rgba(12, 14, 19, 0.96);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 122, 24, 0.35);
+            border-radius: 16px;
+            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+            display: flex;
+            overflow: hidden;
+            animation: modalPop 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            position: relative;
+        }
+
+        body[data-type="badside"] .bossdesk-container {
+            border-color: rgba(239, 68, 68, 0.4);
+            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.85), 0 0 40px rgba(239, 68, 68, 0.12);
+        }
+
+        @keyframes modalPop {
+            from { opacity: 0; transform: scale(0.95) translateY(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        /* Sidebar Kiri */
+        .sidebar {
+            width: 280px;
+            background: rgba(18, 21, 28, 0.75);
+            border-right: 1px solid rgba(255, 255, 255, 0.06);
+            display: flex;
+            flex-direction: column;
+            padding: 28px 22px;
+        }
+
+        .faction-header {
+            margin-bottom: 24px;
+        }
+
+        .faction-badge {
+            display: inline-block;
+            background: rgba(255, 122, 24, 0.15);
+            color: #ff9e44;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 6px;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            margin-bottom: 8px;
+            border: 1px solid rgba(255, 122, 24, 0.3);
+        }
+
+        body[data-type="badside"] .faction-badge {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            border-color: rgba(239, 68, 68, 0.35);
+        }
+
+        .faction-title {
+            color: #ffffff;
+            font-size: 19px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .faction-meta {
+            color: #64748b;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .nav-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: none;
+            color: #8b9bb4;
+            padding: 13px 16px;
+            text-align: left;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 122, 24, 0.08);
+            color: #ffffff;
+        }
+
+        body[data-type="badside"] .nav-btn:hover {
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .nav-btn.active {
+            background: linear-gradient(135deg, #ff7a18, #ff9e44);
+            color: #ffffff;
+            box-shadow: 0 6px 20px rgba(255, 122, 24, 0.4);
+        }
+
+        body[data-type="badside"] .nav-btn.active {
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
+        }
+
+        .btn-exit {
+            width: 100%;
+            background: rgba(239, 68, 68, 0.08);
+            border: 1px solid rgba(239, 68, 68, 0.25);
+            color: #ef4444;
+            padding: 11px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-exit:hover {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: rgba(239, 68, 68, 0.5);
+            color: #fff;
+        }
+
+        /* Area Konten Utama */
+        .content-area {
+            flex: 1;
+            padding: 30px 35px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .tab-pane {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .tab-pane.active {
+            display: flex;
+        }
+
+        .pane-header {
+            margin-bottom: 22px;
+        }
+
+        .pane-title {
+            color: #ffffff;
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .pane-subtitle {
+            color: #8b9bb4;
+            font-size: 13px;
+        }
+
+        /* Grid Kartu Aksi */
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .action-card {
+            background: rgba(20, 24, 33, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 3px; height: 100%;
+            background: #ff7a18;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        body[data-type="badside"] .action-card::before {
+            background: #ef4444;
+        }
+
+        .action-card:hover {
+            border-color: rgba(255, 122, 24, 0.4);
+            background: rgba(255, 122, 24, 0.05);
+            transform: translateY(-2px);
+        }
+
+        body[data-type="badside"] .action-card:hover {
+            border-color: rgba(239, 68, 68, 0.4);
+            background: rgba(239, 68, 68, 0.06);
+        }
+
+        .action-card:hover::before {
+            opacity: 1;
+        }
+
+        .action-card h4 {
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .action-card p {
+            color: #8b9bb4;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        /* Kartu Statistik Keuangan */
+        .vault-stats-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+            margin-bottom: 22px;
+        }
+
+        body[data-type="badside"] .vault-stats-container {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .vault-stats-box {
+            background: linear-gradient(135deg, rgba(25, 29, 39, 0.85), rgba(18, 21, 28, 0.95));
+            border: 1px solid rgba(255, 122, 24, 0.25);
+            border-radius: 12px;
+            padding: 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .vault-stats-box.dirty {
+            border-color: rgba(239, 68, 68, 0.3);
+            display: none;
+        }
+
+        body[data-type="badside"] .vault-stats-box.dirty {
+            display: flex;
+        }
+
+        .vault-info h3 {
+            color: #8b9bb4;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+        }
+
+        .vault-info .amount {
+            color: #ff9e44;
+            font-size: 26px;
+            font-weight: 700;
+            text-shadow: 0 0 20px rgba(255, 122, 24, 0.3);
+        }
+
+        .vault-stats-box.dirty .amount {
+            color: #ef4444;
+            text-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+        }
+
+        /* Kontrol Badside Only */
+        .badside-only {
+            display: none !important;
+        }
+
+        body[data-type="badside"] .badside-only {
+            display: flex !important;
+        }
+
+        /* Tabel Anggota */
+        .member-table-wrapper {
+            flex: 1;
+            background: rgba(18, 22, 30, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            overflow-y: auto;
+            max-height: 400px;
+        }
+
+        table.member-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        table.member-table th {
+            background: rgba(25, 29, 39, 0.9);
+            color: #94a3b8;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 12px 16px;
+            position: sticky;
+            top: 0;
+            z-index: 2;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        table.member-table td {
+            padding: 12px 16px;
+            color: #f1f5f9;
+            font-size: 13px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        table.member-table tr:hover td {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .member-rank-badge {
+            display: inline-block;
+            background: rgba(255, 122, 24, 0.15);
+            color: #ff9e44;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        body[data-type="badside"] .member-rank-badge {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+        }
+
+        .member-actions-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #ffffff;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-right: 4px;
+        }
+
+        .member-actions-btn:hover {
+            background: #ff7a18;
+            border-color: #ff7a18;
+        }
+
+        body[data-type="badside"] .member-actions-btn:hover {
+            background: #ef4444;
+            border-color: #ef4444;
+        }
+
+        .member-actions-btn.danger:hover {
+            background: #ef4444 !important;
+            border-color: #ef4444 !important;
+        }
+
+        /* Modal Input Interaktif */
+        .modal-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(8px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .modal-box {
+            width: 420px;
+            background: rgba(18, 22, 30, 0.98);
+            border: 1px solid rgba(255, 122, 24, 0.4);
+            border-radius: 14px;
+            padding: 26px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.85);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        body[data-type="badside"] .modal-box {
+            border-color: rgba(239, 68, 68, 0.45);
+        }
+
+        .modal-box h3 {
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .modal-input, .modal-select {
+            width: 100%;
+            background: rgba(12, 14, 19, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 8px;
+            padding: 12px 14px;
+            color: #ffffff;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .modal-input:focus, .modal-select:focus {
+            border-color: #ff7a18;
+        }
+
+        body[data-type="badside"] .modal-input:focus,
+        body[data-type="badside"] .modal-select:focus {
+            border-color: #ef4444;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 6px;
+        }
+
+        .btn-primary {
+            flex: 1;
+            background: linear-gradient(135deg, #ff7a18, #ff9e44);
+            border: none;
+            color: #ffffff;
+            padding: 11px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 122, 24, 0.3);
+            transition: all 0.2s;
+        }
+
+        body[data-type="badside"] .btn-primary {
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-primary:hover {
+            opacity: 0.95;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #ffffff;
+            padding: 11px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        /* Empty state */
+        .empty-placeholder {
+            text-align: center;
+            padding: 40px 20px;
+            color: #64748b;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body data-type="goodside">
+
+    <div class="bossdesk-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="faction-header">
+                <span class="faction-badge" id="badge-label">Goodside</span>
+                <div class="faction-title" id="org-title">Kepolisian LSPD</div>
+                <div class="faction-meta" id="player-role-info">Role: Pimpinan</div>
+            </div>
+
+            <div class="nav-list">
+                <button class="nav-btn active" onclick="switchTab('main', this)">
+                    <i class="fa-solid fa-bolt"></i> Menu Utama
+                </button>
+                <button class="nav-btn" onclick="switchTab('members', this)">
+                    <i class="fa-solid fa-users"></i> Kelola Anggota
+                </button>
+                <button class="nav-btn" onclick="switchTab('vault', this)">
+                    <i class="fa-solid fa-vault"></i> Keuangan / Brankas
+                </button>
+            </div>
+
+            <div class="sidebar-footer">
+                <button class="btn-exit" onclick="closeDesk()">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i> Tutup Menu (ESC)
+                </button>
+            </div>
+        </div>
+
+        <!-- Content Panel -->
+        <div class="content-area">
+            
+            <!-- Tab Menu Utama -->
+            <div id="tab-main" class="tab-pane active">
+                <div class="pane-header">
+                    <div class="pane-title">Panel Pimpinan Organisasi</div>
+                    <div class="pane-subtitle">Pilih tindakan manajemen operasional faksi / keluarga Anda.</div>
+                </div>
+
+                <div class="action-grid">
+                    <div class="action-card" onclick="openModal('invite')">
+                        <h4><i class="fa-solid fa-user-plus"></i> Invite Anggota</h4>
+                        <p>Undang pemain terdekat untuk bergabung ke organisasi.</p>
+                    </div>
+                    <div class="action-card" onclick="switchTabByName('members')">
+                        <h4 id="rank-text"><i class="fa-solid fa-ranking-star"></i> Kelola Struktur Pangkat</h4>
+                        <p>Atur struktur hierarki, promosi, atau demosi anggota.</p>
+                    </div>
+                    <div class="action-card" onclick="openModal('kick')">
+                        <h4><i class="fa-solid fa-user-minus"></i> Kick Anggota</h4>
+                        <p>Keluarkan anggota dari struktur organisasi (via ID/List).</p>
+                    </div>
+                    <div class="action-card" onclick="switchTabByName('vault')">
+                        <h4><i class="fa-solid fa-vault"></i> Akses Brankas</h4>
+                        <p>Kelola kas resmi, setor, tarik uang tunai bersama.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Anggota -->
+            <div id="tab-members" class="tab-pane">
+                <div class="pane-header" style="display: flex; justify-content: space-between; align-items: flex-end;">
+                    <div>
+                        <div class="pane-title">Manajemen Anggota</div>
+                        <div class="pane-subtitle" id="member-count-subtitle">Memuat data dari server...</div>
+                    </div>
+                    <button class="btn-primary" style="padding: 8px 16px; font-size: 12px; flex: none;" onclick="openModal('invite')">
+                        <i class="fa-solid fa-user-plus"></i> Undang Baru
+                    </button>
+                </div>
+
+                <div class="member-table-wrapper">
+                    <table class="member-table">
+                        <thead>
+                            <tr>
+                                <th>Nama Karakter</th>
+                                <th>Jabatan / Pangkat</th>
+                                <th>Terakhir Online</th>
+                                <th style="text-align: right;">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="memberTableBody">
+                            <tr>
+                                <td colspan="4" class="empty-placeholder">
+                                    <i class="fa-solid fa-spinner fa-spin" style="margin-right: 8px;"></i> Memuat data anggota...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tab Keuangan -->
+            <div id="tab-vault" class="tab-pane">
+                <div class="pane-header">
+                    <div class="pane-title">Brankas Finansial</div>
+                    <div class="pane-subtitle">Kelola kas bersih maupun aset organisasi.</div>
+                </div>
+
+                <div class="vault-stats-container">
+                    <div class="vault-stats-box">
+                        <div class="vault-info">
+                            <h3>Saldo Kas Resmi</h3>
+                            <div class="amount" id="vault-balance">$0</div>
+                        </div>
+                        <button class="btn-primary" style="padding: 10px 18px; flex: none;" onclick="openModal('deposit')">
+                            Setor Kas
+                        </button>
+                    </div>
+
+                    <!-- Brankas Uang Kotor Khusus Badside -->
+                    <div class="vault-stats-box dirty">
+                        <div class="vault-info">
+                            <h3>Saldo Uang Kotor (Dirty Money)</h3>
+                            <div class="amount" id="vault-dirty-balance">$0</div>
+                        </div>
+                        <button class="btn-primary" style="padding: 10px 18px; flex: none;" onclick="openModal('deposit_dirty')">
+                            Setor Uang Kotor
+                        </button>
+                    </div>
+                </div>
+
+                <div class="action-grid">
+                    <div class="action-card" onclick="openModal('deposit')">
+                        <h4><i class="fa-solid fa-arrow-down"></i> Deposit Saldo Kas</h4>
+                        <p>Setor uang bersih dari dompet ke dalam brankas organisasi.</p>
+                    </div>
+                    <div class="action-card" onclick="openModal('withdraw')">
+                        <h4><i class="fa-solid fa-arrow-up"></i> Withdraw Saldo Kas</h4>
+                        <p>Tarik dana kas resmi dari brankas bersama.</p>
+                    </div>
+                    <div class="action-card badside-only" onclick="openModal('deposit_dirty')">
+                        <h4><i class="fa-solid fa-money-bill-transfer"></i> Deposit Uang Kotor</h4>
+                        <p>Simpan uang hitam hasil kriminal ke brankas rahasia.</p>
+                    </div>
+                    <div class="action-card badside-only" onclick="openModal('withdraw_dirty')">
+                        <h4><i class="fa-solid fa-hand-holding-dollar"></i> Withdraw Uang Kotor</h4>
+                        <p>Tarik uang hitam dari brankas rahasia.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Modal Input Interaktif -->
+        <div class="modal-overlay" id="actionModal">
+            <div class="modal-box">
+                <h3 id="modalTitle">Masukkan Informasi</h3>
+                
+                <!-- Input Normal -->
+                <input type="text" id="modalInput" class="modal-input" placeholder="Ketik nilai atau ID...">
+
+                <!-- Select untuk Pemain Terdekat (Invite) -->
+                <select id="modalSelectNearby" class="modal-select" style="display: none;">
+                    <option value="">Pilih pemain sekitar...</option>
+                </select>
+
+                <!-- Select untuk Pangkat Baru (Set Rank) -->
+                <select id="modalSelectRank" class="modal-select" style="display: none;">
+                    <option value="">Pilih pangkat...</option>
+                </select>
+
+                <div class="modal-actions">
+                    <button class="btn-secondary" onclick="closeModal()">Batal</button>
+                    <button class="btn-primary" onclick="submitModal()">Konfirmasi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CEF Bridge -->
+    <script src="../common/cef-bridge.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
