@@ -418,6 +418,9 @@
             PhoneAudio.playClick();
 
             // End active or incoming call if closed
+            if (PhoneState.activeCall.isActive) {
+                this.hangupCall();
+            }
             if (PhoneState.incomingCall.isActive) {
                 this.declineCall();
             }
@@ -461,6 +464,10 @@
         lockPhone(playSound = true) {
             PhoneState.isLocked = true;
             if (playSound) PhoneAudio.playClick();
+
+            if (PhoneState.activeCall.isActive) {
+                this.hangupCall();
+            }
 
             if (this.screen) {
                 this.screen.classList.add('is-locked');
@@ -797,6 +804,12 @@
             PhoneState.activeCall.isActive = false;
             PhoneState.activeCall.targetNumber = '';
 
+            // Sembunyikan layer panggilan incoming dan active agar tidak stuck
+            PhoneState.incomingCall.isActive = false;
+            PhoneState.incomingCall.fromNumber = '';
+            document.getElementById('viewIncomingCall')?.classList.remove('active');
+            document.getElementById('viewActiveCall')?.classList.remove('active');
+
             if (window.CefBridge) {
                 CefBridge.emit('cef_onPhoneHangup');
             }
@@ -1059,28 +1072,45 @@
                 `;
 
                 // Call Action
-                row.querySelector('.c-act-call').onclick = (e) => {
-                    e.stopPropagation();
+                const callBtn = row.querySelector('.c-act-call');
+                const onCall = (e) => {
+                    if (e) { e.preventDefault(); e.stopPropagation(); }
                     this.startCall(contact.number);
                 };
+                callBtn?.addEventListener('click', onCall);
+                callBtn?.addEventListener('touchend', onCall);
 
                 // SMS Action
-                row.querySelector('.c-act-sms').onclick = (e) => {
-                    e.stopPropagation();
+                const smsBtn = row.querySelector('.c-act-sms');
+                const onSms = (e) => {
+                    if (e) { e.preventDefault(); e.stopPropagation(); }
                     this.openConversation(contact.number, contact.name);
                 };
+                smsBtn?.addEventListener('click', onSms);
+                smsBtn?.addEventListener('touchend', onSms);
 
                 // Share Contact Action (Bagi Kontak ke Pemain Terdekat)
-                row.querySelector('.c-act-share').onclick = (e) => {
-                    e.stopPropagation();
+                const shareBtn = row.querySelector('.c-act-share');
+                const onShare = (e) => {
+                    if (e) { e.preventDefault(); e.stopPropagation(); }
                     this.shareContact(contact.name, contact.number);
                 };
+                shareBtn?.addEventListener('click', onShare);
+                shareBtn?.addEventListener('touchend', onShare);
 
                 // Delete Action
-                row.querySelector('.c-act-del').onclick = (e) => {
-                    e.stopPropagation();
+                const delBtn = row.querySelector('.c-act-del');
+                const onDel = (e) => {
+                    if (e) { e.preventDefault(); e.stopPropagation(); }
                     this.deleteContact(contact.id || contact.number);
                 };
+                delBtn?.addEventListener('click', onDel);
+                delBtn?.addEventListener('touchend', onDel);
+
+                // Sentuhan pada info kontak langsung membuka pilihan bagikan / telepon
+                const contactLeft = row.querySelector('.contact-left');
+                contactLeft?.addEventListener('click', onShare);
+                contactLeft?.addEventListener('touchend', onShare);
 
                 container.appendChild(row);
             });
@@ -1114,12 +1144,12 @@
             if (nameEl) nameEl.textContent = name;
             if (numEl) numEl.textContent = number;
 
-            const inputEl = document.getElementById('shareTargetIdInput');
+            const inputEl = document.getElementById('manualShareTargetId');
             if (inputEl) inputEl.value = '';
 
             const listEl = document.getElementById('nearbyPlayersList');
             if (listEl) {
-                listEl.innerHTML = '<div style="font-size: 10.5px; color: var(--ios-text-muted); padding: 4px;">Mendeteksi pemain terdekat...</div>';
+                listEl.innerHTML = '<div style="font-size: 11px; color: var(--ios-text-muted); padding: 10px; text-align: center;">Mendeteksi pemain di sekitar...</div>';
             }
 
             document.getElementById('modalShareContact')?.classList.add('active');
@@ -1131,8 +1161,20 @@
 
         // Kirim kontak ke Target Player ID yang dipilih
         sendContactToTargetId(targetId) {
-            if (!PhoneState.pendingShare || !targetId) return;
-            const { name, number } = PhoneState.pendingShare;
+            if (!targetId) return;
+            const pending = PhoneState.pendingShare;
+            if (!pending || !pending.name || !pending.number) {
+                this.showNotification('Peringatan', 'Kontak yang akan dibagikan tidak valid.', 'contacts');
+                return;
+            }
+            PhoneAudio.playClick();
+
+            if (window.CefBridge) {
+                CefBridge.emit('cef_onPhoneSendContactToTarget', Number(targetId), pending.name, pending.number);
+            }
+            document.getElementById('modalShareContact')?.classList.remove('active');
+            this.showNotification('Membagikan Kontak', `Permintaan dikirim ke ID ${targetId}...`, 'contacts');
+        },
             PhoneAudio.playClick();
 
             if (window.CefBridge) {
@@ -1838,7 +1880,6 @@
 
             document.getElementById('callMinimizeBtn')?.addEventListener('click', minimizeCallHandler);
             document.getElementById('callKeypadBtn')?.addEventListener('click', minimizeCallHandler);
-            document.getElementById('activeCallBackBtn')?.addEventListener('click', minimizeCallHandler);
 
             // Dynamic Island click -> Kembali ke tampilan panggilan penuh
             document.getElementById('dynamicCallIsland')?.addEventListener('click', (e) => {
@@ -1894,23 +1935,38 @@
                 });
             });
 
-            // Call Overlays: Minimize, Hangup, Accept, Decline
-            document.getElementById('activeCallBackBtn')?.addEventListener('click', (e) => {
-                e.stopPropagation();
-                this.goHome();
-            });
-            document.getElementById('hangupCallBtn')?.addEventListener('click', (e) => {
-                e.stopPropagation();
+            // Call Overlays: Back / Hangup, Accept, Decline (Support Touch Android)
+            const onActiveCallBack = (e) => {
+                if (e) { e.preventDefault(); e.stopPropagation(); }
                 this.hangupCall();
-            });
-            document.getElementById('acceptCallBtn')?.addEventListener('click', (e) => {
-                e.stopPropagation();
+            };
+            const activeBackBtn = document.getElementById('activeCallBackBtn');
+            activeBackBtn?.addEventListener('click', onActiveCallBack);
+            activeBackBtn?.addEventListener('touchend', onActiveCallBack);
+
+            const onHangup = (e) => {
+                if (e) { e.preventDefault(); e.stopPropagation(); }
+                this.hangupCall();
+            };
+            const hangupBtn = document.getElementById('hangupCallBtn');
+            hangupBtn?.addEventListener('click', onHangup);
+            hangupBtn?.addEventListener('touchend', onHangup);
+
+            const onAccept = (e) => {
+                if (e) { e.preventDefault(); e.stopPropagation(); }
                 this.acceptCall();
-            });
-            document.getElementById('declineCallBtn')?.addEventListener('click', (e) => {
-                e.stopPropagation();
+            };
+            const acceptBtn = document.getElementById('acceptCallBtn');
+            acceptBtn?.addEventListener('click', onAccept);
+            acceptBtn?.addEventListener('touchend', onAccept);
+
+            const onDecline = (e) => {
+                if (e) { e.preventDefault(); e.stopPropagation(); }
                 this.declineCall();
-            });
+            };
+            const declineBtn = document.getElementById('declineCallBtn');
+            declineBtn?.addEventListener('click', onDecline);
+            declineBtn?.addEventListener('touchend', onDecline);
 
             // Chat Input & Send
             const sendBtn = document.getElementById('sendMsgBtn');
@@ -1958,7 +2014,8 @@
             });
 
             // Target Player: Terima Kontak (Yes)
-            document.getElementById('btnAcceptContactShare')?.addEventListener('click', () => {
+            const acceptShareAction = (e) => {
+                if (e) { e.preventDefault(); e.stopPropagation(); }
                 if (PhoneState.incomingShare) {
                     const { fromPlayerId, contactName, contactNumber } = PhoneState.incomingShare;
                     PhoneAudio.playClick();
@@ -1977,19 +2034,45 @@
                     PhoneUI.showNotification('Kontak Disimpan', `${contactName} (${contactNumber}) berhasil disimpan ke buku telepon.`, 'contacts');
                     PhoneState.incomingShare = null;
                 }
-            });
+            };
+            const btnAcceptShare = document.getElementById('btnAcceptContactShare');
+            btnAcceptShare?.addEventListener('click', acceptShareAction);
+            btnAcceptShare?.addEventListener('touchend', acceptShareAction);
 
             // Target Player: Tolak Kontak (No)
-            document.getElementById('btnDeclineContactShare')?.addEventListener('click', () => {
+            const declineShareAction = (e) => {
+                if (e) { e.preventDefault(); e.stopPropagation(); }
                 if (PhoneState.incomingShare) {
                     const { fromPlayerId, contactName } = PhoneState.incomingShare;
                     PhoneAudio.playClick();
                     if (window.CefBridge) {
-                        CefBridge.emit('cef_onPhoneDeclineContactShare', Number(fromPlayerId), contactName);
+                        CefBridge.emit('cef_onPhoneDeclineContactShare', Number(fromPlayerId), contactName || '');
                     }
                     document.getElementById('modalConfirmShare')?.classList.remove('active');
                     PhoneState.incomingShare = null;
                 }
+            };
+            const btnDeclineShare = document.getElementById('btnDeclineContactShare');
+            btnDeclineShare?.addEventListener('click', declineShareAction);
+            btnDeclineShare?.addEventListener('touchend', declineShareAction);
+
+            // Manual Target ID Share Input Support
+            const btnManualShare = document.getElementById('btnSendManualShare');
+            const inputManualShare = document.getElementById('manualShareTargetId');
+            const onManualShareSubmit = (e) => {
+                if (e) { e.preventDefault(); e.stopPropagation(); }
+                const val = inputManualShare?.value.trim();
+                if (val && !isNaN(val)) {
+                    this.sendContactToTargetId(Number(val));
+                    inputManualShare.value = '';
+                } else {
+                    this.showNotification('Peringatan', 'Masukkan ID player tujuan yang valid!', 'alert');
+                }
+            };
+            btnManualShare?.addEventListener('click', onManualShareSubmit);
+            btnManualShare?.addEventListener('touchend', onManualShareSubmit);
+            inputManualShare?.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') onManualShareSubmit(e);
             });
 
             // Modal: Add Contact
@@ -2399,6 +2482,8 @@
             const listEl = document.getElementById('nearbyPlayersList');
             if (!listEl) return;
 
+            PhoneState.pendingShare = { name, number };
+
             let players = [];
             try {
                 players = typeof playersJson === 'string' ? JSON.parse(playersJson) : playersJson;
@@ -2407,39 +2492,37 @@
             }
 
             if (!Array.isArray(players) || players.length === 0) {
-                listEl.innerHTML = '<div style="font-size: 11px; color: var(--ios-text-muted); padding: 8px 4px; text-align: center;">Tidak ada pemain lain di sekitar Anda (radius 6m).</div>';
+                listEl.innerHTML = '<div style="font-size: 11px; color: var(--ios-text-muted); padding: 8px 4px; text-align: center;">Tidak ada pemain lain di sekitar Anda (radius 15m).</div>';
                 return;
             }
 
             listEl.innerHTML = '';
             players.forEach(p => {
-                const item = document.createElement('button');
-                item.type = 'button';
+                const item = document.createElement('div');
                 item.className = 'nearby-player-item';
                 item.setAttribute('data-target-id', p.id);
                 item.innerHTML = `
-                    <div style="display:flex; align-items:center; gap:6px; pointer-events:none;">
-                        <strong class="nearby-player-id">[ID: ${p.id}]</strong>
-                        <span class="nearby-player-name">${p.name}</span>
+                    <div class="nearby-player-info">
+                        <div class="nearby-player-header">
+                            <span class="nearby-player-id">[ID: ${p.id}]</span>
+                            <span class="nearby-player-name">${p.name}</span>
+                        </div>
+                        <span class="nearby-player-dist">Jarak: ${p.dist || '1.0'} meter</span>
                     </div>
-                    <span class="nearby-player-dist" style="pointer-events:none;">${p.dist || '1.0'}m</span>
+                    <button type="button" class="nearby-send-btn">Kirim</button>
                 `;
 
-                let touchHandled = false;
                 const onSelectTarget = (e) => {
-                    if (touchHandled) return;
-                    touchHandled = true;
                     if (e) {
                         e.preventDefault();
                         e.stopPropagation();
                     }
                     PhoneAudio.playClick();
                     PhoneUI.sendContactToTargetId(Number(p.id));
-                    setTimeout(() => { touchHandled = false; }, 400);
                 };
 
-                item.addEventListener('click', onSelectTarget);
-                item.addEventListener('touchend', onSelectTarget);
+                item.onclick = onSelectTarget;
+                item.ontouchend = onSelectTarget;
                 listEl.appendChild(item);
             });
         });

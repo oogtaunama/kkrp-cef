@@ -1454,11 +1454,14 @@ body.browser-preview {
 .contact-actions {
     display: flex;
     gap: 6px;
+    align-items: center;
 }
 
 .c-act-btn {
-    width: 30px;
-    height: 30px;
+    width: 34px;
+    height: 34px;
+    min-width: 34px;
+    min-height: 34px;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.12);
     border: none;
@@ -1468,10 +1471,21 @@ body.browser-preview {
     display: flex;
     align-items: center;
     justify-content: center;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+    transition: transform 0.1s ease, background 0.15s ease;
 }
-.c-act-call { color: #34c759; }
-.c-act-sms { color: #38bdf8; }
-.c-act-del { color: #ef4444; }
+.c-act-btn:active {
+    transform: scale(0.92);
+}
+.c-act-btn svg {
+    pointer-events: none;
+}
+.c-act-call { color: #34c759; background: rgba(52, 199, 89, 0.2); }
+.c-act-sms { color: #38bdf8; background: rgba(56, 189, 248, 0.2); }
+.c-act-share { color: #a855f7; background: rgba(168, 85, 247, 0.22); }
+.c-act-del { color: #ef4444; background: rgba(239, 68, 68, 0.2); }
 
 /* ==========================================================================
    7. APP: FLEECA BANK (M-Banking)
@@ -2631,8 +2645,8 @@ input:checked + .slider:before { transform: translateX(18px); }
 
 .nearby-player-item {
     width: 100%;
-    min-height: 44px;
-    padding: 10px 14px;
+    min-height: 48px;
+    padding: 8px 12px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -2647,20 +2661,47 @@ input:checked + .slider:before { transform: translateX(18px); }
     -webkit-user-select: none;
     box-sizing: border-box;
 }
-.nearby-player-item:hover, .nearby-player-item:active {
+.nearby-player-item:active {
     background: rgba(0, 122, 255, 0.35);
     border-color: #007aff;
     transform: scale(0.98);
 }
+.nearby-player-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    text-align: left;
+    pointer-events: none;
+}
+.nearby-player-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
 .nearby-player-id {
     font-weight: 700;
     color: #38bdf8;
-    margin-right: 6px;
     font-size: 12px;
 }
+.nearby-player-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #ffffff;
+}
 .nearby-player-dist {
-    font-size: 10.5px;
+    font-size: 10px;
     color: var(--ios-text-sub);
+}
+.nearby-send-btn {
+    pointer-events: none;
+    padding: 6px 14px;
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 8px;
+    background: #34c759;
+    color: #ffffff;
+    border: none;
+    flex-shrink: 0;
 }
 
 /* Confirm Share Incoming Dialog */
