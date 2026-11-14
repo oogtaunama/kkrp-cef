@@ -397,6 +397,8 @@
         // Show / Open Smartphone
         showPhone(unlocked = false) {
             PhoneState.isOpen = true;
+            clearTimeout(this._peekTimeout);
+            this.wrapper.classList.remove('phone-peek');
             this.wrapper.classList.add('phone-visible');
             PhoneAudio.playClick();
 
@@ -410,6 +412,8 @@
         // Hide / Close Smartphone
         hidePhone() {
             PhoneState.isOpen = false;
+            clearTimeout(this._peekTimeout);
+            this.wrapper.classList.remove('phone-peek');
             this.wrapper.classList.remove('phone-visible');
             PhoneAudio.playClick();
 
@@ -420,6 +424,11 @@
 
             // Kembalikan ke Homescreen bersih agar buka HP berikutnya langsung normal
             this.goHome();
+
+            // Sembunyikan island jika panggilan tidak aktif
+            if (!PhoneState.activeCall.isActive) {
+                document.getElementById('dynamicCallIsland')?.classList.remove('show');
+            }
 
             // Emit close to server
             if (window.CefBridge) {
@@ -566,14 +575,41 @@
             if (notifTitle) notifTitle.textContent = title || appName;
             if (notifDesc) notifDesc.textContent = desc || '';
 
+            // Sembunyikan bottom notification card di bawah dock agar tidak ada 2 notif bertumpuk saat HP terbuka
+            const bottomCard = document.getElementById('bottomNotificationCard');
+            if (bottomCard) bottomCard.classList.remove('show');
+
             if (notif) {
                 notif.classList.add('show');
                 clearTimeout(this._notifTimeout);
 
+                // Jika HP sedang ditutup (di saku), naikkan HP sedikit (peek mode) sesuai referensi FiveM
+                if (!PhoneState.isOpen) {
+                    clearTimeout(this._peekTimeout);
+                    this.wrapper.classList.add('phone-peek');
+
+                    this._peekTimeout = setTimeout(() => {
+                        this.wrapper.classList.remove('phone-peek');
+                        notif.classList.remove('show');
+                    }, 4500);
+                } else {
+                    this._notifTimeout = setTimeout(() => {
+                        notif.classList.remove('show');
+                    }, 4500);
+                }
+
                 // Click banner to open target app or active action screen
                 notif.onclick = () => {
                     notif.classList.remove('show');
-                    if (PhoneState.isLocked) PhoneUI.unlockPhone(false);
+                    clearTimeout(this._peekTimeout);
+                    this.wrapper.classList.remove('phone-peek');
+
+                    // Buka HP penuh
+                    if (!PhoneState.isOpen) {
+                        this.showPhone(true);
+                    } else if (PhoneState.isLocked) {
+                        PhoneUI.unlockPhone(false);
+                    }
 
                     if (PhoneState.incomingCall.isActive) {
                         PhoneUI.switchView('viewIncomingCall', false);
@@ -591,30 +627,12 @@
                         PhoneUI.openApp(appTarget);
                     }
                 };
-
-                this._notifTimeout = setTimeout(() => {
-                    notif.classList.remove('show');
-                }, 4500);
             }
         },
 
-        // Floating Bottom Pop-up Notification (Tetap didukung & sinkron)
+        // Floating Bottom Pop-up Notification (Tetap sinkron ke notifikasi utama tanpa dobel)
         showBottomNotification(title, message, iconSvg = 'bell') {
             this.showNotification(title, message, iconSvg);
-            const bottomCard = document.getElementById('bottomNotificationCard');
-            const bottomTitle = document.getElementById('bottomNotifTitle');
-            const bottomMsg = document.getElementById('bottomNotifMsg');
-            const bottomIcon = document.getElementById('bottomNotifIcon');
-            if (bottomCard) {
-                if (bottomTitle) bottomTitle.textContent = title || 'Notifikasi';
-                if (bottomMsg) bottomMsg.textContent = message || '';
-                if (bottomIcon && PhoneSvg[iconSvg]) bottomIcon.innerHTML = PhoneSvg[iconSvg];
-                bottomCard.classList.add('show');
-                clearTimeout(this._bottomNotifTimeout);
-                this._bottomNotifTimeout = setTimeout(() => {
-                    bottomCard.classList.remove('show');
-                }, 4500);
-            }
         },
 
         // Open App by Name
@@ -723,6 +741,9 @@
             const callStatusEl = document.getElementById('callStatusText');
             if (callStatusEl) callStatusEl.textContent = 'Terhubung';
 
+            const islandNameEl = document.getElementById('islandCallerName');
+            if (islandNameEl) islandNameEl.textContent = PhoneState.activeCall.targetName;
+
             PhoneState.activeCall.startTime = Date.now();
             clearInterval(PhoneState.activeCall.timerInterval);
 
@@ -730,8 +751,12 @@
                 const elapsedSec = Math.floor((Date.now() - PhoneState.activeCall.startTime) / 1000);
                 const mins = String(Math.floor(elapsedSec / 60)).padStart(2, '0');
                 const secs = String(elapsedSec % 60).padStart(2, '0');
+                const timeStr = `${mins}:${secs}`;
+
                 const timerEl = document.getElementById('callTimer');
-                if (timerEl) timerEl.textContent = `${mins}:${secs}`;
+                const islandTimerEl = document.getElementById('islandCallTimer');
+                if (timerEl) timerEl.textContent = timeStr;
+                if (islandTimerEl) islandTimerEl.textContent = timeStr;
             }, 1000);
         },
 
@@ -744,6 +769,19 @@
                 clearInterval(PhoneState.activeCall.timerInterval);
                 PhoneState.activeCall.timerInterval = null;
             }
+
+            // Sembunyikan Dynamic Island Active Call
+            document.getElementById('dynamicCallIsland')?.classList.remove('show');
+
+            // Reset visual mute & speaker buttons
+            PhoneState.activeCall.isMuted = false;
+            PhoneState.activeCall.isSpeaker = false;
+            document.getElementById('callMuteBtn')?.classList.remove('active');
+            document.getElementById('callSpeakerBtn')?.classList.remove('active');
+            const muteLabel = document.getElementById('callMuteLabel');
+            const spkLabel = document.getElementById('callSpeakerLabel');
+            if (muteLabel) muteLabel.textContent = 'Mute';
+            if (spkLabel) spkLabel.textContent = 'Speaker';
 
             // Record to recents
             if (PhoneState.activeCall.targetNumber) {
@@ -1764,10 +1802,78 @@
             });
 
             // Active Call Screen Tool Buttons
-            document.getElementById('callKeypadBtn')?.addEventListener('click', () => {
+            // 1. Mute Button
+            document.getElementById('callMuteBtn')?.addEventListener('click', (e) => {
+                e.stopPropagation();
+                PhoneState.activeCall.isMuted = !PhoneState.activeCall.isMuted;
                 PhoneAudio.playClick();
-                // Beralih ke layar dialer untuk input angka tanpa memutus panggilan
-                this.switchView('viewAppPhone', false);
+                const muteBtn = document.getElementById('callMuteBtn');
+                const muteLabel = document.getElementById('callMuteLabel');
+                if (PhoneState.activeCall.isMuted) {
+                    muteBtn?.classList.add('active');
+                    if (muteLabel) muteLabel.textContent = 'Muted';
+                    this.showNotification('Mikrofon', 'Mikrofon Panggilan Dibisukan', 'microphone');
+                } else {
+                    muteBtn?.classList.remove('active');
+                    if (muteLabel) muteLabel.textContent = 'Mute';
+                    this.showNotification('Mikrofon', 'Mikrofon Panggilan Aktif', 'microphone');
+                }
+                if (window.CefBridge) {
+                    CefBridge.emit('cef_onPhoneToggleMute', PhoneState.activeCall.isMuted);
+                }
+            });
+
+            // 2. Tombol Tengah (Minimize / Layar Utama saat Panggilan Berlangsung)
+            const minimizeCallHandler = (e) => {
+                if (e) e.stopPropagation();
+                PhoneAudio.playClick();
+                this.goHome();
+                if (PhoneState.activeCall.isActive) {
+                    const island = document.getElementById('dynamicCallIsland');
+                    const islandName = document.getElementById('islandCallerName');
+                    if (islandName) islandName.textContent = PhoneState.activeCall.targetName || 'Panggilan Aktif';
+                    if (island) island.classList.add('show');
+                }
+            };
+
+            document.getElementById('callMinimizeBtn')?.addEventListener('click', minimizeCallHandler);
+            document.getElementById('callKeypadBtn')?.addEventListener('click', minimizeCallHandler);
+            document.getElementById('activeCallBackBtn')?.addEventListener('click', minimizeCallHandler);
+
+            // Dynamic Island click -> Kembali ke tampilan panggilan penuh
+            document.getElementById('dynamicCallIsland')?.addEventListener('click', (e) => {
+                if (e.target.closest('#islandHangupBtn')) return;
+                e.stopPropagation();
+                PhoneAudio.playClick();
+                document.getElementById('dynamicCallIsland')?.classList.remove('show');
+                this.switchView('viewActiveCall', false);
+            });
+
+            // Dynamic Island hangup button
+            document.getElementById('islandHangupBtn')?.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.hangupCall();
+            });
+
+            // 3. Speaker Button
+            document.getElementById('callSpeakerBtn')?.addEventListener('click', (e) => {
+                e.stopPropagation();
+                PhoneState.activeCall.isSpeaker = !PhoneState.activeCall.isSpeaker;
+                PhoneAudio.playClick();
+                const spkBtn = document.getElementById('callSpeakerBtn');
+                const spkLabel = document.getElementById('callSpeakerLabel');
+                if (PhoneState.activeCall.isSpeaker) {
+                    spkBtn?.classList.add('active');
+                    if (spkLabel) spkLabel.textContent = 'Speaker On';
+                    this.showNotification('Speaker', 'Pengeras Suara Aktif', 'volume');
+                } else {
+                    spkBtn?.classList.remove('active');
+                    if (spkLabel) spkLabel.textContent = 'Speaker';
+                    this.showNotification('Speaker', 'Pengeras Suara Mati', 'volume');
+                }
+                if (window.CefBridge) {
+                    CefBridge.emit('cef_onPhoneToggleSpeaker', PhoneState.activeCall.isSpeaker);
+                }
             });
 
             // Dialer Tabs (Keypad vs Recents)
@@ -2201,7 +2307,20 @@
                 if (data.bankCardNum) PhoneState.bankCardNum = data.bankCardNum;
                 if (data.wallpaper) PhoneUI.setWallpaper(data.wallpaper);
 
-                if (Array.isArray(data.contacts)) PhoneState.contacts = data.contacts;
+                if (Array.isArray(data.contacts)) {
+                    const unique = [];
+                    const seen = new Set();
+                    data.contacts.forEach(c => {
+                        const key = (c.number || '').trim();
+                        if (key && !seen.has(key)) {
+                            seen.add(key);
+                            unique.push(c);
+                        } else if (!key && !unique.some(u => u.name === c.name)) {
+                            unique.push(c);
+                        }
+                    });
+                    PhoneState.contacts = unique;
+                }
                 if (Array.isArray(data.messages)) PhoneState.messages = data.messages;
                 if (Array.isArray(data.vehicles)) PhoneState.vehicles = data.vehicles;
                 if (Array.isArray(data.twitterFeed)) PhoneState.twitterFeed = data.twitterFeed;
@@ -2267,12 +2386,15 @@
 
         // Add Contact Event dari Pemain Terdekat (Share Contact)
         CefBridge.on('addContact', (name, number) => {
-            PhoneState.contacts.push({ id: Date.now(), name, number });
-            PhoneUI.renderContactsList();
+            const exists = PhoneState.contacts.some(c => c.number === number || (c.name && c.name.toLowerCase() === name.toLowerCase()));
+            if (!exists) {
+                PhoneState.contacts.push({ id: Date.now(), name, number });
+                PhoneUI.renderContactsList();
+            }
             PhoneUI.showNotification('Kontak Baru', `${name} (${number}) telah disimpan ke kontak.`, 'contacts');
         });
 
-        // Tampilkan Daftar Pemain Terdekat untuk Share Contact
+        // Tampilkan Daftar Pemain Terdekat untuk Share Contact (Mendukung Sentuhan Touch Android)
         CefBridge.on('showNearbyShareList', (name, number, playersJson) => {
             const listEl = document.getElementById('nearbyPlayersList');
             if (!listEl) return;
@@ -2285,21 +2407,39 @@
             }
 
             if (!Array.isArray(players) || players.length === 0) {
-                listEl.innerHTML = '<div style="font-size: 10.5px; color: var(--ios-text-muted); padding: 4px;">Tidak ada pemain lain di sekitar Anda (radius 5m).</div>';
+                listEl.innerHTML = '<div style="font-size: 11px; color: var(--ios-text-muted); padding: 8px 4px; text-align: center;">Tidak ada pemain lain di sekitar Anda (radius 6m).</div>';
                 return;
             }
 
             listEl.innerHTML = '';
             players.forEach(p => {
-                const item = document.createElement('div');
+                const item = document.createElement('button');
+                item.type = 'button';
                 item.className = 'nearby-player-item';
+                item.setAttribute('data-target-id', p.id);
                 item.innerHTML = `
-                    <span><strong class="nearby-player-id">[ID: ${p.id}]</strong> ${p.name}</span>
-                    <span class="nearby-player-dist">${p.dist || '1.0'}m</span>
+                    <div style="display:flex; align-items:center; gap:6px; pointer-events:none;">
+                        <strong class="nearby-player-id">[ID: ${p.id}]</strong>
+                        <span class="nearby-player-name">${p.name}</span>
+                    </div>
+                    <span class="nearby-player-dist" style="pointer-events:none;">${p.dist || '1.0'}m</span>
                 `;
-                item.onclick = () => {
-                    PhoneUI.sendContactToTargetId(p.id);
+
+                let touchHandled = false;
+                const onSelectTarget = (e) => {
+                    if (touchHandled) return;
+                    touchHandled = true;
+                    if (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
+                    PhoneAudio.playClick();
+                    PhoneUI.sendContactToTargetId(Number(p.id));
+                    setTimeout(() => { touchHandled = false; }, 400);
                 };
+
+                item.addEventListener('click', onSelectTarget);
+                item.addEventListener('touchend', onSelectTarget);
                 listEl.appendChild(item);
             });
         });
