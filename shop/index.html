@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convenience Store & Shop - KKRP</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            user-select: none;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100vh;
+            background: transparent !important;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* Backdrop filter overlay */
+        .shop-screen {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(8, 10, 15, 0.65);
+        }
+
+        /* Main Shop Wrapper with Glassmorphism */
+        .shop-wrapper {
+            width: 1120px;
+            height: 700px;
+            background: rgba(15, 17, 23, 0.95);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 122, 24, 0.28);
+            border-radius: 16px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.85);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.96) translateY(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        /* Top Header */
+        .shop-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 28px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(20, 24, 33, 0.6);
+        }
+
+        .store-brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .store-icon {
+            width: 44px;
+            height: 44px;
+            background: rgba(255, 122, 24, 0.15);
+            border: 1px solid rgba(255, 122, 24, 0.4);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ff9e44;
+            font-size: 22px;
+        }
+
+        .store-title {
+            color: #ffffff;
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+
+        .store-subtitle {
+            color: #8b9bb4;
+            font-size: 12px;
+        }
+
+        .btn-close-shop {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 16px;
+        }
+
+        .btn-close-shop:hover {
+            background: rgba(239, 68, 68, 0.15);
+            border-color: rgba(239, 68, 68, 0.4);
+            color: #ef4444;
+        }
+
+        /* Shop Body Layout */
+        .shop-body {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* Center Area: Wide Scrollable Product Grid */
+        .product-grid-container {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        /* Product Card */
+        .product-card {
+            background: rgba(22, 26, 35, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            padding: 16px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 190px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .product-card:hover {
+            border-color: rgba(255, 122, 24, 0.45);
+            background: rgba(255, 122, 24, 0.05);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45);
+        }
+
+        .product-card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .product-weight {
+            color: #8b9bb4;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .product-price {
+            color: #ff9e44;
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .product-visual {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 75px;
+            margin: 4px 0;
+        }
+
+        .product-visual img {
+            max-height: 64px;
+            max-width: 64px;
+            object-fit: contain;
+            filter: drop-shadow(0 6px 12px rgba(0,0,0,0.5));
+            transition: transform 0.2s ease;
+        }
+
+        .product-card:hover .product-visual img {
+            transform: scale(1.08);
+        }
+
+        .product-visual .svg-icon {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .product-visual .svg-icon img {
+            width: 100%;
+            height: 100%;
+        }
+
+        .product-visual .fa-icon {
+            font-size: 42px;
+            color: #ff9e44;
+        }
+
+        .product-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 10px;
+        }
+
+        .product-name {
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 175px;
+        }
+
+        .product-category {
+            color: #8b9bb4;
+            font-size: 11px;
+        }
+
+        .btn-add-cart {
+            background: rgba(255, 122, 24, 0.15);
+            border: 1px solid rgba(255, 122, 24, 0.35);
+            color: #ff9e44;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+
+        .product-card:hover .btn-add-cart {
+            background: linear-gradient(135deg, #ff7a18, #ff9e44);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(255, 122, 24, 0.4);
+        }
+
+        /* Right Side: Shopping Cart Panel */
+        .cart-sidebar {
+            width: 350px;
+            background: rgba(18, 21, 28, 0.9);
+            border-left: 1px solid rgba(255, 255, 255, 0.06);
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+        }
+
+        .cart-title {
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cart-items-list {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding-right: 4px;
+            margin-bottom: 16px;
+        }
+
+        .cart-empty {
+            color: #64748b;
+            text-align: center;
+            margin-top: 100px;
+            font-size: 13px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .cart-item {
+            background: rgba(22, 26, 35, 0.65);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 10px;
+            padding: 10px 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .cart-item-visual {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+        }
+
+        .cart-item-visual img {
+            max-width: 28px;
+            max-height: 28px;
+            object-fit: contain;
+        }
+
+        .cart-item-visual .fa-icon {
+            font-size: 18px;
+            color: #ff9e44;
+        }
+
+        .cart-item-info {
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .cart-item-info h5 {
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .cart-item-info p {
+            color: #ff9e44;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .cart-item-controls {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .qty-btn {
+            background: rgba(255, 255, 255, 0.06);
+            border: none;
+            color: #fff;
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s;
+        }
+
+        .qty-btn:hover {
+            background: rgba(255, 122, 24, 0.4);
+            color: #fff;
+        }
+
+        .cart-item-qty {
+            color: #fff;
+            font-size: 13px;
+            font-weight: 600;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        /* Cart Summary & Checkout */
+        .cart-summary {
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding-top: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            color: #8b9bb4;
+            font-size: 13px;
+        }
+
+        .summary-row.total {
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .summary-row.total span:last-child {
+            color: #ff9e44;
+        }
+
+        .checkout-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 4px;
+        }
+
+        .btn-checkout {
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-card {
+            background: rgba(255, 122, 24, 0.15);
+            border: 1px solid rgba(255, 122, 24, 0.4);
+            color: #ff9e44;
+        }
+
+        .btn-card:hover {
+            background: rgba(255, 122, 24, 0.28);
+        }
+
+        .btn-cash {
+            background: linear-gradient(135deg, #ff7a18, #ff9e44);
+            color: #ffffff;
+            box-shadow: 0 4px 15px rgba(255, 122, 24, 0.35);
+        }
+
+        .btn-cash:hover {
+            opacity: 0.92;
+        }
+
+        /* Custom Notification Toast */
+        .toast {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(50px);
+            background: rgba(18, 22, 30, 0.96);
+            border: 1px solid rgba(46, 213, 115, 0.4);
+            color: #2ed573;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 1000;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.12); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 122, 24, 0.3); }
+    </style>
+</head>
+<body>
+
+    <div class="shop-screen" id="shopScreen" style="display: none;">
+        <div class="shop-wrapper">
+            <!-- Top Header -->
+            <div class="shop-header">
+                <div class="store-brand">
+                    <div class="store-icon" id="headerIcon"><i class="fa-solid fa-store"></i></div>
+                    <div>
+                        <div class="store-title" id="headerTitle">Convenience Store</div>
+                        <div class="store-subtitle" id="headerSubtitle">24/7 Open • Fresh Groceries & Supplies</div>
+                    </div>
+                </div>
+                <button class="btn-close-shop" onclick="closeShop()" title="Tutup (ESC)"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <!-- Shop Body -->
+            <div class="shop-body">
+                
+                <!-- Center Scrollable Product Grid -->
+                <div class="product-grid-container">
+                    <div class="product-grid" id="productGrid">
+                        <!-- Dynamic products injected via JS -->
+                    </div>
+                </div>
+
+                <!-- Right Side Shopping Cart -->
+                <div class="cart-sidebar">
+                    <div class="cart-title">
+                        <span>Keranjang Belanja</span>
+                        <span id="cartCountBadge" style="font-size: 12px; color: #8b9bb4; background: rgba(255,255,255,0.06); padding: 2px 8px; border-radius: 6px;">0 item</span>
+                    </div>
+
+                    <div class="cart-items-list" id="cartItemsList">
+                        <div class="cart-empty" id="cartEmptyMsg">
+                            <i class="fa-solid fa-cart-shopping text-2xl text-slate-600 mb-1"></i>
+                            <span>Keranjang belanja masih kosong</span>
+                        </div>
+                    </div>
+
+                    <div class="cart-summary">
+                        <div class="summary-row">
+                            <span>Jumlah Barang</span>
+                            <span id="summaryCount">0 pcs</span>
+                        </div>
+                        <div class="summary-row total">
+                            <span>Total Pembayaran</span>
+                            <span id="summaryTotal">$0</span>
+                        </div>
+                        <div class="checkout-actions">
+                            <button class="btn-checkout btn-card" onclick="checkout('card')">
+                                <i class="fa-solid fa-credit-card"></i> Bayar Kartu
+                            </button>
+                            <button class="btn-checkout btn-cash" onclick="checkout('cash')">
+                                <i class="fa-solid fa-money-bill-wave"></i> Bayar Tunai
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="shopToast">
+        <i class="fa-solid fa-circle-check" id="toastIcon"></i>
+        <span id="toastMsg">Transaksi Berhasil!</span>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../common/cef-bridge.js"></script>
+    <script>
+        // Preset Catalogs berdasarkan Toko Lama Server KKRP
+        const CATALOG_PRESETS = {
+            1: { // Minimarket / 24/7 Shop
+                title: "Convenience Store 24/7",
+                subtitle: "Toko Kelontong & Kebutuhan Pokok",
+                icon: '<i class="fa-solid fa-basket-shopping"></i>',
+                items: [
+                    { id: 1, name: 'Nasi Uduk', category: 'Makanan', price: 650, weight: '0.4 kg', img: 'nasi_uduk.png', iconFa: 'fa-utensils' },
+                    { id: 2, name: 'Air Mineral', category: 'Minuman', price: 650, weight: '0.5 kg', img: 'air_mineral.png', iconFa: 'fa-bottle-water' },
+                    { id: 3, name: 'Skateboard', category: 'Hobi', price: 870, weight: '2.5 kg', img: 'skateboard.png', iconFa: 'fa-person-skating' },
+                    { id: 4, name: 'Perban', category: 'Medis', price: 360, weight: '0.2 kg', img: 'perban.png', iconFa: 'fa-bandage' },
+                    { id: 5, name: 'Udud', category: 'Konsumsi', price: 310, weight: '0.1 kg', img: 'udud.png', iconFa: 'fa-smoking' },
+                    { id: 6, name: 'Baseball Bat', category: 'Peralatan', price: 950, weight: '1.5 kg', img: null, svgPath: '../hud/weapons/5.svg', iconFa: 'fa-baseball-bat-ball' },
+                    { id: 7, name: 'Knife', category: 'Peralatan', price: 950, weight: '0.8 kg', img: null, svgPath: '../hud/weapons/4.svg', iconFa: 'fa-kitchen-set' },
+                    { id: 8, name: 'Golf Stick', category: 'Olahraga', price: 950, weight: '1.8 kg', img: null, iconFa: 'fa-golf-ball-tee' },
+                    { id: 9, name: 'Pool Cue', category: 'Hobi', price: 950, weight: '1.2 kg', img: null, iconFa: 'fa-crosshairs' },
+                    { id: 10, name: 'Hunting Rifle', category: 'Senjata Berburu', price: 1200, weight: '4.5 kg', img: null, svgPath: '../hud/weapons/33.svg', iconFa: 'fa-crosshairs' },
+                    { id: 11, name: 'Hunt Ammo', category: 'Amunisi', price: 700, weight: '0.5 kg', img: 'hunt_ammo.png', iconFa: 'fa-bullseye' },
+                    { id: 12, name: 'Obeng', category: 'Peralatan', price: 620, weight: '0.3 kg', img: 'obeng.png', iconFa: 'fa-screwdriver' },
+                    { id: 13, name: 'Pilox', category: 'Peralatan', price: 780, weight: '0.6 kg', img: 'pilox.png', iconFa: 'fa-spray-can' },
+                    { id: 14, name: 'Senter', category: 'Peralatan', price: 520, weight: '0.4 kg', img: 'senter.png', iconFa: 'fa-flashlight' },
+                    { id: 15, name: 'Cangkul', category: 'Pertanian', price: 500, weight: '2.0 kg', img: 'cangkul.png', iconFa: 'fa-trowel' },
+                    { id: 16, name: 'Pancingan', category: 'Hobi', price: 980, weight: '1.2 kg', img: 'pancingan.png', iconFa: 'fa-fish' },
+                    { id: 17, name: 'Umpan', category: 'Hobi', price: 100, weight: '0.1 kg', img: 'umpan.png', iconFa: 'fa-worm' },
+                    { id: 18, name: 'Ember', category: 'Peralatan', price: 500, weight: '0.8 kg', img: 'ember.png', iconFa: 'fa-bucket' },
+                    { id: 19, name: 'Api Unggun', category: 'Peralatan', price: 700, weight: '1.5 kg', img: 'api_unggun.png', iconFa: 'fa-fire' }
+                ]
+            },
+            3: { // Electronic Store
+                title: "Digital Electronics",
+                subtitle: "Gadget, Aksesoris & Servis Handphone",
+                icon: '<i class="fa-solid fa-microchip"></i>',
+                items: [
+                    { id: 101, name: 'Smartphone', category: 'Gadget', price: 2250, weight: '0.3 kg', img: 'smartphone.png', iconFa: 'fa-mobile-screen-button' },
+                    { id: 102, name: 'Radio', category: 'Komunikasi', price: 2000, weight: '0.5 kg', img: 'radio.png', iconFa: 'fa-walkie-talkie' },
+                    { id: 103, name: 'Earphone', category: 'Aksesoris', price: 1800, weight: '0.1 kg', img: 'gold_earrings.png', iconFa: 'fa-headphones' },
+                    { id: 104, name: 'Boombox', category: 'Audio (VIP)', price: 3690, weight: '3.0 kg', img: null, iconFa: 'fa-radio' },
+                    { id: 105, name: 'Vape', category: 'Lifestyle (VIP)', price: 6300, weight: '0.4 kg', img: 'vape.png', iconFa: 'fa-cloud' },
+                    { id: 106, name: 'Perbaiki Phone', category: 'Layanan Servis', price: 1200, weight: '0.0 kg', img: 'elektronik_rusak.png', iconFa: 'fa-wrench' }
+                ]
+            },
+            4: { // Ammunation Gun Store
+                title: "Ammunation Store",
+                subtitle: "Senjata Resmi Berlisensi CCW",
+                icon: '<i class="fa-solid fa-shield-halved"></i>',
+                items: [
+                    { id: 201, name: 'Katana', category: 'Melee', price: 12500, weight: '1.5 kg', img: null, svgPath: '../hud/weapons/8.svg', iconFa: 'fa-gavel' },
+                    { id: 202, name: 'Flower', category: 'Gift / Melee', price: 10000, weight: '0.3 kg', img: null, iconFa: 'fa-fan' }
+                ]
+            }
+        };
+
+        let currentShopType = 1;
+        let products = CATALOG_PRESETS[1].items;
+        let cart = {};
+
+        // Helper render icon visual produk
+        function getProductVisualHtml(item) {
+            if (item.img) {
+                const imgPath = `../inventory/img/items/${item.img}`;
+                return `<img src="${imgPath}" alt="${item.name}" onerror="this.outerHTML='<i class=\\'fa-solid ${item.iconFa || 'fa-box'}\\' style=\\'font-size:38px;color:#ff9e44;\\'></i>'">`;
+            }
+            if (item.svgPath) {
+                return `<div class="svg-icon" style="color: #ff9e44;"><img src="${item.svgPath}" style="filter: brightness(0) invert(1); width: 52px; height: 52px; object-fit: contain;"></div>`;
+            }
+            return `<i class="fa-solid ${item.iconFa || 'fa-box'} fa-icon"></i>`;
+        }
+
+        function getCartItemVisualHtml(item) {
+            if (item.img) {
+                const imgPath = `../inventory/img/items/${item.img}`;
+                return `<img src="${imgPath}" alt="${item.name}" onerror="this.outerHTML='<i class=\\'fa-solid ${item.iconFa || 'fa-box'}\\' style=\\'font-size:18px;color:#ff9e44;\\'></i>'">`;
+            }
+            if (item.svgPath) {
+                return `<img src="${item.svgPath}" style="filter: brightness(0) invert(1); width: 22px; height: 22px; object-fit: contain;">`;
+            }
+            return `<i class="fa-solid ${item.iconFa || 'fa-box'} fa-icon"></i>`;
+        }
+
+        // Render produk ke Grid
+        function renderProducts() {
+            const grid = document.getElementById('productGrid');
+            grid.innerHTML = '';
+
+            products.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.onclick = () => addToCart(item.id);
+
+                card.innerHTML = `
+                    <div class="product-card-top">
+                        <span class="product-weight"><i class="fa-solid fa-scale-balanced text-orange-400 mr-1"></i> ${item.weight || '-'}</span>
+                        <span class="product-price">$${item.price.toLocaleString()}</span>
+                    </div>
+                    <div class="product-visual">
+                        ${getProductVisualHtml(item)}
+                    </div>
+                    <div class="product-footer">
+                        <div>
+                            <div class="product-name" title="${item.name}">${item.name}</div>
+                            <div class="product-category">${item.category}</div>
+                        </div>
+                        <button class="btn-add-cart" onclick="event.stopPropagation(); addToCart(${item.id})"><i class="fa-solid fa-plus"></i></button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Tambah ke cart
+        function addToCart(id) {
+            if (cart[id]) {
+                cart[id].qty += 1;
+            } else {
+                const product = products.find(p => p.id === id);
+                if (product) {
+                    cart[id] = { ...product, qty: 1 };
+                }
+            }
+            updateCartUI();
+        }
+
+        // Ubah jumlah di cart
+        function changeQty(id, delta) {
+            if (cart[id]) {
+                cart[id].qty += delta;
+                if (cart[id].qty <= 0) {
+                    delete cart[id];
+                }
+            }
+            updateCartUI();
+        }
+
+        // Update Cart UI & Ringkasan Total
+        function updateCartUI() {
+            const listContainer = document.getElementById('cartItemsList');
+            const countBadge = document.getElementById('cartCountBadge');
+            const summaryCount = document.getElementById('summaryCount');
+            const summaryTotal = document.getElementById('summaryTotal');
+
+            let totalItems = 0;
+            let totalPrice = 0;
+
+            const cartKeys = Object.keys(cart);
+            listContainer.innerHTML = '';
+
+            if (cartKeys.length === 0) {
+                const emptyMsg = document.createElement('div');
+                emptyMsg.className = 'cart-empty';
+                emptyMsg.id = 'cartEmptyMsg';
+                emptyMsg.innerHTML = `
+                    <i class="fa-solid fa-cart-shopping text-2xl text-slate-600 mb-1"></i>
+                    <span>Keranjang belanja masih kosong</span>
+                `;
+                listContainer.appendChild(emptyMsg);
+            } else {
+                cartKeys.forEach(key => {
+                    const item = cart[key];
+                    totalItems += item.qty;
+                    totalPrice += item.price * item.qty;
+
+                    const cartItemEl = document.createElement('div');
+                    cartItemEl.className = 'cart-item';
+                    cartItemEl.innerHTML = `
+                        <div class="cart-item-visual">
+                            ${getCartItemVisualHtml(item)}
+                        </div>
+                        <div class="cart-item-info">
+                            <h5 title="${item.name}">${item.name}</h5>
+                            <p>$${(item.price * item.qty).toLocaleString()}</p>
+                        </div>
+                        <div class="cart-item-controls">
+                            <button class="qty-btn" onclick="changeQty(${item.id}, -1)">-</button>
+                            <span class="cart-item-qty">${item.qty}</span>
+                            <button class="qty-btn" onclick="changeQty(${item.id}, 1)">+</button>
+                        </div>
+                    `;
+                    listContainer.appendChild(cartItemEl);
+                });
+            }
+
+            countBadge.innerText = `${totalItems} item`;
+            summaryCount.innerText = `${totalItems} pcs`;
+            summaryTotal.innerText = `$${totalPrice.toLocaleString()}`;
+        }
+
+        // Checkout function via CEF Bridge
+        function checkout(method) {
+            const keys = Object.keys(cart);
+            if (keys.length === 0) {
+                showToast("Keranjang belanja masih kosong!", "#ef4444", "fa-triangle-exclamation");
+                return;
+            }
+
+            if (typeof CefBridge !== 'undefined' && CefBridge.isAvailable()) {
+                keys.forEach(k => {
+                    const itm = cart[k];
+                    CefBridge.emit('cef_onShopBuyItem', String(method), String(itm.name), Number(itm.qty), Number(itm.price));
+                });
+                cart = {};
+                updateCartUI();
+            } else {
+                console.log("[Dev Mode] Checkout", method, cart);
+                showToast(`Berhasil checkout dengan ${method.toUpperCase()}!`, "#2ed573", "fa-circle-check");
+                cart = {};
+                updateCartUI();
+            }
+        }
+
+        // Toast Notification helper
+        function showToast(message, color = "#2ed573", iconClass = "fa-circle-check") {
+            const toast = document.getElementById('shopToast');
+            const toastMsg = document.getElementById('toastMsg');
+            const toastIcon = document.getElementById('toastIcon');
+
+            toastMsg.innerText = message;
+            toast.style.borderColor = color;
+            toast.style.color = color;
+            toastIcon.className = `fa-solid ${iconClass}`;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Close Shop
+        function closeShop() {
+            document.getElementById('shopScreen').style.display = 'none';
+            cart = {};
+            updateCartUI();
+
+            if (typeof CefBridge !== 'undefined' && CefBridge.isAvailable()) {
+                CefBridge.emit('cef_onShopClose');
+            }
+        }
+
+        // Set Shop Type & Catalog
+        function setShop(shopType) {
+            currentShopType = parseInt(shopType) || 1;
+            const config = CATALOG_PRESETS[currentShopType] || CATALOG_PRESETS[1];
+
+            document.getElementById('headerTitle').innerText = config.title;
+            document.getElementById('headerSubtitle').innerText = config.subtitle;
+            document.getElementById('headerIcon').innerHTML = config.icon;
+
+            products = config.items;
+            cart = {};
+            updateCartUI();
+            renderProducts();
+            document.getElementById('shopScreen').style.display = 'flex';
+        }
+
+        // ESC Key to close
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeShop();
+            }
+        });
+
+        // Initialize Shop & Bridge Listeners
+        window.addEventListener('DOMContentLoaded', () => {
+            if (typeof CefBridge !== 'undefined') {
+                CefBridge.on('cef:openShop', (shopType) => {
+                    setShop(shopType);
+                });
+                CefBridge.on('cef:closeShop', () => {
+                    closeShop();
+                });
+                CefBridge.on('cef:shopItemSuccess', (itemName) => {
+                    showToast(`Berhasil membeli ${itemName}!`, "#2ed573", "fa-circle-check");
+                });
+                CefBridge.on('cef:shopItemError', (itemName, reason) => {
+                    showToast(`Gagal (${itemName}): ${reason}`, "#ef4444", "fa-triangle-exclamation");
+                });
+
+                if (CefBridge.isAvailable()) {
+                    CefBridge.emit('cef_onShopReady');
+                } else {
+                    // Preview browser default
+                    setShop(1);
+                }
+            } else {
+                setShop(1);
+            }
+        });
+    </script>
+</body>
+</html>
