@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Los Santos Central Bank - FiveM UI</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter & Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            orange: '#FF7A18',
+                            light: '#FFB347',
+                            dark: '#111113'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        * {
+            user-select: none;
+            -webkit-user-drag: none;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100vh;
+            background: transparent !important;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Screen backdrop overlay */
+        .bank-screen {
+            width: 100vw;
+            height: 100vh;
+            background: rgba(10, 12, 16, 0.72);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 50;
+        }
+
+        /* Main Bank Wrapper with Glassmorphism */
+        .bank-wrapper {
+            width: 1120px;
+            height: 680px;
+            background: rgba(15, 17, 23, 0.95);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 122, 24, 0.28);
+            border-radius: 18px;
+            box-shadow: 0 35px 80px rgba(0, 0, 0, 0.85);
+            display: flex;
+            overflow: hidden;
+            animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            position: relative;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.96) translateY(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        /* Sidebar Navigation */
+        .bank-sidebar {
+            width: 280px;
+            background: rgba(18, 21, 28, 0.75);
+            border-right: 1px solid rgba(255, 255, 255, 0.06);
+            display: flex;
+            flex-direction: column;
+            padding: 30px 22px;
+        }
+
+        .bank-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 35px;
+        }
+
+        .brand-icon {
+            width: 42px;
+            height: 42px;
+            background: rgba(255, 122, 24, 0.15);
+            border: 1px solid rgba(255, 122, 24, 0.4);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ff9e44;
+            font-size: 20px;
+        }
+
+        .brand-title {
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+
+        .brand-subtitle {
+            color: #8b9bb4;
+            font-size: 11px;
+        }
+
+        .nav-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .nav-item {
+            background: transparent;
+            border: none;
+            color: #8b9bb4;
+            padding: 13px 16px;
+            text-align: left;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 122, 24, 0.08);
+            color: #ffffff;
+        }
+
+        .nav-item.active {
+            background: linear-gradient(135deg, #ff7a18, #ff9e44);
+            color: #ffffff;
+            box-shadow: 0 6px 20px rgba(255, 122, 24, 0.4);
+        }
+
+        .user-profile-mini {
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding-top: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, #ff7a18, #ff9e44);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        /* Content Area */
+        .bank-content {
+            flex: 1;
+            padding: 35px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #8b9bb4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            z-index: 10;
+        }
+
+        .close-btn:hover {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: rgba(239, 68, 68, 0.5);
+            color: #ef4444;
+            transform: scale(1.05);
+        }
+
+        .tab-pane {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .tab-pane.active {
+            display: flex;
+        }
+
+        .pane-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-right: 40px;
+        }
+
+        .pane-title {
+            color: #ffffff;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .pane-subtitle {
+            color: #8b9bb4;
+            font-size: 13px;
+        }
+
+        /* Balance Cards Grid */
+        .balance-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .balance-card {
+            background: linear-gradient(135deg, rgba(22, 26, 35, 0.8), rgba(16, 19, 26, 0.9));
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 14px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .balance-card::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 3px; height: 100%;
+            background: #ff7a18;
+        }
+
+        .balance-card.cash::after { background: #2ed573; }
+        .balance-card.savings::after { background: #3498db; }
+
+        .balance-label {
+            color: #8b9bb4;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .balance-amount {
+            color: #ffffff;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        /* Quick Action Buttons */
+        .actions-row {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        .btn-action {
+            background: rgba(22, 26, 35, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 16px;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-action:hover {
+            border-color: rgba(255, 122, 24, 0.5);
+            background: rgba(255, 122, 24, 0.08);
+            transform: translateY(-2px);
+        }
+
+        .btn-action i {
+            color: #ff9e44;
+        }
+
+        /* Transactions List */
+        .transactions-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .transactions-list {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding-right: 4px;
+        }
+
+        .tx-item {
+            background: rgba(20, 24, 33, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 14px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .tx-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .tx-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .tx-icon.deposit { background: rgba(46, 213, 115, 0.15); color: #2ed573; }
+        .tx-icon.withdraw { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+        .tx-icon.transfer { background: rgba(52, 152, 219, 0.15); color: #3498db; }
+
+        .tx-title {
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .tx-date {
+            color: #8b9bb4;
+            font-size: 11px;
+        }
+
+        .tx-amount {
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .tx-amount.positive { color: #2ed573; }
+        .tx-amount.negative { color: #ef4444; }
+
+        /* Transfer Form */
+        .form-card {
+            background: rgba(20, 24, 33, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 14px;
+            padding: 25px;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-label {
+            color: #8b9bb4;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .form-input {
+            background: rgba(12, 14, 19, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 12px 16px;
+            color: #ffffff;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus {
+            border-color: #ff7a18;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #ff7a18, #ff9e44);
+            border: none;
+            color: #ffffff;
+            padding: 14px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 122, 24, 0.35);
+            transition: opacity 0.2s;
+        }
+
+        .btn-submit:hover {
+            opacity: 0.9;
+        }
+
+        /* Modal Overlay */
+        .modal-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(8px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .modal-box {
+            width: 380px;
+            background: rgba(18, 22, 30, 0.96);
+            border: 1px solid rgba(255, 122, 24, 0.4);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.8);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: absolute;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%) translateY(50px);
+            background: rgba(18, 22, 30, 0.95);
+            border: 1px solid rgba(46, 213, 115, 0.4);
+            color: #2ed573;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="bank-screen" id="bankScreen">
+        <div class="bank-wrapper">
+            <!-- Close Button -->
+            <button class="close-btn" onclick="closeBank()" title="Tutup Menu">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <!-- Sidebar -->
+            <div class="bank-sidebar">
+                <div class="bank-brand">
+                    <div class="brand-icon">🏦</div>
+                    <div>
+                        <div class="brand-title">Central Bank</div>
+                        <div class="brand-subtitle" id="bankLocationLabel">Los Santos Branch</div>
+                    </div>
+                </div>
+
+                <div class="nav-list">
+                    <button class="nav-item active" onclick="switchTab('dashboard', this)">
+                        <i class="fa-solid fa-chart-pie w-5"></i> Dashboard
+                    </button>
+                    <button class="nav-item" onclick="switchTab('transfer', this)">
+                        <i class="fa-solid fa-right-left w-5"></i> Transfer Dana
+                    </button>
+                    <button class="nav-item" onclick="switchTab('history', this)">
+                        <i class="fa-solid fa-clock-rotate-left w-5"></i> Riwayat Mutasi
+                    </button>
+                </div>
+
+                <div class="user-profile-mini">
+                    <div class="user-avatar" id="userInitial">W</div>
+                    <div class="overflow-hidden">
+                        <div class="text-sm font-bold text-white truncate" id="userName">Warga Los Santos</div>
+                        <div class="text-[11px] text-[#8b9bb4]" id="userSubInfo">ID: 0 • Rek: 000000</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="bank-content">
+                
+                <!-- TAB 1: DASHBOARD -->
+                <div id="tab-dashboard" class="tab-pane active">
+                    <div class="pane-header">
+                        <div>
+                            <div class="pane-title">Rekening Utama</div>
+                            <div class="pane-subtitle">Ringkasan saldo rekening dan transaksi perbankan Anda.</div>
+                        </div>
+                    </div>
+
+                    <!-- Balance Cards -->
+                    <div class="balance-grid">
+                        <div class="balance-card">
+                            <div class="balance-label">Saldo Rekening (Bank)</div>
+                            <div class="balance-amount text-[#ff9e44]" id="bankBalance">$0</div>
+                        </div>
+                        <div class="balance-card cash">
+                            <div class="balance-label">Uang Tunai (Cash)</div>
+                            <div class="balance-amount text-[#2ed573]" id="cashBalance">$0</div>
+                        </div>
+                        <div class="balance-card savings">
+                            <div class="balance-label">Nomor Rekening</div>
+                            <div class="balance-amount text-[#3498db]" id="accNumberCard">---</div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Action Buttons -->
+                    <div class="actions-row">
+                        <button class="btn-action" onclick="openModal('deposit')">
+                            <i class="fa-solid fa-arrow-down"></i> Setor Tunai (Deposit)
+                        </button>
+                        <button class="btn-action" onclick="openModal('withdraw')">
+                            <i class="fa-solid fa-arrow-up"></i> Tarik Tunai (Withdraw)
+                        </button>
+                        <button class="btn-action" onclick="switchTab('transfer', document.querySelector('.nav-list button:nth-child(2)'))">
+                            <i class="fa-solid fa-paper-plane"></i> Transfer Dana
+                        </button>
+                    </div>
+
+                    <!-- Recent Transactions -->
+                    <div class="transactions-section">
+                        <div class="text-white font-bold text-sm mb-3">Transaksi Terbaru</div>
+                        <div class="transactions-list" id="recentTxList">
+                            <div class="text-xs text-[#8b9bb4] italic py-4 text-center">Belum ada riwayat transaksi terbaru.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 2: TRANSFER -->
+                <div id="tab-transfer" class="tab-pane">
+                    <div class="pane-header">
+                        <div>
+                            <div class="pane-title">Transfer Dana Antar Rekening</div>
+                            <div class="pane-subtitle">Kirim uang langsung ke nomor rekening warga lain secara aman.</div>
+                        </div>
+                    </div>
+
+                    <div class="form-card">
+                        <div class="form-group">
+                            <label class="form-label">Nomor Rekening Bank Tujuan</label>
+                            <input type="number" id="transferTarget" class="form-input" placeholder="Masukkan Nomor Rekening Tujuan">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Jumlah Nominal ($)</label>
+                            <input type="number" id="transferAmount" class="form-input" placeholder="Min. $100">
+                        </div>
+                        <div class="text-[11px] text-[#8b9bb4] flex items-center gap-1">
+                            <i class="fa-solid fa-circle-info text-[#ff9e44]"></i> Biaya administrasi potongan transfer adalah 4%.
+                        </div>
+                        <button class="btn-submit mt-2" onclick="submitTransfer()">Kirim Transfer</button>
+                    </div>
+                </div>
+
+                <!-- TAB 3: HISTORY -->
+                <div id="tab-history" class="tab-pane">
+                    <div class="pane-header">
+                        <div>
+                            <div class="pane-title">Riwayat Mutasi & Transaksi</div>
+                            <div class="pane-subtitle">Seluruh catatan mutasi debit dan kredit rekening Anda.</div>
+                        </div>
+                    </div>
+
+                    <div class="transactions-section">
+                        <div class="transactions-list" id="fullTxList">
+                            <div class="text-xs text-[#8b9bb4] italic py-8 text-center">Belum ada catatan mutasi transaksi.</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Modal Dialog (Deposit / Withdraw) -->
+            <div class="modal-overlay" id="bankModal">
+                <div class="modal-box">
+                    <h3 id="modalTitle" class="text-white font-bold text-base">Jumlah Transaksi</h3>
+                    <p id="modalDesc" class="text-xs text-[#8b9bb4]">Masukkan jumlah uang yang ingin diproses:</p>
+                    <input type="number" id="modalInput" class="form-input" placeholder="Masukkan jumlah nominal...">
+                    <div class="flex gap-2 mt-2">
+                        <button class="btn-action flex-1" onclick="closeModal()">Batal</button>
+                        <button class="btn-submit flex-1" onclick="submitModal()">Konfirmasi</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Toast Notification -->
+            <div class="toast" id="bankToast">
+                <i id="toastIcon" class="fa-solid fa-circle-check"></i>
+                <span id="toastText">Berhasil!</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- CefBridge Script -->
+    <script src="../common/cef-bridge.js"></script>
+    <script>
+        let currentModalAction = '';
+        let bankData = {
+            bank: 0,
+            cash: 0,
+            name: "Warga Los Santos",
+            id: 0,
+            accountNumber: 0,
+            isATM: false
+        };
+
+        let transactions = [];
+
+        function switchTab(tabId, el) {
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            if (el) el.classList.add('active');
+            document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
+            const targetPane = document.getElementById('tab-' + tabId);
+            if (targetPane) targetPane.classList.add('active');
+            if (tabId === 'history') renderHistory();
+        }
+
+        function formatMoney(num) {
+            return '$' + Number(num || 0).toLocaleString();
+        }
+
+        function updateUI() {
+            document.getElementById('bankBalance').textContent = formatMoney(bankData.bank);
+            document.getElementById('cashBalance').textContent = formatMoney(bankData.cash);
+            document.getElementById('accNumberCard').textContent = bankData.accountNumber ? bankData.accountNumber : 'N/A';
+            document.getElementById('userName').textContent = bankData.name;
+            document.getElementById('userInitial').textContent = (bankData.name && bankData.name.length > 0) ? bankData.name.charAt(0).toUpperCase() : 'W';
+            document.getElementById('userSubInfo').textContent = `ID: ${bankData.id} • Rek: ${bankData.accountNumber || '-'}`;
+            
+            if (bankData.isATM) {
+                document.getElementById('bankLocationLabel').textContent = "ATM Terminal";
+            } else {
+                document.getElementById('bankLocationLabel').textContent = "Central Bank";
+            }
+        }
+
+        function openModal(action) {
+            currentModalAction = action;
+            const modal = document.getElementById('bankModal');
+            const title = document.getElementById('modalTitle');
+            const desc = document.getElementById('modalDesc');
+            const input = document.getElementById('modalInput');
+
+            modal.style.display = 'flex';
+            input.value = '';
+            if (action === 'deposit') {
+                title.textContent = 'Setor Tunai (Deposit)';
+                desc.textContent = `Saldo tunai saat ini: ${formatMoney(bankData.cash)}`;
+            } else {
+                title.textContent = 'Tarik Tunai (Withdraw)';
+                desc.textContent = `Saldo rekening saat ini: ${formatMoney(bankData.bank)} (Potongan 4%)`;
+            }
+            setTimeout(() => input.focus(), 50);
+        }
+
+        function closeModal() {
+            document.getElementById('bankModal').style.display = 'none';
+            document.getElementById('modalInput').value = '';
+        }
+
+        function submitModal() {
+            const val = parseInt(document.getElementById('modalInput').value);
+            if (!val || val <= 0) {
+                showToast("Nominal tidak valid!", "#ef4444", "fa-triangle-exclamation");
+                return;
+            }
+
+            if (currentModalAction === 'deposit') {
+                if (val > bankData.cash) {
+                    showToast("Uang cash tidak cukup!", "#ef4444", "fa-triangle-exclamation");
+                    return;
+                }
+                if (typeof CefBridge !== 'undefined' && CefBridge.isAvailable()) {
+                    CefBridge.emit('cef_onBankDeposit', val);
+                } else {
+                    bankData.cash -= val;
+                    bankData.bank += val;
+                    addTransaction('deposit', 'Setor Tunai', val, 'Baru saja');
+                    showToast(`Berhasil setor ${formatMoney(val)}`);
+                    updateUI();
+                }
+            } else if (currentModalAction === 'withdraw') {
+                if (val > bankData.bank) {
+                    showToast("Saldo bank tidak cukup!", "#ef4444", "fa-triangle-exclamation");
+                    return;
+                }
+                if (typeof CefBridge !== 'undefined' && CefBridge.isAvailable()) {
+                    CefBridge.emit('cef_onBankWithdraw', val);
+                } else {
+                    bankData.bank -= val;
+                    const fee = Math.round(val * 0.04);
+                    bankData.cash += (val - fee);
+                    addTransaction('withdraw', 'Tarik Tunai', -val, 'Baru saja');
+                    showToast(`Berhasil tarik ${formatMoney(val)} (Potongan 4%)`);
+                    updateUI();
+                }
+            }
+            closeModal();
+        }
+
+        function submitTransfer() {
+            const target = parseInt(document.getElementById('transferTarget').value);
+            const amount = parseInt(document.getElementById('transferAmount').value);
+
+            if (!target || target <= 0) {
+                showToast("Masukkan nomor rekening tujuan yang valid!", "#ef4444", "fa-triangle-exclamation");
+                return;
+            }
+            if (!amount || amount < 100) {
+                showToast("Jumlah transfer minimal $100!", "#ef4444", "fa-triangle-exclamation");
+                return;
+            }
+            if (target === bankData.accountNumber) {
+                showToast("Tidak bisa transfer ke rekening sendiri!", "#ef4444", "fa-triangle-exclamation");
+                return;
+            }
+            if (amount > bankData.bank) {
+                showToast("Saldo rekening tidak mencukupi!", "#ef4444", "fa-triangle-exclamation");
+                return;
+            }
+
+            if (typeof CefBridge !== 'undefined' && CefBridge.isAvailable()) {
+                CefBridge.emit('cef_onBankTransfer', target, amount);
+            } else {
+                bankData.bank -= amount;
+                addTransaction('transfer', `Transfer ke Rek. ${target}`, -amount, 'Baru saja');
+                showToast(`Berhasil transfer ${formatMoney(amount)}`);
+                document.getElementById('transferTarget').value = '';
+                document.getElementById('transferAmount').value = '';
+                updateUI();
+            }
+        }
+
+        function addTransaction(type, title, amount, date) {
+            transactions.unshift({ type, title, amount, date: date || 'Baru saja' });
+            if (transactions.length > 20) transactions.pop();
+            renderRecentTx();
+            renderHistory();
+        }
+
+        function renderRecentTx() {
+            const list = document.getElementById('recentTxList');
+            if (transactions.length === 0) {
+                list.innerHTML = `<div class="text-xs text-[#8b9bb4] italic py-4 text-center">Belum ada transaksi terbaru.</div>`;
+                return;
+            }
+            list.innerHTML = '';
+            transactions.slice(0, 3).forEach(tx => {
+                const isPos = tx.amount > 0;
+                list.innerHTML += `
+                    <div class="tx-item">
+                        <div class="tx-left">
+                            <div class="tx-icon ${tx.type}"><i class="fa-solid fa-${tx.type === 'deposit' ? 'arrow-down' : tx.type === 'withdraw' ? 'arrow-up' : 'right-left'}"></i></div>
+                            <div>
+                                <div class="tx-title">${tx.title}</div>
+                                <div class="tx-date">${tx.date}</div>
+                            </div>
+                        </div>
+                        <div class="tx-amount ${isPos ? 'positive' : 'negative'}">${isPos ? '+' : ''}${formatMoney(tx.amount)}</div>
+                    </div>
+                `;
+            });
+        }
+
+        function renderHistory() {
+            const list = document.getElementById('fullTxList');
+            if (transactions.length === 0) {
+                list.innerHTML = `<div class="text-xs text-[#8b9bb4] italic py-8 text-center">Belum ada catatan mutasi transaksi.</div>`;
+                return;
+            }
+            list.innerHTML = '';
+            transactions.forEach(tx => {
+                const isPos = tx.amount > 0;
+                list.innerHTML += `
+                    <div class="tx-item">
+                        <div class="tx-left">
+                            <div class="tx-icon ${tx.type}"><i class="fa-solid fa-${tx.type === 'deposit' ? 'arrow-down' : tx.type === 'withdraw' ? 'arrow-up' : 'right-left'}"></i></div>
+                            <div>
+                                <div class="tx-title">${tx.title}</div>
+                                <div class="tx-date">${tx.date}</div>
+                            </div>
+                        </div>
+                        <div class="tx-amount ${isPos ? 'positive' : 'negative'}">${isPos ? '+' : ''}${formatMoney(tx.amount)}</div>
+                    </div>
+                `;
+            });
+        }
+
+        function showToast(msg, color = "#2ed573", iconClass = "fa-circle-check") {
+            const toast = document.getElementById('bankToast');
+            const toastText = document.getElementById('toastText');
+            const toastIcon = document.getElementById('toastIcon');
+
+            toastText.textContent = msg;
+            toast.style.borderColor = color;
+            toast.style.color = color;
+            toastIcon.className = `fa-solid ${iconClass}`;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3200);
+        }
+
+        function closeBank() {
+            document.getElementById('bankScreen').style.display = 'none';
+            closeModal();
+            if (typeof CefBridge !== 'undefined' && CefBridge.isAvailable()) {
+                CefBridge.emit('cef_onBankClose');
+            }
+        }
+
+        function setBankData(bank, cash, name, id, accNum, isATM) {
+            bankData.bank = parseInt(bank) || 0;
+            bankData.cash = parseInt(cash) || 0;
+            bankData.name = name || "Warga Los Santos";
+            bankData.id = parseInt(id) || 0;
+            bankData.accountNumber = parseInt(accNum) || 0;
+            bankData.isATM = !!isATM;
+            updateUI();
+            document.getElementById('bankScreen').style.display = 'flex';
+        }
+
+        // ESC Key listener
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                if (document.getElementById('bankModal').style.display === 'flex') {
+                    closeModal();
+                } else {
+                    closeBank();
+                }
+            }
+        });
+
+        // Bridge Listeners
+        window.addEventListener('DOMContentLoaded', () => {
+            if (typeof CefBridge !== 'undefined') {
+                CefBridge.on('cef:initBank', (bank, cash, name, id, accNum, isATM) => {
+                    setBankData(bank, cash, name, id, accNum, isATM);
+                });
+
+                CefBridge.on('cef:updateBalance', (bank, cash) => {
+                    bankData.bank = parseInt(bank) || 0;
+                    bankData.cash = parseInt(cash) || 0;
+                    updateUI();
+                });
+
+                CefBridge.on('cef:bankSuccess', (msg, type, title, amount) => {
+                    showToast(msg, "#2ed573", "fa-circle-check");
+                    if (type && title && amount) {
+                        addTransaction(type, title, parseInt(amount), 'Baru saja');
+                    }
+                    document.getElementById('transferTarget').value = '';
+                    document.getElementById('transferAmount').value = '';
+                });
+
+                CefBridge.on('cef:bankError', (msg) => {
+                    showToast(msg, "#ef4444", "fa-triangle-exclamation");
+                });
+
+                CefBridge.on('cef:closeBank', () => {
+                    closeBank();
+                });
+
+                if (CefBridge.isAvailable()) {
+                    CefBridge.emit('cef_onBankReady');
+                } else {
+                    // Preview browser fallback
+                    setBankData(1450000, 9883240, "Xyper William", 1, 829102, false);
+                    addTransaction('deposit', 'Setor Tunai', 150000, 'Hari ini, 04:30');
+                    addTransaction('transfer', 'Transfer ke Pak Mbut', -50000, 'Kemarin, 21:15');
+                    addTransaction('withdraw', 'Tarik Tunai', -200000, '13 Nov, 19:10');
+                }
+            } else {
+                setBankData(1450000, 9883240, "Xyper William", 1, 829102, false);
+                addTransaction('deposit', 'Setor Tunai', 150000, 'Hari ini, 04:30');
+                addTransaction('transfer', 'Transfer ke Pak Mbut', -50000, 'Kemarin, 21:15');
+                addTransaction('withdraw', 'Tarik Tunai', -200000, '13 Nov, 19:10');
+            }
+        });
+    </script>
+</body>
+</html>
