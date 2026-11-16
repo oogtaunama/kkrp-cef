@@ -630,6 +630,135 @@ window.addEventListener('DOMContentLoaded', () => {
         hideTargetPrompt();
     });
 
+    // =========================================================================
+    // 5. FIVEM ITEM NOTIFICATION CONTROLLER (Item Box Add / Remove)
+    // =========================================================================
+    const ItemCustomMap = {
+        'kentang': 'french_fries',
+        'french_fries': 'french_fries',
+        'fries': 'french_fries',
+        'air': 'air_mineral',
+        'water': 'air_mineral',
+        'mineral': 'air_mineral',
+        'kopi': 'brewed_coffee',
+        'coffee': 'brewed_coffee',
+        'bandage': 'perban',
+        'hoe': 'cangkul',
+        'wood': 'kayu',
+        'iron': 'besi',
+        'gold': 'emas',
+        'diamond': 'berlian',
+        'stone': 'batu',
+        'phone': 'smartphone',
+        'hp': 'smartphone',
+        'repairkit': 'toolkit',
+        'ammo': 'ammo_9x19mm',
+        'component': 'komponen',
+        'armor': 'kevlar_biru',
+        'kevlar': 'kevlar_biru',
+        'key': 'newbie_key',
+        'weed': 'daun_ganja',
+        'marijuana': 'daun_ganja',
+        'fish': 'ikan',
+        'meat': 'daging',
+        'cash': 'cash',
+        'uang': 'cash',
+        'dirty_money': 'moneybag',
+        'dirtymoney': 'moneybag'
+    };
+
+    function resolveItemIcon(itemName, iconOverride) {
+        if (iconOverride) {
+            if (iconOverride.includes('<svg') || iconOverride.startsWith('http') || iconOverride.includes('/') || iconOverride.length <= 4) {
+                return iconOverride;
+            }
+        }
+
+        const clean = (itemName || '').toLowerCase().trim()
+            .replace(/\s+/g, '_')
+            .replace(/[^a-z0-9_]/g, '');
+
+        const mapped = ItemCustomMap[clean] || clean;
+        const imgPath = `../inventory/img/items/${mapped}.png`;
+
+        return `<img src="${imgPath}" alt="${itemName}" onerror="this.onerror=null;this.parentElement.innerHTML='📦';">`;
+    }
+
+    function showItemNotification(type, itemName, count, icon, duration = 3500) {
+        const container = document.getElementById('item-notif-container');
+        if (!container) return;
+
+        const actionType = (type || 'add').toLowerCase() === 'remove' ? 'remove' : 'add';
+        let formattedCount = count;
+        if (typeof count === 'number') {
+            formattedCount = (actionType === 'remove' ? `-${count}x` : `+${count}x`);
+        } else if (typeof count === 'string') {
+            if (actionType === 'remove') {
+                formattedCount = count.startsWith('-') ? count : `-${count.replace(/^\+/, '')}`;
+            } else {
+                formattedCount = count.startsWith('+') ? count : `+${count.replace(/^-/, '')}`;
+            }
+        }
+
+        const iconContent = resolveItemIcon(itemName, icon);
+        const card = document.createElement('div');
+        card.className = `item-card ${actionType}`;
+
+        const iconHtml = (typeof iconContent === 'string' && (iconContent.startsWith('<') || iconContent.length <= 4))
+            ? iconContent 
+            : `<img src="${iconContent}" alt="${itemName}" onerror="this.onerror=null;this.parentElement.innerHTML='📦';">`;
+
+        card.innerHTML = `
+            <div class="item-qty-badge">${formattedCount}</div>
+            <div class="item-icon-box">${iconHtml}</div>
+            <div class="item-title" title="${itemName}">${itemName}</div>
+        `;
+
+        container.appendChild(card);
+        NotifyAudio.play(actionType === 'remove' ? 'warning' : 'success');
+
+        const dur = Math.max(1500, Number(duration) || 3500);
+        setTimeout(() => {
+            card.classList.add('fade-out');
+            setTimeout(() => {
+                if (card.parentNode) card.parentNode.removeChild(card);
+            }, 200);
+        }, dur);
+    }
+
+    window.showItemNotification = showItemNotification;
+
+    // Listener CEF Bridge untuk Item Notification
+    CefBridge.on('item:notify', (payload) => {
+        let data = payload;
+        if (typeof payload === 'string') {
+            try {
+                data = JSON.parse(payload);
+            } catch (e) {
+                data = { type: 'add', name: payload, count: '1x' };
+            }
+        }
+        if (data) {
+            showItemNotification(
+                data.type || 'add',
+                data.name || data.item || 'Item',
+                data.count || data.quantity || data.total || '1x',
+                data.icon,
+                data.duration || 3500
+            );
+        }
+    });
+
+    CefBridge.on('itemNotification', (payload) => {
+        let data = payload;
+        if (typeof payload === 'string') {
+            try { data = JSON.parse(payload); } catch (e) { data = { type: 'add', name: payload, count: '1x' }; }
+        }
+        if (data) {
+            showItemNotification(data.type, data.name, data.count, data.icon, data.duration);
+        }
+    });
+
     // Listen postMessage fallback
     window.addEventListener('message', (event) => {
         if (!event.data) return;
@@ -640,6 +769,8 @@ window.addEventListener('DOMContentLoaded', () => {
             handleTargetPrompt(d);
         } else if (d.action === 'hideTargetPrompt') {
             hideTargetPrompt();
+        } else if (d.action === 'itemNotification' || d.action === 'itemNotify') {
+            showItemNotification(d.type, d.name, d.count, d.icon, d.duration);
         }
     });
 });

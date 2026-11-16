@@ -244,7 +244,9 @@ html, body {
     left: calc(50% + 56px); /* Mengapung rapi tepat di sebelah kanan reticle */
     transform: translateY(-50%) scale(1);
     width: 320px;
-    background: rgba(13, 17, 24, 0.94);
+    background: var(--ox-bg-card);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border: 1px solid var(--ox-border);
     border-radius: 14px;
     padding: 16px;
@@ -528,7 +530,8 @@ html, body {
     align-items: center;
     gap: 10px;
     padding: 6px 16px;
-    background: rgba(13, 17, 24, 0.92);
+    background: rgba(13, 17, 24, 0.85);
+    backdrop-filter: blur(12px);
     border: 1px solid var(--ox-border);
     border-radius: 9999px;
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5), 0 0 15px rgba(255, 152, 0, 0.15);

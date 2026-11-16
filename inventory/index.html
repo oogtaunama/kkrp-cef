@@ -43,7 +43,7 @@
                 <div class="status-pill status-healthy" id="overallBodyStatus">OPTIMAL</div>
             </header>
 
-            <!-- Hologram Wireframe Body Container -->
+            <!-- Detailed Anatomical Body Container -->
             <div class="body-diagnostic-container">
                 <div class="body-canvas-wrap">
                     
@@ -95,64 +95,100 @@
                         <span class="callout-val" id="valRLeg">100%</span>
                     </div>
 
-                    <!-- SVG Hologram Silhouette -->
-                    <svg class="hologram-silhouette" viewBox="0 0 200 360" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- SVG Detailed Anatomical Body Model -->
+                    <svg class="hologram-silhouette" viewBox="0 0 220 380" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <defs>
-                            <linearGradient id="orangeGlowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stop-color="#ff9d00" stop-opacity="0.8" />
-                                <stop offset="50%" stop-color="#ff6600" stop-opacity="0.6" />
-                                <stop offset="100%" stop-color="#e65100" stop-opacity="0.4" />
+                            <!-- Gradien Kesehatan Normal / Sehat (Oranye-Emas Hangat) -->
+                            <linearGradient id="bodyHealthyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" stop-color="#ff9d00" stop-opacity="0.42" />
+                                <stop offset="55%" stop-color="#ff6a00" stop-opacity="0.22" />
+                                <stop offset="100%" stop-color="#d94e00" stop-opacity="0.12" />
                             </linearGradient>
-                            <linearGradient id="bodyInnerGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                                <stop offset="0%" stop-color="#ff7b00" stop-opacity="0.25" />
-                                <stop offset="100%" stop-color="#ff5100" stop-opacity="0.05" />
+
+                            <!-- Gradien Cedera Ringan (Kuning-Oranye Terang) -->
+                            <linearGradient id="bodyWarnGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" stop-color="#fbbf24" stop-opacity="0.55" />
+                                <stop offset="100%" stop-color="#d97706" stop-opacity="0.25" />
                             </linearGradient>
-                            <filter id="neonOrange" x="-20%" y="-20%" width="140%" height="140%">
-                                <feGaussianBlur stdDeviation="3" result="blur" />
+
+                            <!-- Gradien Cedera Parah / Kritis (Merah Menyala) -->
+                            <linearGradient id="bodyCritGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" stop-color="#ef4444" stop-opacity="0.65" />
+                                <stop offset="100%" stop-color="#991b1b" stop-opacity="0.30" />
+                            </linearGradient>
+
+                            <!-- Efek Cahaya Halus -->
+                            <filter id="bodyGlow" x="-25%" y="-25%" width="150%" height="150%">
+                                <feGaussianBlur stdDeviation="2.5" result="blur" />
                                 <feComposite in="SourceGraphic" in2="blur" operator="over" />
                             </filter>
                         </defs>
 
-                        <!-- Hologram Background Grid Lines -->
-                        <g class="hologram-grid-bg" opacity="0.25" stroke="#ff8800" stroke-width="0.75" stroke-dasharray="2,4">
-                            <line x1="20" y1="50" x2="180" y2="50" />
-                            <line x1="15" y1="120" x2="185" y2="120" />
-                            <line x1="10" y1="190" x2="190" y2="190" />
-                            <line x1="20" y1="260" x2="180" y2="260" />
-                            <line x1="100" y1="20" x2="100" y2="340" />
+                        <!-- Latar Belakang Grid Medis & Lingkaran Target -->
+                        <g opacity="0.22" stroke="#ff8800" stroke-width="0.7">
+                            <circle cx="110" cy="190" r="85" stroke-dasharray="3,4" />
+                            <circle cx="110" cy="190" r="125" stroke-dasharray="2,6" />
+                            <line x1="110" y1="12" x2="110" y2="368" stroke-dasharray="3,3" />
+                            <line x1="25" y1="78" x2="195" y2="78" stroke-dasharray="2,4" />
+                            <line x1="20" y1="190" x2="200" y2="190" stroke-dasharray="2,4" />
+                            <line x1="25" y1="280" x2="195" y2="280" stroke-dasharray="2,4" />
                         </g>
 
-                        <!-- Head -->
-                        <path id="partHead" class="body-part" d="M100 24 C89 24, 82 33, 82 46 C82 60, 88 70, 100 70 C112 70, 118 60, 118 46 C118 33, 111 24, 100 24 Z" 
-                              fill="url(#bodyInnerGrad)" stroke="#ff7b00" stroke-width="1.8" filter="url(#neonOrange)"/>
-                        
-                        <!-- Neck & Shoulders & Torso -->
-                        <path id="partTorso" class="body-part" d="M93 70 L107 70 L112 80 L136 88 L142 100 L134 116 L124 165 L118 195 L82 195 L76 165 L66 116 L58 100 L64 88 L88 80 Z" 
-                              fill="url(#bodyInnerGrad)" stroke="#ff7b00" stroke-width="1.8"/>
+                        <!-- ================= 1. HEAD & NECK (KEPALA) ================= -->
+                        <g id="partHead" class="body-part part-healthy" data-part="head">
+                            <path d="M110 18 C97 18, 89 27, 89 41 C89 51, 92 59, 98 64 L103 68 L117 68 L122 64 C128 59, 131 51, 131 41 C131 27, 123 18, 110 18 Z"
+                                  fill="url(#bodyHealthyGrad)" stroke="#ff8c00" stroke-width="1.6" filter="url(#bodyGlow)"/>
+                            <path d="M96 38 Q103 35 108 38 M112 38 Q117 35 124 38" stroke="#ffaa33" stroke-width="1" opacity="0.7" stroke-linecap="round"/>
+                            <path d="M110 39 L110 49 M104 56 Q110 58 116 56" stroke="#ffaa33" stroke-width="0.9" opacity="0.6" stroke-linecap="round"/>
+                        </g>
 
-                        <!-- Left Arm -->
-                        <path id="partLArm" class="body-part" d="M136 88 L152 102 L158 142 L163 182 L165 210 L157 214 L150 186 L144 146 L134 116 Z" 
-                              fill="url(#bodyInnerGrad)" stroke="#ff7b00" stroke-width="1.5"/>
+                        <!-- ================= 2. TORSO (DADA, RUSUK & PERUT) ================= -->
+                        <g id="partTorso" class="body-part part-healthy" data-part="torso">
+                            <path d="M101 68 L119 68 L124 77 L146 84 L151 96 L143 116 L136 146 L132 174 L134 194 L110 202 L86 194 L88 174 L84 146 L77 116 L69 96 L74 84 L96 77 Z"
+                                  fill="url(#bodyHealthyGrad)" stroke="#ff8c00" stroke-width="1.6"/>
+                            <path d="M94 82 Q110 87 126 82" stroke="#ffaa33" stroke-width="1" opacity="0.65" fill="none"/>
+                            <path d="M85 95 Q97 109 109 103 L109 88" stroke="#ffaa33" stroke-width="1" opacity="0.65" fill="none"/>
+                            <path d="M135 95 Q123 109 111 103 L111 88" stroke="#ffaa33" stroke-width="1" opacity="0.65" fill="none"/>
+                            <line x1="110" y1="106" x2="110" y2="184" stroke="#ffaa33" stroke-width="0.9" opacity="0.55"/>
+                            <path d="M97 120 Q110 123 123 120 M96 135 Q110 138 124 135 M97 150 Q110 153 123 150 M99 165 Q110 168 121 165"
+                                  stroke="#ffaa33" stroke-width="0.85" opacity="0.5" fill="none"/>
+                        </g>
 
-                        <!-- Right Arm -->
-                        <path id="partRArm" class="body-part" d="M64 88 L48 102 L42 142 L37 182 L35 210 L43 214 L50 186 L56 146 L66 116 Z" 
-                              fill="url(#bodyInnerGrad)" stroke="#ff7b00" stroke-width="1.5"/>
+                        <!-- ================= 3. LEFT ARM (TANGAN KIRI) ================= -->
+                        <g id="partLArm" class="body-part part-healthy" data-part="lArm">
+                            <path d="M146 84 L158 91 L164 108 L168 136 L173 166 L177 194 L181 212 L175 221 L168 218 L166 202 L159 172 L151 142 L143 116 L151 96 Z"
+                                  fill="url(#bodyHealthyGrad)" stroke="#ff8c00" stroke-width="1.5"/>
+                            <path d="M156 105 Q161 122 158 138 M163 146 Q168 168 169 190" stroke="#ffaa33" stroke-width="0.9" opacity="0.6" fill="none"/>
+                            <circle cx="160" cy="142" r="2.5" fill="#ffaa33" opacity="0.85"/>
+                        </g>
 
-                        <!-- Left Leg -->
-                        <path id="partLLeg" class="body-part" d="M101 195 L118 195 L124 245 L121 285 L124 330 L113 335 L108 288 L103 246 L101 195 Z" 
-                              fill="url(#bodyInnerGrad)" stroke="#ff7b00" stroke-width="1.6"/>
+                        <!-- ================= 4. RIGHT ARM (TANGAN KANAN) ================= -->
+                        <g id="partRArm" class="body-part part-healthy" data-part="rArm">
+                            <path d="M74 84 L62 91 L56 108 L52 136 L47 166 L43 194 L39 212 L45 221 L52 218 L54 202 L61 172 L69 142 L77 116 L69 96 Z"
+                                  fill="url(#bodyHealthyGrad)" stroke="#ff8c00" stroke-width="1.5"/>
+                            <path d="M64 105 Q59 122 62 138 M57 146 Q52 168 51 190" stroke="#ffaa33" stroke-width="0.9" opacity="0.6" fill="none"/>
+                            <circle cx="60" cy="142" r="2.5" fill="#ffaa33" opacity="0.85"/>
+                        </g>
 
-                        <!-- Right Leg -->
-                        <path id="partRLeg" class="body-part" d="M99 195 L82 195 L76 245 L79 285 L76 330 L87 335 L92 288 L97 246 L99 195 Z" 
-                              fill="url(#bodyInnerGrad)" stroke="#ff7b00" stroke-width="1.6"/>
+                        <!-- ================= 5. LEFT LEG (KAKI KIRI) ================= -->
+                        <g id="partLLeg" class="body-part part-healthy" data-part="lLeg">
+                            <path d="M111 202 L134 194 L138 228 L135 266 L137 298 L133 336 L141 352 L136 359 L121 358 L119 342 L116 302 L113 268 L111 232 Z"
+                                  fill="url(#bodyHealthyGrad)" stroke="#ff8c00" stroke-width="1.5"/>
+                            <path d="M123 212 Q126 238 124 260 M125 278 Q128 304 125 328" stroke="#ffaa33" stroke-width="0.9" opacity="0.6" fill="none"/>
+                            <ellipse cx="124" cy="268" rx="4.5" ry="3.5" stroke="#ffaa33" stroke-width="1" fill="rgba(255,170,51,0.2)"/>
+                        </g>
 
-                        <!-- Interactive Nodes / Anchor circles -->
-                        <circle cx="100" cy="46" r="3.5" fill="#ffaa00" />
-                        <circle cx="100" cy="130" r="3.5" fill="#ffaa00" />
-                        <circle cx="156" cy="150" r="3" fill="#ffaa00" />
-                        <circle cx="44" cy="150" r="3" fill="#ffaa00" />
-                        <circle cx="115" cy="265" r="3" fill="#ffaa00" />
-                        <circle cx="85" cy="265" r="3" fill="#ffaa00" />
+                        <!-- ================= 6. RIGHT LEG (KAKI KANAN) ================= -->
+                        <g id="partRLeg" class="body-part part-healthy" data-part="rLeg">
+                            <path d="M109 202 L86 194 L82 228 L85 266 L83 298 L87 336 L79 352 L84 359 L99 358 L101 342 L104 302 L107 268 L109 232 Z"
+                                  fill="url(#bodyHealthyGrad)" stroke="#ff8c00" stroke-width="1.5"/>
+                            <path d="M97 212 Q94 238 96 260 M95 278 Q92 304 95 328" stroke="#ffaa33" stroke-width="0.9" opacity="0.6" fill="none"/>
+                            <ellipse cx="96" cy="268" rx="4.5" ry="3.5" stroke="#ffaa33" stroke-width="1" fill="rgba(255,170,51,0.2)"/>
+                        </g>
+
+                        <!-- Titik Sensor Anatomi Utama -->
+                        <circle cx="110" cy="42" r="2.8" fill="#ffb700" />
+                        <circle cx="110" cy="128" r="2.8" fill="#ffb700" />
                     </svg>
                 </div>
             </div>
@@ -210,7 +246,7 @@
                         </div>
                     </div>
 
-                    <!-- Tombol Tutup Inventory (Clickable & Prominent) -->
+                    <!-- Tombol Tutup Inventory -->
                     <button class="btn-close-inv" id="btnCloseInventory" title="Tutup Inventory (ESC / TAB)">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                             <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -288,7 +324,6 @@
             <header class="panel-header">
                 <div class="header-left">
                     <div class="icon-wrap-orange" id="rightContainerIcon">
-                        <!-- Default icon: Drop / Ground -->
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
                             <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
@@ -361,7 +396,6 @@
 
     <!-- ============================================================ -->
     <!-- FLOATING ITEM ACTION POPUP / CONTEXT MODAL                    -->
-    <!-- (Mirip persis seperti referensi: Fries, 0.25KG, Gunakan/Beri) -->
     <!-- ============================================================ -->
     <div class="item-context-popup" id="itemContextPopup" style="display: none;">
         <div class="popup-header">
@@ -394,7 +428,6 @@
 
         <!-- Action Buttons Grid -->
         <div class="popup-actions-grid" id="ctxActionsGrid">
-            <!-- Tombol Gunakan -->
             <button class="btn-action btn-use orange-btn" id="ctxBtnUse">
                 <svg viewBox="0 0 24 24" fill="currentColor">
                     <polygon points="5 3 19 12 5 21 5 3"></polygon>
@@ -402,7 +435,6 @@
                 <span>Gunakan (Use)</span>
             </button>
 
-            <!-- Tombol Beri (Give) -->
             <button class="btn-action btn-give" id="ctxBtnGive">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
@@ -413,7 +445,6 @@
                 <span>Beri (Give)</span>
             </button>
 
-            <!-- Tombol Pindah / Transfer ke Kontainer Kanan -->
             <button class="btn-action btn-transfer" id="ctxBtnTransfer">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -422,7 +453,6 @@
                 <span id="ctxTransferLabel">Pindah ke Bagasi</span>
             </button>
 
-            <!-- Tombol Buang (Drop) -->
             <button class="btn-action btn-drop" id="ctxBtnDrop">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polyline points="3 6 5 6 21 6"></polyline>

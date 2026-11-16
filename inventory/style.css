@@ -295,7 +295,6 @@ body {
     min-width: 130px;
 }
 
-/* Header right actions (Capacity + Close button) */
 .header-right-actions {
     display: flex;
     align-items: center;
@@ -411,10 +410,34 @@ body {
     cursor: pointer;
 }
 
-.body-part:hover {
+.body-part:hover path:first-child {
     stroke: var(--orange-bright) !important;
-    stroke-width: 2.4px !important;
+    stroke-width: 2.2px !important;
     filter: drop-shadow(0 0 8px var(--orange-primary));
+}
+
+/* Status Warna Bagian Tubuh (Sehat / Peringatan / Kritis) */
+.body-part.part-healthy path:first-child {
+    fill: url(#bodyHealthyGrad);
+    stroke: #ff8c00;
+}
+
+.body-part.part-warn path:first-child {
+    fill: url(#bodyWarnGrad);
+    stroke: #fbbf24;
+    filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.5));
+}
+
+.body-part.part-crit path:first-child {
+    fill: url(#bodyCritGrad);
+    stroke: #ef4444;
+    filter: drop-shadow(0 0 10px rgba(239, 68, 68, 0.75));
+    animation: pulseCritPart 1.4s infinite alternate;
+}
+
+@keyframes pulseCritPart {
+    from { opacity: 0.75; }
+    to { opacity: 1; }
 }
 
 /* Callouts Around Body Silhouette */
@@ -460,12 +483,12 @@ body {
 }
 
 /* Positioning of Callout Labels */
-.callout-head { top: 38px; left: -10px; }
-.callout-larm { top: 110px; right: -25px; flex-direction: row-reverse; }
-.callout-rarm { top: 110px; left: -25px; }
-.callout-torso { top: 155px; left: -15px; }
-.callout-lleg { bottom: 65px; right: -20px; flex-direction: row-reverse; }
-.callout-rleg { bottom: 65px; left: -20px; }
+.callout-head { top: 34px; left: -12px; }
+.callout-larm { top: 108px; right: -26px; flex-direction: row-reverse; }
+.callout-rarm { top: 108px; left: -26px; }
+.callout-torso { top: 155px; left: -16px; }
+.callout-lleg { bottom: 65px; right: -22px; flex-direction: row-reverse; }
+.callout-rleg { bottom: 65px; left: -22px; }
 
 /* Personal Information Card */
 .personal-info-card {
@@ -903,55 +926,6 @@ body {
     flex-direction: column;
 }
 
-/* Container Tabs (Mode Switcher) */
-.container-tabs {
-    display: flex;
-    align-items: center;
-    padding: 8px 16px;
-    gap: 6px;
-    background: rgba(0, 0, 0, 0.2);
-    border-bottom: 1px solid var(--border-subtle);
-    overflow-x: auto;
-}
-
-.container-tabs::-webkit-scrollbar {
-    display: none;
-}
-
-.tab-btn {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 7px 12px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-sm);
-    color: var(--text-muted);
-    font-size: 11px;
-    font-weight: 600;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: all 0.2s ease;
-}
-
-.tab-btn svg {
-    width: 14px;
-    height: 14px;
-}
-
-.tab-btn:hover {
-    background: rgba(255, 255, 255, 0.08);
-    color: var(--text-white);
-    border-color: var(--border-medium);
-}
-
-.tab-btn.active {
-    background: linear-gradient(135deg, rgba(255, 123, 0, 0.25), rgba(255, 123, 0, 0.1));
-    border-color: var(--border-orange);
-    color: var(--orange-bright);
-    box-shadow: 0 0 10px rgba(255, 123, 0, 0.2);
-}
-
 /* Right Container Grid Wrapper */
 .right-slots-wrapper {
     flex: 1;
@@ -1006,7 +980,7 @@ body {
 }
 
 /* ==========================================================================
-   FLOATING ITEM ACTION POPUP (MIRIP PERSIS GAMBAR REFERENSI)
+   FLOATING ITEM ACTION POPUP
    ========================================================================== */
 .item-context-popup {
     position: fixed;

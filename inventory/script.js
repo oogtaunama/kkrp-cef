@@ -85,114 +85,80 @@
     // 2. ICON REGISTRY (Crisp Inline SVGs for KKRP Roleplay Items)
     // =========================================================================
     const ItemIcons = {
-        // Makanan (Food)
         food_fries: `<svg viewBox="0 0 24 24" fill="none" stroke="#ffaa00" stroke-width="1.8"><path d="M5 11l2 11h10l2-11H5z"/><line x1="8" y1="11" x2="8" y2="4"/><line x1="12" y1="11" x2="12" y2="2"/><line x1="16" y1="11" x2="16" y2="5"/><line x1="10" y1="11" x2="9" y2="3"/><line x1="14" y1="11" x2="15" y2="3"/></svg>`,
         food_burger: `<svg viewBox="0 0 24 24" fill="none" stroke="#ffaa00" stroke-width="1.8"><path d="M4 11a8 8 0 0 1 16 0H4z"/><rect x="3" y="14" width="18" height="3" rx="1.5"/><path d="M4 18h16a2 2 0 0 1-2 3H6a2 2 0 0 1-2-3z"/><line x1="3" y1="11" x2="21" y2="11"/></svg>`,
         food_meal: `<svg viewBox="0 0 24 24" fill="none" stroke="#ff9100" stroke-width="1.8"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>`,
-
-        // Minuman (Drink)
         drink_water: `<svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="1.8"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>`,
         drink_soda: `<svg viewBox="0 0 24 24" fill="none" stroke="#f43f5e" stroke-width="1.8"><rect x="6" y="5" width="12" height="16" rx="3"/><path d="M9 2h6v3H9z"/><line x1="6" y1="11" x2="18" y2="11"/></svg>`,
         drink_coffee: `<svg viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="1.8"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/></svg>`,
-
-        // Peralatan Elektronik (Gadgets)
         gadget_phone: `<svg viewBox="0 0 24 24" fill="none" stroke="#ff9500" stroke-width="1.8"><rect x="5" y="2" width="14" height="20" rx="3"/><line x1="12" y1="18" x2="12.01" y2="18" stroke-width="2.5"/><line x1="10" y1="5" x2="14" y2="5"/></svg>`,
         gadget_radio: `<svg viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="1.8"><rect x="4" y="6" width="16" height="15" rx="2"/><circle cx="9" cy="13" r="3"/><line x1="15" y1="11" x2="17" y2="11"/><line x1="15" y1="15" x2="17" y2="15"/><line x1="7" y1="2" x2="7" y2="6"/></svg>`,
-
-        // Medis (Medical)
         med_kit: `<svg viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="1.8"><rect x="3" y="6" width="18" height="15" rx="2"/><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/><line x1="12" y1="10" x2="12" y2="16"/><line x1="9" y1="13" x2="15" y2="13"/></svg>`,
         med_bandage: `<svg viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="1.8"><rect x="2" y="7" width="20" height="10" rx="2" transform="rotate(45 12 12)"/><circle cx="12" cy="12" r="1.5"/></svg>`,
         med_pills: `<svg viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="1.8"><path d="M10.5 20.5l10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><line x1="8.5" y1="8.5" x2="15.5" y2="15.5"/></svg>`,
-
-        // Senjata & Peluru (Weapons & Ammo)
         weap_ammo: `<svg viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="1.8"><rect x="4" y="9" width="4" height="11" rx="1"/><path d="M4 9l2-5 2 5z"/><rect x="10" y="9" width="4" height="11" rx="1"/><path d="M10 9l2-5 2 5z"/><rect x="16" y="9" width="4" height="11" rx="1"/><path d="M16 9l2-5 2 5z"/></svg>`,
         weap_gun: `<svg viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="1.8"><path d="M3 8h12l5 4v3h-4l-2 5h-4l1-5H3z"/></svg>`,
-
-        // Tools & Kerajinan (Tools & Materials)
         tool_wrench: `<svg viewBox="0 0 24 24" fill="none" stroke="#ff9500" stroke-width="1.8"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>`,
         tool_hoe: `<svg viewBox="0 0 24 24" fill="none" stroke="#eab308" stroke-width="1.8"><path d="M3 4l18 18"/><path d="M14 3h7v5l-4-2z"/></svg>`,
         tool_box: `<svg viewBox="0 0 24 24" fill="none" stroke="#ff7b00" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>`,
-
-        // Bahan Alam & Tambang (Ores & Wood)
         res_wood: `<svg viewBox="0 0 24 24" fill="none" stroke="#b45309" stroke-width="1.8"><circle cx="6" cy="12" r="3"/><path d="M6 9h12a3 3 0 0 1 3 3v0a3 3 0 0 1-3 3H6"/></svg>`,
         res_ore: `<svg viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.8"><polygon points="12 2 2 9 12 22 22 9 12 2"/><line x1="2" y1="9" x2="22" y2="9"/><line x1="12" y1="2" x2="12" y2="22"/></svg>`,
         res_gold: `<svg viewBox="0 0 24 24" fill="none" stroke="#eab308" stroke-width="1.8"><polygon points="6 3 18 3 22 9 12 21 2 9 6 3"/><polyline points="2 9 12 13 22 9"/></svg>`,
         res_diamond: `<svg viewBox="0 0 24 24" fill="none" stroke="#06b6d4" stroke-width="1.8"><polygon points="6 2 18 2 22 8 12 22 2 8 6 2"/><line x1="2" y1="8" x2="22" y2="8"/><line x1="12" y1="2" x2="6" y2="8"/><line x1="12" y1="2" x2="18" y2="8"/><line x1="12" y1="22" x2="6" y2="8"/><line x1="12" y1="22" x2="18" y2="8"/></svg>`,
-
-        // Ilegal / Drugs
         illegal_leaf: `<svg viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="1.8"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>`,
         illegal_chem: `<svg viewBox="0 0 24 24" fill="none" stroke="#ec4899" stroke-width="1.8"><path d="M10 2v7.31L4.67 19.53A2 2 0 0 0 6.4 22h11.2a2 2 0 0 0 1.73-2.47L14 9.31V2"/></svg>`,
-
-        // Default & Key
         item_key: `<svg viewBox="0 0 24 24" fill="none" stroke="#ffaa00" stroke-width="1.8"><circle cx="7.5" cy="15.5" r="4.5"/><path d="m21 3-9.5 9.5"/><path d="m15.5 7.5 3 3M18 5l3 3"/></svg>`,
         item_card: `<svg viewBox="0 0 24 24" fill="none" stroke="#ff9500" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>`,
         item_default: `<svg viewBox="0 0 24 24" fill="none" stroke="#ff7b00" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="3" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="21"/><line x1="3" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="21" y2="12"/></svg>`
     };
 
-    /**
-     * Cari icon berdasarkan nama item
-     */
     function getItemIcon(itemName) {
         if (!itemName) return ItemIcons.item_default;
         const name = itemName.toLowerCase();
 
-        // Makanan
         if (name.includes('fries') || name.includes('kentang')) return ItemIcons.food_fries;
         if (name.includes('burger')) return ItemIcons.food_burger;
         if (name.includes('nasi') || name.includes('ayam') || name.includes('donut') || name.includes('snack') || name.includes('cereal') || name.includes('bbq') || name.includes('daging')) return ItemIcons.food_meal;
 
-        // Minuman
         if (name.includes('air') || name.includes('mineral')) return ItemIcons.drink_water;
         if (name.includes('cola') || name.includes('sprunk') || name.includes('soda')) return ItemIcons.drink_soda;
         if (name.includes('coffee') || name.includes('kopi') || name.includes('milkshake') || name.includes('sirup') || name.includes('tuak') || name.includes('jus')) return ItemIcons.drink_coffee;
 
-        // Gadget
         if (name.includes('phone') || name.includes('smartphone') || name.includes('hp')) return ItemIcons.gadget_phone;
         if (name.includes('radio') || name.includes('walkie')) return ItemIcons.gadget_radio;
         if (name.includes('tablet')) return ItemIcons.item_card;
 
-        // Medis
         if (name.includes('medkit')) return ItemIcons.med_kit;
         if (name.includes('perban') || name.includes('bandage')) return ItemIcons.med_bandage;
         if (name.includes('pil') || name.includes('vitamin') || name.includes('obat')) return ItemIcons.med_pills;
 
-        // Senjata & Peluru
         if (name.includes('ammo') || name.includes('peluru') || name.includes('clip')) return ItemIcons.weap_ammo;
         if (name.includes('gun') || name.includes('shotgun') || name.includes('pistol') || name.includes('rifle') || name.includes('weapon')) return ItemIcons.weap_gun;
 
-        // Tools
         if (name.includes('toolkit') || name.includes('kunci') || name.includes('obeng') || name.includes('linggis')) return ItemIcons.tool_wrench;
         if (name.includes('cangkul') || name.includes('pancingan')) return ItemIcons.tool_hoe;
         if (name.includes('komponen') || name.includes('part') || name.includes('jerigen')) return ItemIcons.tool_box;
 
-        // Ores & Materials
         if (name.includes('kayu') || name.includes('papan')) return ItemIcons.res_wood;
         if (name.includes('batu') || name.includes('baja') || name.includes('alumunium') || name.includes('besi') || name.includes('tembaga')) return ItemIcons.res_ore;
         if (name.includes('emas')) return ItemIcons.res_gold;
         if (name.includes('berlian')) return ItemIcons.res_diamond;
 
-        // Drugs
         if (name.includes('ganja') || name.includes('marijuana') || name.includes('bibit') || name.includes('daun') || name.includes('tani')) return ItemIcons.illegal_leaf;
         if (name.includes('sabu') || name.includes('cocaine') || name.includes('heroin') || name.includes('sinte') || name.includes('stimulan')) return ItemIcons.illegal_chem;
 
-        // Kartu & Kunci
         if (name.includes('key')) return ItemIcons.item_key;
         if (name.includes('card') || name.includes('booster')) return ItemIcons.item_card;
 
         return ItemIcons.item_default;
     }
 
-    /**
-     * Cari path gambar PNG untuk item (FiveM Style)
-     * Folder: img/items/<nama_item>.png
-     */
     function getItemImage(itemName) {
         if (!itemName) return 'img/items/default.png';
         const clean = itemName.toLowerCase().trim()
             .replace(/\s+/g, '_')
             .replace(/[^a-z0-9_]/g, '');
 
-        // Pemetaan variasi nama item khusus roleplay
         const customMap = {
             'kentang': 'french_fries',
             'french_fries': 'french_fries',
@@ -230,9 +196,6 @@
         return `img/items/${clean}.png`;
     }
 
-    /**
-     * Klasifikasi kategori item
-     */
     function getItemCategory(itemName) {
         const name = (itemName || '').toLowerCase();
         if (name.includes('fries') || name.includes('burger') || name.includes('nasi') || name.includes('ayam') || name.includes('snack') || name.includes('daging')) return 'Makanan';
@@ -253,7 +216,6 @@
         MAX_PLAYER_SLOTS: 20,
         MAX_RIGHT_SLOTS: 20,
 
-        // Data Pemain
         player: {
             name: 'Rey_Simanjuntak',
             ucp: 'Dinar123',
@@ -266,7 +228,6 @@
             slots: []
         },
 
-        // Status Tubuh
         body: {
             overall: 'OPTIMAL',
             head: 100,
@@ -277,9 +238,8 @@
             rLeg: 100
         },
 
-        // Kontainer Kanan (Drop/Shop/Trunk/Safe)
         rightContainer: {
-            mode: 'ground', // 'ground' | 'trunk' | 'shop' | 'safe'
+            mode: 'ground',
             title: 'Ground (Sekitar)',
             subtitle: 'ITEM DI TANAH TERDEKAT',
             weight: 0.00,
@@ -287,16 +247,9 @@
             slots: []
         },
 
-        // Item yang sedang aktif dibuka di Popup Context Menu
-        selectedItem: null, // { source: 'player' | 'right', slotIndex, item }
-        
-        // Pemain terdekat (untuk dialog Give)
+        selectedItem: null,
         nearbyPlayers: [],
-
-        // Dragging State
-        draggedItem: null, // { source: 'player' | 'right', slotIndex }
-
-        // Filter / Search
+        draggedItem: null,
         playerSearchQuery: '',
         rightSearchQuery: '',
 
@@ -308,18 +261,14 @@
             this.bindDomElements();
             this.bindEvents();
             this.setupCefBridge();
-
-            // Selalu siapkan struktur slot kosong terlebih dahulu agar grid slot langsung tampil
             this.initEmptySlots();
 
-            // Cek apakah berjalan di dalam Game atau Standalone Web Preview
             const isCef = window.CefBridge && window.CefBridge.isAvailable();
             if (!isCef) {
                 console.info('[CEF INVENTORY] Standalone Mode aktif. Memuat Mock Roleplay Data...');
                 this.loadMockData();
             } else {
                 console.info('[CEF INVENTORY] Running inside open.mp CEF Engine.');
-                // Minta server mengirim data awal
                 window.CefBridge.emit('cef_onInventoryReady');
             }
 
@@ -345,7 +294,6 @@
         // DOM Elements Binding
         // =====================================================================
         bindDomElements() {
-            // Panel Kiri: Body & Info
             this.dom = {
                 valHead: document.getElementById('valHead'),
                 valTorso: document.getElementById('valTorso'),
@@ -357,7 +305,6 @@
                 infoCitizenId: document.getElementById('infoCitizenId'),
                 infoPhone: document.getElementById('infoPhone'),
 
-                // Panel Tengah: Player Inventory
                 btnCloseInventory: document.getElementById('btnCloseInventory'),
                 btnBottomClose: document.getElementById('btnBottomClose'),
                 playerWeightVal: document.getElementById('playerWeightVal'),
@@ -370,7 +317,6 @@
                 hotbarSlotsContainer: document.getElementById('hotbarSlotsContainer'),
                 playerSlotsContainer: document.getElementById('playerSlotsContainer'),
 
-                // Panel Kanan: Right Container
                 rightContainerTitle: document.getElementById('rightContainerTitle'),
                 rightContainerSubtitle: document.getElementById('rightContainerSubtitle'),
                 rightContainerModeTag: document.getElementById('rightContainerModeTag'),
@@ -384,7 +330,6 @@
                 rightSlotsContainer: document.getElementById('rightSlotsContainer'),
                 btnTakeAll: document.getElementById('btnTakeAll'),
 
-                // Context Popup
                 itemContextPopup: document.getElementById('itemContextPopup'),
                 ctxItemImg: document.getElementById('ctxItemImg'),
                 ctxItemName: document.getElementById('ctxItemName'),
@@ -402,7 +347,6 @@
                 ctxTransferLabel: document.getElementById('ctxTransferLabel'),
                 ctxBtnDrop: document.getElementById('ctxBtnDrop'),
 
-                // Give Modal
                 giveModal: document.getElementById('giveModal'),
                 giveModalItemInfo: document.getElementById('giveModalItemInfo'),
                 giveTargetSelect: document.getElementById('giveTargetSelect'),
@@ -411,7 +355,6 @@
                 btnConfirmGive: document.getElementById('btnConfirmGive'),
                 btnGiveModalClose: document.getElementById('btnGiveModalClose'),
 
-                // Toasts & Backdrop
                 toastContainer: document.getElementById('toastContainer'),
                 backdrop: document.getElementById('backdrop')
             };
@@ -421,7 +364,6 @@
         // Event Listeners (Mouse, Keyboard, Tabs, Drag)
         // =====================================================================
         bindEvents() {
-            // Click Close Buttons (Header ✕, Bottom Bar, Backdrop)
             if (this.dom.btnCloseInventory) {
                 this.dom.btnCloseInventory.addEventListener('click', () => this.closeInventory());
             }
@@ -436,13 +378,11 @@
                 });
             }
 
-            // Keyboard Shortcuts: ESC / TAB / I untuk menutup
             window.addEventListener('keydown', (e) => {
                 const key = e.key;
                 const code = e.code;
                 const keyCode = e.keyCode || e.which;
 
-                // Tutup inventory jika ESC, TAB, atau I ditekan
                 if (key === 'Escape' || code === 'Escape' || keyCode === 27 ||
                     key === 'Tab' || code === 'Tab' || keyCode === 9 ||
                     key === 'i' || key === 'I' || code === 'KeyI' || keyCode === 73) {
@@ -461,7 +401,6 @@
                     return;
                 }
 
-                // Angka 1-5 untuk Hotbar Shortcut
                 if (['1', '2', '3', '4', '5'].includes(key) && !this.isTypingInInput()) {
                     const slotIndex = parseInt(key, 10) - 1;
                     this.useHotbarSlot(slotIndex);
@@ -469,7 +408,6 @@
                 }
             }, true);
 
-            // Klik di luar context menu untuk menutup popup
             document.addEventListener('click', (e) => {
                 if (this.dom.itemContextPopup.style.display !== 'none') {
                     if (!this.dom.itemContextPopup.contains(e.target) && !e.target.closest('.inv-slot')) {
@@ -478,7 +416,6 @@
                 }
             });
 
-            // Search Bar Filter Pemain
             this.dom.playerSearchInput.addEventListener('input', (e) => {
                 this.playerSearchQuery = e.target.value.toLowerCase().trim();
                 this.dom.btnClearPlayerSearch.style.display = this.playerSearchQuery ? 'block' : 'none';
@@ -492,7 +429,6 @@
                 this.renderPlayerSlots();
             });
 
-            // Search Bar Filter Kontainer Kanan
             this.dom.rightSearchInput.addEventListener('input', (e) => {
                 this.rightSearchQuery = e.target.value.toLowerCase().trim();
                 this.dom.btnClearRightSearch.style.display = this.rightSearchQuery ? 'block' : 'none';
@@ -506,7 +442,6 @@
                 this.renderRightSlots();
             });
 
-            // Context Menu Actions
             this.dom.ctxBtnClose.addEventListener('click', () => this.closeContextMenu());
 
             this.dom.ctxBtnMinus.addEventListener('click', () => {
@@ -529,22 +464,12 @@
                 SoundFx.play('hover');
             });
 
-            // Tombol Gunakan (Use)
             this.dom.ctxBtnUse.addEventListener('click', () => this.executeAction('use'));
-
-            // Tombol Beri (Give)
             this.dom.ctxBtnGive.addEventListener('click', () => this.openGiveModal());
-
-            // Tombol Pindah (Transfer)
             this.dom.ctxBtnTransfer.addEventListener('click', () => this.executeAction('transfer'));
-
-            // Tombol Buang (Drop)
             this.dom.ctxBtnDrop.addEventListener('click', () => this.executeAction('drop'));
-
-            // Tombol Ambil Semua (Take All)
             this.dom.btnTakeAll.addEventListener('click', () => this.executeTakeAll());
 
-            // Give Modal Controls
             this.dom.btnCancelGive.addEventListener('click', () => this.closeGiveModal());
             this.dom.btnGiveModalClose.addEventListener('click', () => this.closeGiveModal());
             this.dom.btnConfirmGive.addEventListener('click', () => this.confirmGiveItem());
@@ -556,12 +481,11 @@
         },
 
         // =====================================================================
-        // CEF Bridge Integration (Dua arah antara Pawn & JS)
+        // CEF Bridge Integration
         // =====================================================================
         setupCefBridge() {
             if (!window.CefBridge) return;
 
-            // 1. Terima update inventaris lengkap dari Pawn (backward compatible)
             window.CefBridge.on('server:openInventory', (data) => {
                 try {
                     const parsed = typeof data === 'string' ? JSON.parse(data) : data;
@@ -580,7 +504,6 @@
                 }
             });
 
-            // 2. Terima update terpisah item pemain (aman dari pemotongan buffer)
             window.CefBridge.on('server:updatePlayerInventory', (slotsData, weight, maxWeight, citizenId, phone, name) => {
                 try {
                     let slots = slotsData;
@@ -607,7 +530,6 @@
                 }
             });
 
-            // 3. Terima update kontainer sekunder (ground / trunk)
             window.CefBridge.on('server:updateRightContainer', (mode, title, subtitle, weight, maxWeight, slotsData) => {
                 try {
                     let slots = slotsData;
@@ -630,7 +552,6 @@
                 }
             });
 
-            // 4. Update status kesehatan tubuh
             window.CefBridge.on('server:updateBodyStatus', (hp, armor) => {
                 const health = Math.round(parseFloat(hp) || 100);
                 this.body.head = health;
@@ -642,14 +563,22 @@
                 this.renderBodyStatus();
             });
 
-            // 5. Tutup inventaris dari server
+            window.CefBridge.on('server:updateNearbyPlayers', (playersData) => {
+                try {
+                    const list = typeof playersData === 'string' ? JSON.parse(playersData) : playersData;
+                    this.nearbyPlayers = Array.isArray(list) ? list : [];
+                } catch (e) {
+                    console.error('[CEF BRIDGE] Gagal parse server:updateNearbyPlayers:', e);
+                }
+            });
+
             window.CefBridge.on('server:closeInventory', () => {
                 this.closeInventory(false);
             });
         },
 
         // =====================================================================
-        // Mock Data Generator (Untuk Preview Standalone di Browser)
+        // Mock Data Generator
         // =====================================================================
         loadMockData() {
             this.player.name = 'Rey_Simanjuntak';
@@ -661,13 +590,11 @@
             this.player.weight = 14.25;
             this.player.maxWeight = 50.00;
 
-            // Inisialisasi 20 slot pemain dengan beberapa item roleplay
             const playerSlots = Array.from({ length: this.MAX_PLAYER_SLOTS }, (_, i) => ({
                 slotIndex: i,
                 exists: false
             }));
 
-            // Slot 0 (Hotbar 1): Fries (seperti di referensi)
             playerSlots[0] = {
                 slotIndex: 0,
                 exists: true,
@@ -679,7 +606,6 @@
                 desc: 'Kentang goreng renyah bumbu keju.'
             };
 
-            // Slot 1 (Hotbar 2): Smartphone
             playerSlots[1] = {
                 slotIndex: 1,
                 exists: true,
@@ -691,7 +617,6 @@
                 desc: 'Ponsel pintar untuk telepon dan pesan.'
             };
 
-            // Slot 2 (Hotbar 3): Radio
             playerSlots[2] = {
                 slotIndex: 2,
                 exists: true,
@@ -703,7 +628,6 @@
                 desc: 'Radio HT komunikasi frekuensi tim.'
             };
 
-            // Slot 3 (Hotbar 4): Air Mineral
             playerSlots[3] = {
                 slotIndex: 3,
                 exists: true,
@@ -715,7 +639,6 @@
                 desc: 'Air pegunungan segar pelepas dahaga.'
             };
 
-            // Slot 4 (Hotbar 5): Medkit
             playerSlots[4] = {
                 slotIndex: 4,
                 exists: true,
@@ -727,7 +650,6 @@
                 desc: 'Kotak P3K medis darurat.'
             };
 
-            // Slot 5+: Bahan Material, Makanan, Peluru
             playerSlots[5] = {
                 slotIndex: 5,
                 exists: true,
@@ -762,11 +684,8 @@
             };
 
             this.player.slots = playerSlots;
-
-            // Mock Data Kontainer Kanan (Ground Mode default)
             this.loadMockRightContainer('ground');
 
-            // Mock Nearby Players untuk dialog Beri
             this.nearbyPlayers = [
                 { id: 14, name: 'Budi_Santoso' },
                 { id: 28, name: 'Siti_Aminah' },
@@ -774,9 +693,6 @@
             ];
         },
 
-        /**
-         * Load data kontainer sekunder berdasarkan mode
-         */
         loadMockRightContainer(mode) {
             this.rightContainer.mode = mode;
             const rightSlots = Array.from({ length: this.MAX_RIGHT_SLOTS }, (_, i) => ({
@@ -926,23 +842,6 @@
             this.rightContainer.slots = rightSlots;
         },
 
-        /**
-         * Ganti mode kontainer kanan (Sekitar / Bagasi / Toko / Brankas)
-         */
-        switchRightContainerMode(mode) {
-            const tabs = this.dom.containerTabs.querySelectorAll('.tab-btn');
-            tabs.forEach(t => t.classList.toggle('active', t.dataset.mode === mode));
-
-            this.loadMockRightContainer(mode);
-            this.renderRightContainerHeader();
-            this.renderRightSlots();
-
-            // Notifikasi ke server jika di dalam game
-            if (window.CefBridge && window.CefBridge.isAvailable()) {
-                window.CefBridge.emit('cef_onSwitchContainerMode', mode);
-            }
-        },
-
         // =====================================================================
         // RENDER FUNCTIONS
         // =====================================================================
@@ -955,7 +854,6 @@
         },
 
         renderPlayerStats() {
-            // Live Capacity
             const curr = parseFloat(this.player.weight || 0).toFixed(2);
             const max = parseFloat(this.player.maxWeight || 50).toFixed(2);
             if (this.dom.playerWeightVal) this.dom.playerWeightVal.textContent = curr;
@@ -964,27 +862,44 @@
             const pct = Math.min(100, Math.max(0, (curr / max) * 100));
             if (this.dom.playerWeightBar) this.dom.playerWeightBar.style.width = `${pct}%`;
 
-            // Personal Information (Hanya ID Karakter dan No. HP)
             if (this.dom.infoCitizenId) this.dom.infoCitizenId.textContent = this.player.citizenId || 'N/A';
             if (this.dom.infoPhone) this.dom.infoPhone.textContent = this.player.phone || 'N/A';
         },
 
         renderBodyStatus() {
-            this.dom.valHead.textContent = `${this.body.head || 100}%`;
-            this.dom.valTorso.textContent = `${this.body.torso || 100}%`;
-            this.dom.valLArm.textContent = `${this.body.lArm || 100}%`;
-            this.dom.valRArm.textContent = `${this.body.rArm || 100}%`;
-            this.dom.valLLeg.textContent = `${this.body.lLeg || 100}%`;
-            this.dom.valRLeg.textContent = `${this.body.rLeg || 100}%`;
+            const parts = [
+                { id: 'partHead', valEl: this.dom.valHead, hp: this.body.head ?? 100 },
+                { id: 'partTorso', valEl: this.dom.valTorso, hp: this.body.torso ?? 100 },
+                { id: 'partLArm', valEl: this.dom.valLArm, hp: this.body.lArm ?? 100 },
+                { id: 'partRArm', valEl: this.dom.valRArm, hp: this.body.rArm ?? 100 },
+                { id: 'partLLeg', valEl: this.dom.valLLeg, hp: this.body.lLeg ?? 100 },
+                { id: 'partRLeg', valEl: this.dom.valRLeg, hp: this.body.rLeg ?? 100 }
+            ];
 
-            const isInjured = (this.body.head < 90 || this.body.torso < 90 || this.body.lArm < 90 || this.body.rArm < 90 || this.body.lLeg < 90 || this.body.rLeg < 90);
+            let isInjured = false;
+
+            parts.forEach(p => {
+                const hp = Math.max(0, Math.min(100, Math.round(p.hp)));
+                if (p.valEl) p.valEl.textContent = `${hp}%`;
+                if (hp < 90) isInjured = true;
+
+                const svgGroup = document.getElementById(p.id);
+                if (svgGroup) {
+                    svgGroup.classList.remove('part-healthy', 'part-warn', 'part-crit');
+                    if (hp <= 40) {
+                        svgGroup.classList.add('part-crit');
+                    } else if (hp < 85) {
+                        svgGroup.classList.add('part-warn');
+                    } else {
+                        svgGroup.classList.add('part-healthy');
+                    }
+                }
+            });
+
             this.dom.overallBodyStatus.textContent = isInjured ? 'CEDERA' : 'OPTIMAL';
             this.dom.overallBodyStatus.className = `status-pill ${isInjured ? 'status-injured' : 'status-healthy'}`;
         },
 
-        /**
-         * Render slot pemain (Hotbar slot 0-4 dan Main inventory slot 5-19)
-         */
         renderPlayerSlots() {
             this.dom.hotbarSlotsContainer.innerHTML = '';
             this.dom.playerSlotsContainer.innerHTML = '';
@@ -997,7 +912,6 @@
                 const hasItem = item && item.exists;
                 if (hasItem) filledCount++;
 
-                // Filter search
                 if (this.playerSearchQuery) {
                     if (!hasItem) return;
                     if (!item.name.toLowerCase().includes(this.playerSearchQuery)) return;
@@ -1021,15 +935,11 @@
             this.dom.playerTotalSlots.textContent = this.MAX_PLAYER_SLOTS;
         },
 
-        /**
-         * Render header dan stats kontainer kanan
-         */
         renderRightContainerHeader() {
             this.dom.rightContainerTitle.textContent = this.rightContainer.title || 'Ground (Sekitar)';
             this.dom.rightContainerSubtitle.textContent = this.rightContainer.subtitle || 'ITEM SEKITAR';
             this.dom.rightContainerModeTag.textContent = (this.rightContainer.mode || 'ground').toUpperCase();
 
-            // Sembunyikan capacity bar jika mode Shop
             const isShop = this.rightContainer.mode === 'shop';
             const capacityBlock = document.getElementById('rightCapacityBlock');
             if (capacityBlock) {
@@ -1045,13 +955,9 @@
                 this.dom.rightWeightBar.style.width = `${pct}%`;
             }
 
-            // Ganti label tombol Take All jika di Toko
             this.dom.btnTakeAll.style.display = isShop ? 'none' : 'block';
         },
 
-        /**
-         * Render slot di kontainer kanan
-         */
         renderRightSlots() {
             this.dom.rightSlotsContainer.innerHTML = '';
             let filledCount = 0;
@@ -1061,7 +967,6 @@
                 const hasItem = item && item.exists;
                 if (hasItem) filledCount++;
 
-                // Filter search
                 if (this.rightSearchQuery) {
                     if (!hasItem) return;
                     if (!item.name.toLowerCase().includes(this.rightSearchQuery)) return;
@@ -1081,21 +986,16 @@
             this.dom.rightTotalSlots.textContent = this.MAX_RIGHT_SLOTS;
         },
 
-        /**
-         * Helper pembuatan elemen HTML slot
-         */
         createSlotElement({ source, slotIndex, item, hotkeyNumber, isShop }) {
             const slot = document.createElement('div');
             slot.className = `inv-slot ${item ? 'has-item' : 'empty'}`;
             slot.dataset.source = source;
             slot.dataset.slotIndex = slotIndex;
 
-            // Highlight jika sedang dipilih di context popup
             if (this.selectedItem && this.selectedItem.source === source && this.selectedItem.slotIndex === slotIndex) {
                 slot.classList.add('active-selected');
             }
 
-            // Badge Hotkey (1 - 5)
             if (hotkeyNumber) {
                 const badge = document.createElement('span');
                 badge.className = 'slot-hotkey-badge';
@@ -1104,13 +1004,11 @@
             }
 
             if (item) {
-                // Quantity Badge (Top Right)
                 const qtyBadge = document.createElement('span');
                 qtyBadge.className = 'slot-qty-badge';
                 qtyBadge.textContent = `x${item.quantity}`;
                 slot.appendChild(qtyBadge);
 
-                // Icon Item (FiveM PNG Image dengan fallback)
                 const iconWrap = document.createElement('div');
                 iconWrap.className = 'slot-icon-wrap';
 
@@ -1121,19 +1019,17 @@
                 img.draggable = false;
                 img.onerror = function () {
                     this.onerror = null;
-                    this.src = 'img/items/default.png';
+                    iconWrap.innerHTML = getItemIcon(item.name);
                 };
                 iconWrap.appendChild(img);
                 slot.appendChild(iconWrap);
 
-                // Nama Item
                 const title = document.createElement('span');
                 title.className = 'slot-title';
                 title.textContent = item.name;
                 title.title = item.name;
                 slot.appendChild(title);
 
-                // Bottom Meta: Weight atau Price
                 if (isShop && item.price !== undefined) {
                     const priceTag = document.createElement('span');
                     priceTag.className = 'slot-price-tag';
@@ -1147,7 +1043,6 @@
                     slot.appendChild(weightBadge);
                 }
 
-                // Durability / Quality Line
                 const duraLine = document.createElement('div');
                 duraLine.className = 'slot-durability-line';
                 const duraFill = document.createElement('div');
@@ -1156,18 +1051,15 @@
                 duraLine.appendChild(duraFill);
                 slot.appendChild(duraLine);
 
-                // Drag and Drop Attributes
                 slot.draggable = true;
                 slot.addEventListener('dragstart', (e) => this.onDragStart(e, source, slotIndex, item));
                 slot.addEventListener('dragend', (e) => this.onDragEnd(e));
             }
 
-            // Drag over events
             slot.addEventListener('dragover', (e) => this.onDragOver(e));
             slot.addEventListener('dragleave', (e) => this.onDragLeave(e));
             slot.addEventListener('drop', (e) => this.onDrop(e, source, slotIndex));
 
-            // Click Handler
             slot.addEventListener('click', (e) => {
                 SoundFx.play('click');
                 if (item) {
@@ -1177,7 +1069,6 @@
                 }
             });
 
-            // Hover Sound
             slot.addEventListener('mouseenter', () => {
                 if (item) SoundFx.play('hover');
             });
@@ -1191,7 +1082,6 @@
         openContextMenu(e, source, slotIndex, item) {
             this.selectedItem = { source, slotIndex, item };
 
-            // Update UI elements in popup
             this.dom.ctxItemName.textContent = item.name;
             this.dom.ctxItemCategory.textContent = getItemCategory(item.name);
             this.dom.ctxItemWeight.textContent = `${(item.weight || 0.25).toFixed(2)} KG`;
@@ -1204,11 +1094,9 @@
                 };
             }
 
-            // Reset amount stepper
             this.dom.ctxAmountInput.value = 1;
             this.dom.ctxAmountInput.max = item.quantity;
 
-            // Sesuaikan label tombol transfer berdasarkan sumber item
             const isFromPlayer = source === 'player';
             const isShop = this.rightContainer.mode === 'shop';
 
@@ -1226,7 +1114,6 @@
 
                 this.dom.ctxTransferLabel.textContent = `Pindah ke ${targetName}`;
             } else {
-                // Item berasal dari kontainer kanan
                 this.dom.ctxBtnUse.style.display = 'none';
                 this.dom.ctxBtnGive.style.display = 'none';
                 this.dom.ctxBtnDrop.style.display = 'none';
@@ -1239,12 +1126,10 @@
                 }
             }
 
-            // Posisi Context Menu mengambang tepat di dekat slot yang diklik
             const rect = e.currentTarget.getBoundingClientRect();
             const popup = this.dom.itemContextPopup;
             popup.style.display = 'block';
 
-            // Kalkulasi koordinat agar tidak terpotong layar
             const popupWidth = 270;
             const popupHeight = 220;
             let left = rect.right + 12;
@@ -1260,7 +1145,6 @@
             popup.style.left = `${Math.max(10, left)}px`;
             popup.style.top = `${Math.max(10, top)}px`;
 
-            // Render ulang border aktif pada slot terpilih
             this.renderPlayerSlots();
             this.renderRightSlots();
         },
@@ -1284,11 +1168,9 @@
                 SoundFx.play('use');
                 this.showToast(`Menggunakan 1x ${item.name}`, 'toast-success');
 
-                // Kirim event ke server Pawn
                 if (window.CefBridge && window.CefBridge.isAvailable()) {
                     window.CefBridge.emit('cef_onInventoryUseItem', slotIndex, item.name, 1);
                 } else {
-                    // Mock local behavior
                     item.quantity -= 1;
                     if (item.quantity <= 0) item.exists = false;
                     this.renderPlayerSlots();
@@ -1305,20 +1187,15 @@
                 if (window.CefBridge && window.CefBridge.isAvailable()) {
                     window.CefBridge.emit('cef_onInventoryDropItem', slotIndex, item.name, amount);
                 } else {
-                    // Pindahkan ke ground di mock
                     this.moveItemBetweenContainers('player', slotIndex, 'right', -1, amount);
                 }
                 this.closeContextMenu();
             }
         },
 
-        /**
-         * Pindahkan item antara player inventory dan kontainer kanan
-         */
         transferItem(source, slotIndex, amount) {
             const targetSource = source === 'player' ? 'right' : 'player';
             const sourceContainer = source === 'player' ? this.player.slots : this.rightContainer.slots;
-            const targetContainer = source === 'player' ? this.rightContainer.slots : this.player.slots;
             const item = sourceContainer[slotIndex];
             if (!item || !item.exists) return;
 
@@ -1331,7 +1208,6 @@
                     window.CefBridge.emit('cef_onInventoryMoveItem', source, slotIndex, targetSource, -1, amount);
                 }
             } else {
-                // Mock execution
                 if (source === 'right' && this.rightContainer.mode === 'shop') {
                     this.showToast(`Membeli ${amount}x ${item.name} seharga $${(item.price || 10) * amount}`, 'toast-success');
                     this.addOrStackItem(this.player.slots, item, amount);
@@ -1342,16 +1218,13 @@
             }
         },
 
-        /**
-         * Tombol Ambil Semua (Take All) dari kontainer kanan
-         */
         executeTakeAll() {
             SoundFx.play('move');
             if (window.CefBridge && window.CefBridge.isAvailable()) {
                 window.CefBridge.emit('cef_onInventoryTakeAll');
             } else {
                 let movedAny = false;
-                this.rightContainer.slots.forEach((item, idx) => {
+                this.rightContainer.slots.forEach((item) => {
                     if (item && item.exists) {
                         this.addOrStackItem(this.player.slots, item, item.quantity);
                         item.exists = false;
@@ -1378,7 +1251,6 @@
             this.dom.giveAmountInput.value = this.dom.ctxAmountInput.value || 1;
             this.dom.giveAmountInput.max = item.quantity;
 
-            // Render opsi pemain terdekat
             this.dom.giveTargetSelect.innerHTML = '';
             if (this.nearbyPlayers.length === 0) {
                 const opt = document.createElement('option');
@@ -1473,16 +1345,13 @@
             if (!this.draggedItem) return;
             const { source, slotIndex, item } = this.draggedItem;
 
-            // Jika dijatuhkan pada slot yang sama persis
             if (source === targetSource && slotIndex === targetSlotIndex) return;
 
             SoundFx.play('move');
 
-            // Emit ke server jika di game
             if (window.CefBridge && window.CefBridge.isAvailable()) {
                 window.CefBridge.emit('cef_onInventoryMoveItem', source, slotIndex, targetSource, targetSlotIndex, item.quantity);
             } else {
-                // Mock perpindahan slot
                 this.moveItemBetweenContainers(source, slotIndex, targetSource, targetSlotIndex, item.quantity);
                 this.renderAll();
             }
@@ -1495,7 +1364,6 @@
             const item = srcArr[srcSlot];
             if (!item || !item.exists) return;
 
-            // Cari target slot kosong jika targetSlot bernilai -1
             let destSlot = targetSlot;
             if (destSlot === -1 || destSlot === undefined) {
                 destSlot = tgtArr.findIndex(s => !s.exists);
@@ -1508,13 +1376,11 @@
 
             const targetExisting = tgtArr[destSlot];
 
-            // Jika item sama -> stack
             if (targetExisting && targetExisting.exists && targetExisting.name === item.name) {
                 targetExisting.quantity += amount;
                 item.quantity -= amount;
                 if (item.quantity <= 0) item.exists = false;
             } else if (!targetExisting || !targetExisting.exists) {
-                // Pindah ke slot kosong
                 tgtArr[destSlot] = {
                     ...item,
                     slotIndex: destSlot,
@@ -1524,7 +1390,6 @@
                 item.quantity -= amount;
                 if (item.quantity <= 0) item.exists = false;
             } else {
-                // Swap slot jika kontainer sama
                 if (srcContainerName === targetContainerName) {
                     const temp = { ...srcArr[srcSlot] };
                     srcArr[srcSlot] = { ...tgtArr[destSlot], slotIndex: srcSlot };
@@ -1537,13 +1402,11 @@
         },
 
         addOrStackItem(slotsArr, item, amount) {
-            // Coba stack ke item sejenis
             const existing = slotsArr.find(s => s && s.exists && s.name === item.name);
             if (existing) {
                 existing.quantity += amount;
                 return true;
             }
-            // Cari slot kosong
             const freeIndex = slotsArr.findIndex(s => !s || !s.exists);
             if (freeIndex !== -1) {
                 slotsArr[freeIndex] = {
@@ -1557,9 +1420,6 @@
             return false;
         },
 
-        /**
-         * Penggunaan Cepat dari Hotbar Slot (1 - 5)
-         */
         useHotbarSlot(slotIndex) {
             const slot = this.player.slots[slotIndex];
             if (!slot || !slot.exists) {
@@ -1581,9 +1441,6 @@
             }
         },
 
-        /**
-         * Tutup antarmuka Inventory
-         */
         closeInventory(notifyServer = true) {
             SoundFx.play('click');
             const root = document.getElementById('inventoryRoot');
@@ -1600,9 +1457,6 @@
             }
         },
 
-        /**
-         * Toast notification manager
-         */
         showToast(message, type = 'toast-success') {
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
@@ -1618,7 +1472,6 @@
         }
     };
 
-    // Auto-boot saat DOM ready atau langsung jika document sudah ready
     function startApp() {
         if (!window.InventoryAppInitialized) {
             window.InventoryAppInitialized = true;
