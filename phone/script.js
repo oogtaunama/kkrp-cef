@@ -420,8 +420,17 @@
             }
 
             // Standalone Browser Detection (Preview Mode di Chrome / Edge)
-            const isCef = window.CefBridge && typeof CefBridge.isAvailable === 'function' && CefBridge.isAvailable();
-            if (!isCef) {
+            const isCef = Boolean(
+                (typeof cef !== 'undefined' && cef !== null) ||
+                (typeof window !== 'undefined' && typeof window.cef !== 'undefined' && window.cef !== null) ||
+                (window.CefBridge && typeof CefBridge.isAvailable === 'function' && CefBridge.isAvailable()) ||
+                window.cefQuery ||
+                window.mp ||
+                (typeof navigator !== 'undefined' && navigator.userAgent && navigator.userAgent.includes('CEF'))
+            );
+            // Hanya aktifkan preview mode jika jelas-jelas di browser file langsung atau parameter preview=true
+            const isPreviewMode = !isCef && (window.location.protocol === 'file:' || window.location.search.includes('preview=true'));
+            if (isPreviewMode) {
                 document.body.classList.add('browser-preview');
                 // Buka HP langsung ke Homescreen di browser preview agar user bisa langsung klik dan coba semua aplikasi
                 this.showPhone(true);

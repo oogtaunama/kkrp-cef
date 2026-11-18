@@ -50,9 +50,9 @@ html, body {
     color: var(--ios-text-white);
 }
 
-/* Standalone Browser Preview Background */
+/* Standalone Browser Preview Background (Transparan agar tidak pernah menutupi HUD & Game) */
 body.browser-preview {
-    background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%) !important;
+    background: transparent !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;

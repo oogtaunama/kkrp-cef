@@ -289,6 +289,13 @@ window.addEventListener('DOMContentLoaded', () => {
             const jobEl = document.getElementById('hudPlayerJob');
             if (jobEl) jobEl.innerText = String(data.job);
         }
+        if (data.family !== undefined) {
+            const famEl = document.getElementById('hudPlayerFamily');
+            if (famEl) {
+                const famStr = String(data.family).trim();
+                famEl.innerText = famStr || 'None';
+            }
+        }
         if (data.cash !== undefined) {
             const cashEl = document.getElementById('hudCash');
             if (cashEl) cashEl.innerText = formatCurrency(data.cash);
