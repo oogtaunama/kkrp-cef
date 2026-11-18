@@ -138,6 +138,26 @@
             // Register Keyboard Listeners (Hotkeys [1-9], ESC, ALT)
             window.addEventListener('keydown', (e) => this._handleKeyDown(e));
 
+            // Right-click to cancel / close target menu
+            window.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+                if (this.isTargetModeActive) {
+                    this.closeTargetMode();
+                }
+            });
+
+            // Click outside card (on background/reticle/axes) to cancel
+            if (this.root) {
+                this.root.addEventListener('click', (e) => {
+                    if (e.target === this.root || 
+                        e.target.id === 'reticleWrapper' || 
+                        e.target.classList.contains('crosshair-axis') || 
+                        e.target.classList.contains('reticle-wrapper')) {
+                        this.closeTargetMode();
+                    }
+                });
+            }
+
             // Init CEF Bridge Events
             this._setupCefBridge();
 

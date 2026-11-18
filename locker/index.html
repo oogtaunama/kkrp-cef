@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KKRP Modern Locker - Faction & Jobs</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome 6 Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="../common/common.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Main Locker Wrapper -->
+    <div class="locker-overlay" id="lockerOverlay">
+        <div class="locker-window glass-panel">
+            
+            <!-- Window Glow Edge Highlights -->
+            <div class="panel-glow-top"></div>
+
+            <!-- Header Section -->
+            <header class="locker-header">
+                <div class="header-left">
+                    <div class="org-avatar-badge" id="orgIconWrapper">
+                        <i class="fa-solid fa-shield-halved" id="orgIcon"></i>
+                    </div>
+                    <div class="org-title-group">
+                        <div class="org-tag" id="orgTag">FACTION LOCKER</div>
+                        <h1 class="org-name" id="orgName">Kepolisian Los Santos</h1>
+                        <p class="org-desc">Sistem Manajemen Ruang Ganti, Seragam, & Perlengkapan Dinas</p>
+                    </div>
+                </div>
+
+                <div class="header-right">
+                    <!-- Player Identity Pill -->
+                    <div class="player-profile-badge">
+                        <div class="player-avatar">
+                            <i class="fa-solid fa-user-tie"></i>
+                        </div>
+                        <div class="player-info">
+                            <span class="player-name" id="playerName">Brenden Randall</span>
+                            <span class="player-rank" id="playerRank">Officer II</span>
+                        </div>
+                    </div>
+
+                    <!-- Close Button -->
+                    <button class="btn-close" id="btnClose" title="Tutup Menu [ESC]">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Duty Status Banner -->
+            <section class="duty-banner-wrapper">
+                <div class="duty-banner" id="dutyBanner">
+                    <div class="duty-status-info">
+                        <div class="duty-indicator" id="dutyIndicator"></div>
+                        <div class="duty-text-wrap">
+                            <span class="duty-state-label" id="dutyStatusLabel">STATUS TUGAS: OFF DUTY</span>
+                            <span class="duty-state-sub" id="dutyStatusSub">Anda sedang tidak dalam status jam dinas aktif</span>
+                        </div>
+                    </div>
+                    <button class="btn-duty-toggle" id="btnToggleDuty">
+                        <i class="fa-solid fa-power-off"></i>
+                        <span id="btnDutyText">Mulai Tugas (On Duty)</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Navigation Tabs -->
+            <nav class="locker-nav-tabs">
+                <button class="nav-tab active" data-tab="uniforms">
+                    <i class="fa-solid fa-shirt"></i>
+                    <span>Koleksi Seragam</span>
+                </button>
+                <button class="nav-tab" data-tab="equipments">
+                    <i class="fa-solid fa-vest-patches"></i>
+                    <span>Perlengkapan & Senjata</span>
+                </button>
+                <button class="nav-tab" data-tab="info">
+                    <i class="fa-solid fa-id-badge"></i>
+                    <span>Informasi & Ketentuan</span>
+                </button>
+            </nav>
+
+            <!-- Main Content Area -->
+            <main class="locker-body">
+                
+                <!-- Tab 1: Koleksi Seragam (Uniforms) -->
+                <div class="tab-pane active" id="pane-uniforms">
+                    <div class="section-toolbar">
+                        <div class="toolbar-title">
+                            <h3>Pilih Seragam Dinas</h3>
+                            <span class="sub-counter" id="uniformCount">8 Seragam Tersedia</span>
+                        </div>
+                        <button class="btn-secondary" id="btnCivilianClothes">
+                            <i class="fa-solid fa-person"></i>
+                            <span>Kembali ke Pakaian Sipil</span>
+                        </button>
+                    </div>
+
+                    <div class="uniforms-grid" id="uniformsGrid">
+                        <!-- Dynamic Uniform Cards rendered by script.js -->
+                    </div>
+                </div>
+
+                <!-- Tab 2: Perlengkapan & Senjata (Equipments) -->
+                <div class="tab-pane" id="pane-equipments">
+                    <div class="section-toolbar">
+                        <div class="toolbar-title">
+                            <h3>Perlengkapan Tugas Lapangan</h3>
+                            <span class="sub-counter" id="equipmentCount">Disesuaikan dengan Jabatan Anda</span>
+                        </div>
+                        <div class="toolbar-actions">
+                            <button class="btn-primary" id="btnClaimAllEquipment">
+                                <i class="fa-solid fa-box-archive"></i>
+                                <span>Ambil Semua Perlengkapan</span>
+                            </button>
+                            <button class="btn-danger" id="btnStoreAllEquipment">
+                                <i class="fa-solid fa-arrow-rotate-left"></i>
+                                <span>Kembalikan Semua</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="equipments-grid" id="equipmentsGrid">
+                        <!-- Dynamic Equipment Cards rendered by script.js -->
+                    </div>
+                </div>
+
+                <!-- Tab 3: Informasi & Aturan (Info) -->
+                <div class="tab-pane" id="pane-info">
+                    <div class="info-card-grid">
+                        <div class="info-card">
+                            <div class="info-card-header">
+                                <i class="fa-solid fa-clipboard-check"></i>
+                                <h4>Prosedur Standar Operasional (SOP)</h4>
+                            </div>
+                            <ul class="sop-list">
+                                <li>Wajib menyalakan status <strong>On Duty</strong> sebelum menggunakan kendaraan dan perlengkapan dinas.</li>
+                                <li>Gunakan seragam resmi yang sesuai dengan pangkat dan divisi masing-masing.</li>
+                                <li>Kembalikan seluruh senjata dan perlengkapan inventaris faksi sebelum keluar kota atau sebelum off duty.</li>
+                                <li>Penyalahgunaan fasilitas locker dan inventaris dinas dapat dikenakan sanksi indisipliner / mutasi.</li>
+                            </ul>
+                        </div>
+
+                        <div class="info-card">
+                            <div class="info-card-header">
+                                <i class="fa-solid fa-clock-rotate-left"></i>
+                                <h4>Catatan Masa Tugas & Gaji</h4>
+                            </div>
+                            <p class="info-desc">Waktu saat On Duty akan tercatat ke dalam sistem log server untuk kalkulasi absensi berkala, bonus keaktifan faksi, serta pembayaran slip gaji (paycheck) mingguan.</p>
+                            <div class="stats-mini-row">
+                                <div class="stat-pill">
+                                    <span class="stat-title">Faksi ID</span>
+                                    <span class="stat-val" id="statFactionId">#1 (LSPD)</span>
+                                </div>
+                                <div class="stat-pill">
+                                    <span class="stat-title">Tingkat Jabatan</span>
+                                    <span class="stat-val" id="statRankLevel">Rank 2</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </main>
+
+            <!-- Footer Section -->
+            <footer class="locker-footer">
+                <div class="footer-hint">
+                    <span class="kbd">ESC</span> Tutup Menu Locker
+                </div>
+                <div class="footer-branding">
+                    <span>KOTA KECILKU ROLEPLAY</span>
+                    <span class="bullet">•</span>
+                    <span>LOCKER SYSTEM v2.0</span>
+                </div>
+            </footer>
+
+        </div>
+    </div>
+
+    <!-- Common CEF Bridge -->
+    <script src="../common/cef-bridge.js"></script>
+    <!-- Locker Controller -->
+    <script src="script.js"></script>
+</body>
+</html>
