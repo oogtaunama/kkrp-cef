@@ -15,12 +15,15 @@ const GarageApp = {
         this.bindEvents();
 
         if (typeof CefBridge !== 'undefined') {
-            if (CefBridge.isAvailable()) {
+            if (typeof CefBridge.emit === 'function') {
                 CefBridge.emit('cef_onGarageReady');
-            } else {
-                // Mode Dev Preview di luar game
+            }
+            // Mode Dev Preview HANYA jika dipanggil dengan parameter ?preview=true
+            if (window.location.search.includes('preview=true')) {
                 this.loadMockData();
             }
+        } else if (window.location.search.includes('preview=true')) {
+            this.loadMockData();
         }
     },
 

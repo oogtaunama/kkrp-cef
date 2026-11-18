@@ -263,16 +263,17 @@
             this.setupCefBridge();
             this.initEmptySlots();
 
-            const isCef = window.CefBridge && window.CefBridge.isAvailable();
-            if (!isCef) {
-                console.info('[CEF INVENTORY] Standalone Mode aktif. Memuat Mock Roleplay Data...');
+            if (window.location.search.includes('preview=true')) {
+                console.info('[CEF INVENTORY] Standalone Preview Mode aktif. Memuat Mock Roleplay Data...');
                 this.loadMockData();
+                const root = document.getElementById('inventoryRoot');
+                if (root) root.style.display = 'grid';
+                this.renderAll();
             } else {
-                console.info('[CEF INVENTORY] Running inside open.mp CEF Engine.');
-                window.CefBridge.emit('cef_onInventoryReady');
+                if (window.CefBridge && typeof window.CefBridge.emit === 'function') {
+                    window.CefBridge.emit('cef_onInventoryReady');
+                }
             }
-
-            this.renderAll();
         },
 
         initEmptySlots() {
@@ -1446,14 +1447,11 @@
             const root = document.getElementById('inventoryRoot');
             if (root) root.style.display = 'none';
 
-            if (notifyServer && window.CefBridge && window.CefBridge.isAvailable()) {
+            if (notifyServer && window.CefBridge && typeof window.CefBridge.emit === 'function') {
                 window.CefBridge.emit('cef_onInventoryClose');
-                window.CefBridge.setFocus(false);
-            } else {
-                this.showToast('Inventory Ditutup. (Tekan I untuk buka kembali)', 'toast-success');
-                setTimeout(() => {
-                    if (root) root.style.display = 'grid';
-                }, 1500);
+                if (typeof window.CefBridge.setFocus === 'function') {
+                    window.CefBridge.setFocus(false);
+                }
             }
         },
 

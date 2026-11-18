@@ -847,13 +847,14 @@
                     showToast(`Gagal (${itemName}): ${reason}`, "#ef4444", "fa-triangle-exclamation");
                 });
 
-                if (CefBridge.isAvailable()) {
+                if (typeof CefBridge.emit === 'function') {
                     CefBridge.emit('cef_onShopReady');
-                } else {
-                    // Preview browser default
+                }
+                // Preview mode HANYA jika secara eksplisit dipanggil dengan parameter ?preview=true di browser
+                if (window.location.search.includes('preview=true')) {
                     setShop(1);
                 }
-            } else {
+            } else if (window.location.search.includes('preview=true')) {
                 setShop(1);
             }
         });

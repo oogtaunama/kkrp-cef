@@ -930,16 +930,17 @@
                     closeModal();
                 });
 
-                if (CefBridge.isAvailable()) {
+                if (typeof CefBridge.emit === 'function') {
                     CefBridge.emit('cef_onBankReady');
-                } else {
-                    // Preview browser fallback
+                }
+                // Preview mode HANYA jika secara eksplisit dipanggil dengan parameter ?preview=true di browser
+                if (window.location.search.includes('preview=true')) {
                     setBankData(1450000, 9883240, "Xyper William", 1, 829102, false);
                     addTransaction('deposit', 'Setor Tunai', 150000, 'Hari ini, 04:30');
                     addTransaction('transfer', 'Transfer ke Pak Mbut', -50000, 'Kemarin, 21:15');
                     addTransaction('withdraw', 'Tarik Tunai', -200000, '13 Nov, 19:10');
                 }
-            } else {
+            } else if (window.location.search.includes('preview=true')) {
                 setBankData(1450000, 9883240, "Xyper William", 1, 829102, false);
                 addTransaction('deposit', 'Setor Tunai', 150000, 'Hari ini, 04:30');
                 addTransaction('transfer', 'Transfer ke Pak Mbut', -50000, 'Kemarin, 21:15');

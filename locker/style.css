@@ -1,7 +1,7 @@
 /**
  * ============================================================================
  * MODERN LOCKER UI - KOTA KECILKU ROLEPLAY
- * Glassmorphism Orange Cyber Theme (#ff9800 / #ffa726 / #f57c00)
+ * Clean Orange Cyber Glassmorphism (#ff9800 / #ffa726 / #f57c00)
  * ============================================================================
  */
 
@@ -12,11 +12,11 @@
     --primary-orange-glow: rgba(255, 152, 0, 0.35);
     --primary-orange-subtle: rgba(255, 152, 0, 0.12);
 
-    --bg-dark-base: rgba(13, 14, 18, 0.88);
-    --bg-card: rgba(24, 25, 32, 0.65);
-    --bg-card-hover: rgba(35, 37, 48, 0.8);
+    --bg-dark-base: rgba(14, 16, 22, 0.92);
+    --bg-card: rgba(26, 29, 38, 0.75);
+    --bg-card-hover: rgba(38, 42, 56, 0.9);
     --border-glass: rgba(255, 255, 255, 0.08);
-    --border-orange: rgba(255, 152, 0, 0.35);
+    --border-orange: rgba(255, 152, 0, 0.4);
 
     --text-primary: #ffffff;
     --text-secondary: #94a3b8;
@@ -24,9 +24,8 @@
 
     --status-success: #10b981;
     --status-danger: #ef4444;
-    --status-warning: #f59e0b;
 
-    --font-heading: 'Chakra Petch', 'Rajdhani', sans-serif;
+    --font-heading: 'Chakra Petch', sans-serif;
     --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
@@ -53,19 +52,26 @@ body.preview-mode {
 }
 
 /* ==========================================================================
-   LOCKER OVERLAY & CONTAINER
+   LOCKER OVERLAY & CONTAINER (Initial Hidden)
    ========================================================================== */
 .locker-overlay {
     width: 100vw;
     height: 100vh;
-    display: flex;
+    display: none;
     align-items: center;
     justify-content: center;
     padding: 24px;
-    background: rgba(0, 0, 0, 0.45);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    transition: opacity 0.25s ease;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+.locker-overlay.active {
+    display: flex !important;
 }
 
 .locker-overlay.hidden {
@@ -73,14 +79,14 @@ body.preview-mode {
 }
 
 .locker-window {
-    width: 960px;
+    width: 880px;
     max-width: 95vw;
-    height: 680px;
-    max-height: 92vh;
+    height: 620px;
+    max-height: 90vh;
     background: var(--bg-dark-base);
     border: 1px solid var(--border-glass);
     border-radius: 20px;
-    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65), 0 0 40px var(--primary-orange-subtle);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.75), 0 0 40px var(--primary-orange-subtle);
     display: flex;
     flex-direction: column;
     position: relative;
@@ -106,7 +112,7 @@ body.preview-mode {
     right: 10%;
     height: 2px;
     background: linear-gradient(90deg, transparent, var(--primary-orange), transparent);
-    box-shadow: 0 0 15px var(--primary-orange);
+    box-shadow: 0 0 16px var(--primary-orange);
 }
 
 /* ==========================================================================
@@ -116,7 +122,7 @@ body.preview-mode {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 22px 28px;
+    padding: 20px 28px;
     border-bottom: 1px solid var(--border-glass);
     background: rgba(255, 255, 255, 0.015);
 }
@@ -128,15 +134,14 @@ body.preview-mode {
 }
 
 .org-avatar-badge {
-    width: 52px;
-    height: 52px;
-    background: linear-gradient(135deg, rgba(255, 152, 0, 0.25), rgba(245, 124, 0, 0.05));
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, rgba(255, 152, 0, 0.25), rgba(245, 124, 0, 0.08));
     border: 1px solid var(--border-orange);
     border-radius: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 24px;
     color: var(--primary-orange);
     box-shadow: 0 4px 16px var(--primary-orange-subtle);
 }
@@ -144,7 +149,7 @@ body.preview-mode {
 .org-title-group {
     display: flex;
     flex-direction: column;
-    gap: 3px;
+    gap: 2px;
 }
 
 .org-tag {
@@ -158,7 +163,7 @@ body.preview-mode {
 
 .org-name {
     font-family: var(--font-heading);
-    font-size: 22px;
+    font-size: 21px;
     font-weight: 700;
     color: #ffffff;
     letter-spacing: 0.5px;
@@ -172,13 +177,13 @@ body.preview-mode {
 .header-right {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 14px;
 }
 
 .player-profile-badge {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid var(--border-glass);
     padding: 6px 14px 6px 8px;
@@ -186,15 +191,14 @@ body.preview-mode {
 }
 
 .player-avatar {
-    width: 36px;
-    height: 36px;
+    width: 34px;
+    height: 34px;
     background: rgba(255, 152, 0, 0.15);
     border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
     color: var(--primary-orange);
-    font-size: 16px;
 }
 
 .player-info {
@@ -215,8 +219,8 @@ body.preview-mode {
 }
 
 .btn-close {
-    width: 38px;
-    height: 38px;
+    width: 36px;
+    height: 36px;
     border-radius: 10px;
     border: 1px solid var(--border-glass);
     background: rgba(255, 255, 255, 0.03);
@@ -224,7 +228,6 @@ body.preview-mode {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 16px;
     cursor: pointer;
     transition: all 0.2s ease;
 }
@@ -240,7 +243,7 @@ body.preview-mode {
    DUTY STATUS BANNER
    ========================================================================== */
 .duty-banner-wrapper {
-    padding: 16px 28px 8px 28px;
+    padding: 18px 28px 10px 28px;
 }
 
 .duty-banner {
@@ -255,8 +258,8 @@ body.preview-mode {
 }
 
 .duty-banner.on-duty {
-    background: linear-gradient(90deg, rgba(16, 185, 129, 0.12), rgba(255, 152, 0, 0.04));
-    border-color: rgba(16, 185, 129, 0.35);
+    background: linear-gradient(90deg, rgba(16, 185, 129, 0.14), rgba(255, 152, 0, 0.05));
+    border-color: rgba(16, 185, 129, 0.4);
 }
 
 .duty-status-info {
@@ -312,13 +315,13 @@ body.preview-mode {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 10px 18px;
+    padding: 10px 20px;
     background: linear-gradient(135deg, var(--primary-orange), var(--primary-orange-dark));
     color: #ffffff;
     border: none;
     border-radius: 10px;
     font-family: var(--font-heading);
-    font-size: 13px;
+    font-size: 13.5px;
     font-weight: 700;
     letter-spacing: 0.5px;
     cursor: pointer;
@@ -341,51 +344,14 @@ body.preview-mode {
 }
 
 /* ==========================================================================
-   NAVIGATION TABS
-   ========================================================================== */
-.locker-nav-tabs {
-    display: flex;
-    gap: 8px;
-    padding: 12px 28px 0 28px;
-    border-bottom: 1px solid var(--border-glass);
-}
-
-.nav-tab {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 18px;
-    background: transparent;
-    border: none;
-    border-bottom: 2px solid transparent;
-    color: var(--text-secondary);
-    font-family: var(--font-heading);
-    font-size: 13.5px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.nav-tab:hover {
-    color: #ffffff;
-}
-
-.nav-tab.active {
-    color: var(--primary-orange);
-    border-bottom-color: var(--primary-orange);
-}
-
-.nav-tab i {
-    font-size: 14px;
-}
-
-/* ==========================================================================
-   MAIN CONTENT AREA & TABS
+   MAIN CONTENT AREA (UNIFORMS ONLY)
    ========================================================================== */
 .locker-body {
     flex: 1;
     overflow-y: auto;
-    padding: 20px 28px;
+    padding: 16px 28px 20px 28px;
+    display: flex;
+    flex-direction: column;
 }
 
 .locker-body::-webkit-scrollbar {
@@ -399,20 +365,6 @@ body.preview-mode {
     background: rgba(255, 152, 0, 0.5);
 }
 
-.tab-pane {
-    display: none;
-    animation: tabFadeIn 0.25s ease;
-}
-
-.tab-pane.active {
-    display: block;
-}
-
-@keyframes tabFadeIn {
-    0% { opacity: 0; transform: translateY(6px); }
-    100% { opacity: 1; transform: translateY(0); }
-}
-
 .section-toolbar {
     display: flex;
     align-items: center;
@@ -420,9 +372,15 @@ body.preview-mode {
     margin-bottom: 16px;
 }
 
-.toolbar-title h3 {
+.title-with-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.title-with-badge h3 {
     font-family: var(--font-heading);
-    font-size: 17px;
+    font-size: 16.5px;
     font-weight: 700;
     color: #ffffff;
 }
@@ -430,32 +388,8 @@ body.preview-mode {
 .toolbar-title .sub-counter {
     font-size: 12px;
     color: var(--text-secondary);
-}
-
-.toolbar-actions {
-    display: flex;
-    gap: 10px;
-}
-
-/* Buttons */
-.btn-primary {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 16px;
-    background: linear-gradient(135deg, var(--primary-orange), var(--primary-orange-dark));
-    color: #ffffff;
-    border: none;
-    border-radius: 8px;
-    font-size: 12.5px;
-    font-weight: 600;
-    cursor: pointer;
-    box-shadow: 0 4px 14px var(--primary-orange-glow);
-    transition: all 0.2s ease;
-}
-.btn-primary:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 6px 18px var(--primary-orange-glow);
+    margin-top: 2px;
+    display: block;
 }
 
 .btn-secondary {
@@ -472,28 +406,11 @@ body.preview-mode {
     cursor: pointer;
     transition: all 0.2s ease;
 }
+
 .btn-secondary:hover {
     background: rgba(255, 255, 255, 0.1);
     color: #ffffff;
-}
-
-.btn-danger {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 16px;
-    background: rgba(239, 68, 68, 0.15);
-    border: 1px solid rgba(239, 68, 68, 0.35);
-    color: #ef4444;
-    border-radius: 8px;
-    font-size: 12.5px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-.btn-danger:hover {
-    background: rgba(239, 68, 68, 0.25);
-    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.2);
 }
 
 /* ==========================================================================
@@ -501,7 +418,7 @@ body.preview-mode {
    ========================================================================== */
 .uniforms-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
     gap: 16px;
 }
 
@@ -509,7 +426,7 @@ body.preview-mode {
     background: var(--bg-card);
     border: 1px solid var(--border-glass);
     border-radius: 14px;
-    padding: 16px;
+    padding: 16px 14px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -528,7 +445,7 @@ body.preview-mode {
 
 .uniform-card.active-skin {
     border-color: var(--primary-orange);
-    background: linear-gradient(180deg, rgba(255, 152, 0, 0.15), var(--bg-card));
+    background: linear-gradient(180deg, rgba(255, 152, 0, 0.16), var(--bg-card));
 }
 
 .uniform-card.active-skin::after {
@@ -546,17 +463,23 @@ body.preview-mode {
 }
 
 .uniform-icon-wrap {
-    width: 64px;
-    height: 64px;
+    width: 58px;
+    height: 58px;
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid var(--border-glass);
     border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 26px;
     color: var(--primary-orange-light);
     margin-bottom: 12px;
+    transition: all 0.2s ease;
+}
+
+.uniform-card:hover .uniform-icon-wrap {
+    background: rgba(255, 152, 0, 0.12);
+    border-color: var(--border-orange);
+    color: var(--primary-orange);
 }
 
 .uniform-title {
@@ -564,13 +487,17 @@ body.preview-mode {
     font-size: 14px;
     font-weight: 700;
     color: #ffffff;
-    margin-bottom: 4px;
+    margin-bottom: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
 }
 
 .uniform-skin-id {
     font-size: 11px;
     color: var(--text-muted);
-    margin-bottom: 14px;
+    margin-bottom: 12px;
 }
 
 .btn-equip-uniform {
@@ -593,177 +520,13 @@ body.preview-mode {
 }
 
 /* ==========================================================================
-   EQUIPMENT GRID
-   ========================================================================== */
-.equipments-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 14px;
-}
-
-.equipment-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border-glass);
-    border-radius: 12px;
-    padding: 14px;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    transition: all 0.2s ease;
-}
-
-.equipment-card:hover {
-    background: var(--bg-card-hover);
-    border-color: rgba(255, 255, 255, 0.15);
-    transform: translateY(-2px);
-}
-
-.equip-icon-box {
-    width: 44px;
-    height: 44px;
-    background: rgba(255, 152, 0, 0.12);
-    border: 1px solid var(--border-orange);
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--primary-orange);
-    font-size: 18px;
-    flex-shrink: 0;
-}
-
-.equip-details {
-    flex: 1;
-}
-
-.equip-name {
-    font-size: 13.5px;
-    font-weight: 600;
-    color: #ffffff;
-    margin-bottom: 2px;
-}
-
-.equip-desc {
-    font-size: 11.5px;
-    color: var(--text-muted);
-}
-
-.btn-claim-single {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid var(--border-glass);
-    border-radius: 8px;
-    padding: 6px 10px;
-    color: var(--text-secondary);
-    cursor: pointer;
-    font-size: 12px;
-    transition: all 0.2s ease;
-}
-
-.btn-claim-single:hover {
-    background: var(--primary-orange);
-    border-color: var(--primary-orange);
-    color: #ffffff;
-}
-
-/* ==========================================================================
-   INFO & SOP TAB
-   ========================================================================== */
-.info-card-grid {
-    display: grid;
-    grid-template-columns: 1.2fr 0.8fr;
-    gap: 20px;
-}
-
-.info-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border-glass);
-    border-radius: 14px;
-    padding: 20px;
-}
-
-.info-card-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 14px;
-    color: var(--primary-orange);
-}
-
-.info-card-header h4 {
-    font-family: var(--font-heading);
-    font-size: 15px;
-    font-weight: 700;
-    color: #ffffff;
-}
-
-.sop-list {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.sop-list li {
-    font-size: 12.5px;
-    color: #cbd5e1;
-    line-height: 1.5;
-    position: relative;
-    padding-left: 18px;
-}
-
-.sop-list li::before {
-    content: "•";
-    color: var(--primary-orange);
-    font-size: 18px;
-    position: absolute;
-    left: 2px;
-    top: -2px;
-}
-
-.info-desc {
-    font-size: 12.5px;
-    color: var(--text-secondary);
-    line-height: 1.6;
-    margin-bottom: 16px;
-}
-
-.stats-mini-row {
-    display: flex;
-    gap: 12px;
-}
-
-.stat-pill {
-    flex: 1;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid var(--border-glass);
-    border-radius: 10px;
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-}
-
-.stat-title {
-    font-size: 10.5px;
-    color: var(--text-muted);
-    text-transform: uppercase;
-}
-
-.stat-val {
-    font-family: var(--font-heading);
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--primary-orange-light);
-}
-
-/* ==========================================================================
    FOOTER SECTION
    ========================================================================== */
 .locker-footer {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 14px 28px;
+    padding: 12px 28px;
     border-top: 1px solid var(--border-glass);
     background: rgba(255, 255, 255, 0.015);
     font-size: 11.5px;

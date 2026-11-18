@@ -16,16 +16,11 @@ const CharApp = {
     init() {
         console.log('[CharApp] Inisialisasi Modul Character Selector & Creator.');
 
-        // Minta CEF focus & cursor aktif untuk pemilihan karakter
-        if (typeof CefBridge !== 'undefined' && typeof CefBridge.setFocus === 'function') {
-            CefBridge.setFocus(true);
-        }
-
         this.bindBridgeEvents();
         this.bindStaticEvents();
 
         // Mode Dev Preview di luar game
-        if (typeof CefBridge !== 'undefined' && !CefBridge.isAvailable()) {
+        if (window.location.search.includes('preview=true')) {
             this.loadMockData();
         }
     },
