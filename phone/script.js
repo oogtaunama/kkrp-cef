@@ -333,7 +333,54 @@
         yellowpages: [],
         photos: [],
         notes: [],
-        recents: []
+        bankHistory: [],
+        recents: [],
+
+        // GPS App State & Database
+        gpsFilter: 'all',
+        gpsSearch: '',
+        gpsLocations: [
+            // Lokasi Umum
+            { name: 'Balai Kota Pemerintahan', category: 'public', categoryName: 'Umum', desc: 'Layanan publik & administrasi kota', x: 1480.3030, y: -1772.7407, z: 13.5669 },
+            { name: 'Kantor Kepolisian (SAPD)', category: 'public', categoryName: 'Umum', desc: 'Markas kepolisian Los Santos', x: 331.0963, y: -1519.4348, z: 35.8672 },
+            { name: 'Rumah Sakit Kota (ASGH)', category: 'public', categoryName: 'Umum', desc: 'Pelayanan medis & rawat darurat SAMD', x: 1128.8544, y: -1438.1390, z: 15.7969 },
+            { name: 'Weazel News', category: 'public', categoryName: 'Umum', desc: 'Kantor berita & jurnalis kota', x: 486.4346, y: -1654.5016, z: 22.2240 },
+            { name: 'Bengkel Kota', category: 'public', categoryName: 'Umum', desc: 'Perbaikan mesin & modifikasi kendaraan', x: 185.3883, y: -248.5895, z: 1.4297 },
+            { name: 'Asuransi Los Santos', category: 'public', categoryName: 'Umum', desc: 'Klaim kendaraan & asuransi', x: 424.6763, y: -1322.2543, z: 15.0031 },
+            { name: 'Showroom / Cardealer', category: 'public', categoryName: 'Umum', desc: 'Pembelian mobil & motor baru', x: 397.4295, y: -1344.3303, z: 14.6274 },
+            { name: 'Bank Pacific Standard', category: 'public', categoryName: 'Umum', desc: 'Pusat perbankan & brankas utama', x: 1468.6134, y: -1157.6217, z: 23.7928 },
+            { name: 'MALL KKRP #LS', category: 'public', categoryName: 'Umum', desc: 'Pusat perbelanjaan & toko terlengkap', x: 2479.1294, y: -1963.1271, z: 16.7578 },
+            { name: 'Diamond Royal Casino', category: 'public', categoryName: 'Umum', desc: 'Hiburan mewah & kasino kota', x: 556.216, y: -1477.16, z: 14.6929 },
+            { name: 'Modification Shop (Modshop)', category: 'public', categoryName: 'Umum', desc: 'Kustomisasi stiker & bodykit', x: -41.9671, y: -1141.4138, z: 1.1542 },
+            { name: 'Cobra GYM', category: 'public', categoryName: 'Umum', desc: 'Pusat kebugaran & seni bela diri', x: -2262.2756, y: -156.0122, z: 35.1719 },
+            { name: 'Karnaval Pantai LS', category: 'public', categoryName: 'Umum', desc: 'Wahana santai penurun tingkat stres', x: 384.2046, y: -1900.0710, z: 7.8359 },
+            { name: 'Rusun Kembar Indah', category: 'public', categoryName: 'Umum', desc: 'Tempat istirahat & kamar susun', x: 2222.1545, y: -1136.6956, z: 25.6250 },
+            { name: 'Pawn Shop', category: 'public', categoryName: 'Umum', desc: 'Toko gadai & penukaran material', x: 2341.1680, y: -2081.4031, z: 14.7533 },
+
+            // Lokasi Pekerjaan
+            { name: 'Pembersih Jalanan', category: 'jobs', categoryName: 'Pekerjaan', desc: 'Kerja sampingan Sweeper jalanan', x: 608.9968, y: -1510.5494, z: 14.6442 },
+            { name: 'Potong Rumput', category: 'jobs', categoryName: 'Pekerjaan', desc: 'Kerja sampingan Mower taman kota', x: 2117.4211, y: -1182.7363, z: 24.0903 },
+            { name: 'Forklift Gudang', category: 'jobs', categoryName: 'Pekerjaan', desc: 'Kerja sampingan angkut palet kargo', x: -1732.6582, y: -65.4632, z: 3.5547 },
+            { name: 'Tukang Sampah', category: 'jobs', categoryName: 'Pekerjaan', desc: 'Kerja sampingan Trashmaster', x: 1067.1381, y: 1333.2260, z: 10.8203 },
+            { name: 'Pengantar Pizza', category: 'jobs', categoryName: 'Pekerjaan', desc: 'Kerja sampingan Pizza Boy', x: 2119.4346, y: -1787.9850, z: 13.5547 },
+            { name: 'Terminal Supir Bus', category: 'jobs', categoryName: 'Pekerjaan', desc: 'Rute transportasi bus umum', x: 1220.3954, y: -1824.0049, z: 13.5908 },
+            { name: 'Depot Supir Kargo', category: 'jobs', categoryName: 'Pekerjaan', desc: 'Pengiriman kontainer jarak jauh', x: -242.2259, y: -236.0227, z: 2.4297 },
+            { name: 'Ladang Petani', category: 'jobs', categoryName: 'Pekerjaan', desc: 'Bercocok tanam padi & palawija', x: -381.9745, y: -1438.8531, z: 25.7266 },
+            { name: 'Ladang Pertanian Buah', category: 'jobs', categoryName: 'Pekerjaan', desc: 'Perkebunan strawberry, anggur & jeruk', x: -347.8932, y: -1046.3129, z: 59.8125 },
+            { name: 'Locker & Tambang', category: 'jobs', categoryName: 'Pekerjaan', desc: 'Pekerjaan tambang batu & mineral', x: 2881.4590, y: -192.7048, z: 4.9001 },
+            { name: 'Rumah Potong Ayam', category: 'jobs', categoryName: 'Pekerjaan', desc: 'Pekerjaan pemotongan & pengepakan daging', x: -2090.3755, y: -2430.8972, z: 30.6379 },
+            { name: 'Kilang Minyak', category: 'jobs', categoryName: 'Pekerjaan', desc: 'Pekerjaan pengeboran & refine minyak bumi', x: 2729.8345, y: -2313.9382, z: 19.2539 },
+            { name: 'Dermaga Nelayan', category: 'jobs', categoryName: 'Pekerjaan', desc: 'Pekerjaan pelaut & penangkapan ikan', x: 2891.2710, y: -2116.8899, z: 3.9413 },
+            { name: 'Tukang Kayu (Lumberjack)', category: 'jobs', categoryName: 'Pekerjaan', desc: 'Penebangan & pemotongan papan kayu', x: -1425.4706, y: -1528.8383, z: 102.1115 },
+            { name: 'Locker Penjahit', category: 'jobs', categoryName: 'Pekerjaan', desc: 'Industri garmen & pembuatan pakaian', x: 2556.8508, y: 2023.0450, z: 10.8256 },
+
+            // Fasilitas & Layanan
+            { name: 'ATM Fleeca City Center', category: 'facility', categoryName: 'Fasilitas', desc: 'Anjungan tunai mandiri 24 jam', x: 1468.6134, y: -1157.6217, z: 23.7928 },
+            { name: 'Pom Bensin Idlewood', category: 'facility', categoryName: 'Fasilitas', desc: 'Pengisian bahan bakar & perbaikan', x: 1944.38, y: -1772.93, z: 13.39 },
+            { name: 'Pom Bensin Commerce', category: 'facility', categoryName: 'Fasilitas', desc: 'Stasiun pengisian bensin pusat', x: 1004.05, y: -939.99, z: 42.17 },
+            { name: 'Warung Lokal Pecel Lele', category: 'facility', categoryName: 'Fasilitas', desc: 'Makanan tradisional penambah energi', x: -30.2743, y: -461.8211, z: 1.9641 },
+            { name: 'Neon Nights Garage', category: 'facility', categoryName: 'Fasilitas', desc: 'Garasi swasta & tempat berkumpul', x: 830.4304, y: -2031.2748, z: 12.8672 }
+        ]
     };
 
     // =========================================================================
@@ -667,6 +714,9 @@
                     break;
                 case 'bank':
                     this.renderBankView();
+                    if (window.CefBridge) {
+                        CefBridge.emit('cef_onPhoneRequestBankHistory');
+                    }
                     this.switchView('viewAppBank');
                     break;
                 case 'twitter':
@@ -693,7 +743,14 @@
                     break;
                 case 'notes':
                     this.renderNotesList();
+                    if (window.CefBridge) {
+                        CefBridge.emit('cef_onPhoneRequestNotes');
+                    }
                     this.switchView('viewAppNotes');
+                    break;
+                case 'gps':
+                    this.renderGpsList();
+                    this.switchView('viewAppGps');
                     break;
                 case 'calculator':
                     this.switchView('viewAppCalculator');
@@ -1027,11 +1084,31 @@
             }
         },
 
-        trackLocation(coords) {
+        trackLocation(coordsOrX, y, z, label) {
             PhoneAudio.playClick();
-            this.showNotification('GPS Lokasi', 'Titik koordinat berhasil ditandai di radar peta!');
+            let posX = 0, posY = 0, posZ = 0, locName = 'Lokasi';
+            if (typeof coordsOrX === 'object' && coordsOrX !== null) {
+                posX = coordsOrX.x || 0;
+                posY = coordsOrX.y || 0;
+                posZ = coordsOrX.z || 0;
+                locName = coordsOrX.name || label || 'Lokasi';
+            } else {
+                posX = coordsOrX;
+                posY = y;
+                posZ = z;
+                locName = label || 'Lokasi';
+            }
+            this.showNotification('GPS Lokasi', `Rute ke ${locName} berhasil ditandai di radar peta!`);
             if (window.CefBridge) {
-                CefBridge.emit('cef_onPhoneTrackLocation', coords.x, coords.y, coords.z);
+                CefBridge.emit('cef_onPhoneTrackLocation', posX, posY, posZ);
+            }
+        },
+
+        clearGpsRoute() {
+            PhoneAudio.playClick();
+            this.showNotification('GPS', 'Titik penanda GPS telah dihapus dari radar.');
+            if (window.CefBridge) {
+                CefBridge.emit('cef_onPhoneClearGps');
             }
         },
 
@@ -1217,23 +1294,29 @@
             const listEl = document.getElementById('bankHistoryList');
             if (!listEl) return;
 
-            const mockHistory = [
-                { title: 'Gaji Pekerjaan', amount: 850, type: 'plus', date: 'Hari ini' },
-                { title: 'Transfer ke Bengkel Joe', amount: 450, type: 'minus', date: 'Kemarin' },
-                { title: 'Pembelian di Supermarket 24/7', amount: 120, type: 'minus', date: '2 hari lalu' }
-            ];
+            const history = PhoneState.bankHistory || [];
+            if (history.length === 0) {
+                listEl.innerHTML = '<div style="text-align: center; color: var(--ios-text-muted); font-size: 11px; padding: 25px 0;">Belum ada riwayat transaksi tersimpan.</div>';
+                return;
+            }
 
             listEl.innerHTML = '';
-            mockHistory.forEach(item => {
+            history.forEach(item => {
                 const row = document.createElement('div');
                 row.className = 'trans-item';
+                const isPlus = (item.type === 'plus');
+                let dateStr = item.date;
+                if (!dateStr && item.timestamp) {
+                    const d = new Date(item.timestamp * 1000);
+                    dateStr = d.toLocaleDateString('id-ID', { hour: '2-digit', minute: '2-digit' });
+                }
                 row.innerHTML = `
                     <div>
-                        <div style="font-weight: 600;">${item.title}</div>
-                        <div style="font-size: 10px; color: var(--ios-text-muted);">${item.date}</div>
+                        <div style="font-weight: 600; color: #ffffff;">${item.title}</div>
+                        <div style="font-size: 10px; color: var(--ios-text-muted);">${dateStr || 'Baru saja'}</div>
                     </div>
-                    <div class="trans-amount ${item.type}">
-                        ${item.type === 'plus' ? '+' : '-'}$${item.amount}
+                    <div class="trans-amount ${isPlus ? 'plus' : 'minus'}">
+                        ${isPlus ? '+' : '-'}$${parseInt(item.amount, 10).toLocaleString('en-US')}
                     </div>
                 `;
                 listEl.appendChild(row);
@@ -1646,27 +1729,89 @@
             const container = document.getElementById('notesListContainer');
             if (!container) return;
 
-            if (PhoneState.notes.length === 0) {
-                container.innerHTML = '<div style="text-align: center; color: var(--ios-text-muted); font-size: 12px; margin-top: 40px;">Belum ada catatan tersimpan.</div>';
+            if (!PhoneState.notes || PhoneState.notes.length === 0) {
+                container.innerHTML = '<div style="text-align: center; color: var(--ios-text-muted); font-size: 12px; margin-top: 50px;">Belum ada catatan tersimpan.<br><span style="font-size: 11px; opacity: 0.7;">Klik ikon + di kanan atas untuk membuat catatan baru.</span></div>';
                 return;
             }
 
             container.innerHTML = '';
             PhoneState.notes.forEach(note => {
-                const row = document.createElement('div');
-                row.className = 'recent-row';
-                row.innerHTML = `
-                    <div class="recent-info">
-                        <span class="recent-name">${note.title}</span>
-                        <span class="recent-meta">${note.content}</span>
+                const card = document.createElement('div');
+                card.className = 'note-card';
+                let dateStr = '';
+                if (note.timestamp) {
+                    const d = new Date(note.timestamp * 1000);
+                    dateStr = d.toLocaleDateString('id-ID', { hour: '2-digit', minute: '2-digit' });
+                }
+                card.innerHTML = `
+                    <div class="note-card-body">
+                        <div class="note-card-title">${note.title}</div>
+                        <div class="note-card-text">${note.content}</div>
+                        ${dateStr ? `<div class="note-card-date">${dateStr}</div>` : ''}
                     </div>
-                    <button class="c-act-btn c-act-del" title="Hapus">${PhoneSvg.trash}</button>
+                    <button class="c-act-btn c-act-del" title="Hapus Catatan">${PhoneSvg.trash}</button>
                 `;
-                row.querySelector('.c-act-del').onclick = () => {
-                    PhoneState.notes = PhoneState.notes.filter(n => n.id !== note.id);
-                    PhoneUI.renderNotesList();
+                card.querySelector('.c-act-del').onclick = (e) => {
+                    e.stopPropagation();
+                    if (confirm('Apakah Anda yakin ingin menghapus catatan ini?')) {
+                        if (window.CefBridge) {
+                            CefBridge.emit('cef_onPhoneDeleteNote', note.id);
+                        }
+                        PhoneState.notes = PhoneState.notes.filter(n => n.id !== note.id);
+                        PhoneUI.renderNotesList();
+                    }
                 };
-                container.appendChild(row);
+                container.appendChild(card);
+            });
+        },
+
+        // =====================================================================
+        // 14B. APP LOGIC: GPS / PETA NAVIGASI
+        // =====================================================================
+        renderGpsList() {
+            const container = document.getElementById('gpsLocationsListContainer');
+            if (!container) return;
+
+            let locations = PhoneState.gpsLocations || [];
+            const filter = PhoneState.gpsFilter || 'all';
+            const search = (PhoneState.gpsSearch || '').toLowerCase().trim();
+
+            if (filter !== 'all') {
+                locations = locations.filter(loc => loc.category === filter);
+            }
+            if (search) {
+                locations = locations.filter(loc =>
+                    loc.name.toLowerCase().includes(search) ||
+                    loc.desc.toLowerCase().includes(search)
+                );
+            }
+
+            if (locations.length === 0) {
+                container.innerHTML = '<div style="text-align: center; color: var(--ios-text-muted); font-size: 12px; margin-top: 40px;">Tidak ada lokasi yang cocok.</div>';
+                return;
+            }
+
+            container.innerHTML = '';
+            locations.forEach(loc => {
+                const card = document.createElement('div');
+                card.className = 'gps-card';
+                card.innerHTML = `
+                    <div class="gps-card-info">
+                        <span class="gps-card-name">${loc.name}</span>
+                        <div class="gps-card-sub">
+                            <span class="gps-card-badge">${loc.categoryName}</span>
+                            <span>${loc.desc}</span>
+                        </div>
+                    </div>
+                    <button class="gps-card-btn" title="Tandai Rute">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg>
+                        Tandai
+                    </button>
+                `;
+                card.onclick = () => {
+                    this.trackLocation(loc.x, loc.y, loc.z, loc.name);
+                };
+                container.appendChild(card);
             });
         },
 
@@ -2140,6 +2285,60 @@
                 }
             });
 
+            // Bank: Refresh History & Balance
+            document.getElementById('btnRefreshBank')?.addEventListener('click', () => {
+                PhoneAudio.playClick();
+                if (window.CefBridge) {
+                    CefBridge.emit('cef_onPhoneRequestBankHistory');
+                }
+                this.showNotification('Fleeca Bank', 'Memperbarui data mutasi...');
+            });
+
+            // Modal: Add Note
+            document.getElementById('newNoteBtn')?.addEventListener('click', () => {
+                const titleIn = document.getElementById('newNoteTitleInput');
+                const contentIn = document.getElementById('newNoteContentInput');
+                if (titleIn) titleIn.value = '';
+                if (contentIn) contentIn.value = '';
+                document.getElementById('modalAddNote')?.classList.add('active');
+                titleIn?.focus();
+            });
+            document.getElementById('saveNoteSubmitBtn')?.addEventListener('click', () => {
+                const title = document.getElementById('newNoteTitleInput')?.value?.trim();
+                const content = document.getElementById('newNoteContentInput')?.value?.trim();
+                if (!title || !content) {
+                    this.showNotification('Catatan', 'Judul dan isi catatan tidak boleh kosong!');
+                    return;
+                }
+                if (window.CefBridge) {
+                    CefBridge.emit('cef_onPhoneCreateNote', title, content);
+                }
+                document.getElementById('modalAddNote')?.classList.remove('active');
+                document.getElementById('newNoteTitleInput').value = '';
+                document.getElementById('newNoteContentInput').value = '';
+            });
+
+            // GPS App: Category Tabs
+            document.querySelectorAll('.gps-tab-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.gps-tab-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    PhoneState.gpsFilter = btn.getAttribute('data-cat') || 'all';
+                    this.renderGpsList();
+                });
+            });
+
+            // GPS App: Search Input
+            document.getElementById('searchGpsInput')?.addEventListener('input', (e) => {
+                PhoneState.gpsSearch = e.target.value;
+                this.renderGpsList();
+            });
+
+            // GPS App: Clear Route Button
+            document.getElementById('btnClearGpsBtn')?.addEventListener('click', () => {
+                this.clearGpsRoute();
+            });
+
             // Modal: New Tweet
             document.getElementById('newTweetBtn')?.addEventListener('click', () => {
                 document.getElementById('modalNewTweet')?.classList.add('active');
@@ -2391,10 +2590,14 @@
                 { id: 2, url: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=400&auto=format&fit=crop&q=80', date: '2 hari lalu' }
             ];
 
-            PhoneState.notes = [
-                { id: 1, title: 'Frekuensi Radio Faksi', content: 'Radio Utama: 105.4 | Cadangan: 108.2' },
-                { id: 2, title: 'Daftar Belanja', content: 'Perban, Repair Kit, Kunci Cadangan' }
-            ];
+            if (!window.CefBridge) {
+                PhoneState.notes = [
+                    { id: 1, title: 'Frekuensi Radio Faksi', content: 'Radio Utama: 105.4 | Cadangan: 108.2' },
+                    { id: 2, title: 'Daftar Belanja', content: 'Perban, Repair Kit, Kunci Cadangan' }
+                ];
+            } else {
+                PhoneState.notes = [];
+            }
         }
     };
 
@@ -2471,7 +2674,7 @@
         });
 
         // Receive SMS Event from Pawn
-        CefBridge.on('receiveSMS', (fromNumber, fromName, text, isLocation) => {
+        CefBridge.on('receiveSMS', (fromNumber, fromName, text, isLocation, posX, posY, posZ) => {
             const now = new Date();
             const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
 
@@ -2481,6 +2684,7 @@
                 text: text,
                 isSent: false,
                 isLocation: Boolean(isLocation),
+                coords: (posX !== undefined && posY !== undefined) ? { x: Number(posX) || 0, y: Number(posY) || 0, z: Number(posZ) || 0 } : null,
                 time: timeStr,
                 timestamp: Date.now()
             });
@@ -2685,6 +2889,36 @@
                 if (PhoneState.currentView === 'viewAppTwitter') {
                     PhoneUI.renderTwitterFeed();
                 }
+            }
+        });
+
+        // Load Notes from Pawn (MySQL phone_notes)
+        CefBridge.on('loadPhoneNotes', (jsonNotes) => {
+            try {
+                const notes = typeof jsonNotes === 'string' ? JSON.parse(jsonNotes) : jsonNotes;
+                if (Array.isArray(notes)) {
+                    PhoneState.notes = notes;
+                    if (PhoneState.currentView === 'viewAppNotes') {
+                        PhoneUI.renderNotesList();
+                    }
+                }
+            } catch (e) {
+                console.error('[CEF Phone] Gagal parse notes:', e);
+            }
+        });
+
+        // Load Bank History from Pawn (MySQL phone_bank_transactions)
+        CefBridge.on('loadBankHistory', (jsonHistory) => {
+            try {
+                const history = typeof jsonHistory === 'string' ? JSON.parse(jsonHistory) : jsonHistory;
+                if (Array.isArray(history)) {
+                    PhoneState.bankHistory = history;
+                    if (PhoneState.currentView === 'viewAppBank') {
+                        PhoneUI.renderBankHistory();
+                    }
+                }
+            } catch (e) {
+                console.error('[CEF Phone] Gagal parse bank history:', e);
             }
         });
     }

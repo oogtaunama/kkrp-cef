@@ -51,14 +51,14 @@
             font-family: 'Inter', sans-serif;
         }
 
-        /* Screen backdrop overlay */
+        /* Screen backdrop overlay - Initial hidden to prevent lag */
         .bank-screen {
             width: 100vw;
             height: 100vh;
             background: rgba(10, 12, 16, 0.72);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            display: flex;
+            display: none;
             justify-content: center;
             align-items: center;
             position: fixed;
@@ -506,7 +506,7 @@
 </head>
 <body>
 
-    <div class="bank-screen" id="bankScreen">
+    <div class="bank-screen" id="bankScreen" style="display: none;">
         <div class="bank-wrapper">
             <!-- Close Button -->
             <button class="close-btn" onclick="closeBank()" title="Tutup Menu">
@@ -867,7 +867,9 @@
         }
 
         function closeBank() {
-            document.getElementById('bankScreen').style.display = 'none';
+            const screen = document.getElementById('bankScreen');
+            if (!screen || screen.style.display === 'none') return;
+            screen.style.display = 'none';
             closeModal();
             if (typeof CefBridge !== 'undefined' && CefBridge.isAvailable()) {
                 CefBridge.emit('cef_onBankClose');
@@ -923,7 +925,9 @@
                 });
 
                 CefBridge.on('cef:closeBank', () => {
-                    closeBank();
+                    const screen = document.getElementById('bankScreen');
+                    if (screen) screen.style.display = 'none';
+                    closeModal();
                 });
 
                 if (CefBridge.isAvailable()) {

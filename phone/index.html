@@ -241,6 +241,14 @@
                             </div>
                             <span class="app-label">Pengaturan</span>
                         </div>
+
+                        <!-- 13. Peta & GPS -->
+                        <div class="app-item" data-app="gps">
+                            <div class="app-icon icon-gps">
+                                <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg>
+                            </div>
+                            <span class="app-label">Peta & GPS</span>
+                        </div>
                     </div>
 
                     <!-- iOS Frosted Glass Blur Dock (4 Aplikasi Utama) -->
@@ -882,6 +890,37 @@
                 </div>
 
                 <!-- ============================================================ -->
+                <!-- 18. APP: GPS / PETA NAVIGASI                                -->
+                <!-- ============================================================ -->
+                <div class="screen-view app-screen" id="viewAppGps">
+                    <header class="app-header">
+                        <button class="nav-back-btn" data-action="go-home">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+                        </button>
+                        <h2 class="app-header-title">Peta & GPS</h2>
+                        <button class="app-header-action" id="btnClearGpsBtn" title="Hapus Checkpoint GPS" style="color: #ef4444;">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"/></svg>
+                        </button>
+                    </header>
+
+                    <div class="search-box-wrap" style="padding: 6px 14px 4px;">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                        <input type="text" class="search-input" id="searchGpsInput" placeholder="Cari nama lokasi / pekerjaan...">
+                    </div>
+
+                    <div class="gps-category-tabs">
+                        <button class="gps-tab-btn active" data-cat="all">Semua</button>
+                        <button class="gps-tab-btn" data-cat="public">Umum</button>
+                        <button class="gps-tab-btn" data-cat="jobs">Pekerjaan</button>
+                        <button class="gps-tab-btn" data-cat="facility">Fasilitas</button>
+                    </div>
+
+                    <div class="gps-locations-list" id="gpsLocationsListContainer">
+                        <!-- Populated dynamically by JS -->
+                    </div>
+                </div>
+
+                <!-- ============================================================ -->
                 <!-- MODALS (Tersimpan rapi di dalam layar HP, tidak menimpa)    -->
                 <!-- ============================================================ -->
 
@@ -907,6 +946,32 @@
                         <div class="modal-footer">
                             <button class="btn btn-secondary" data-close="modalAddContact">Batal</button>
                             <button class="btn btn-primary" id="saveContactSubmitBtn">Simpan</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal: Tambah Catatan Baru -->
+                <div class="modal-backdrop" id="modalAddNote">
+                    <div class="modal-card">
+                        <div class="modal-header">
+                            <h3>Catatan Baru</h3>
+                            <button class="modal-close-btn" data-close="modalAddNote">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label>Judul Catatan</label>
+                                <input type="text" class="form-input" id="newNoteTitleInput" placeholder="Judul catatan..." maxlength="60">
+                            </div>
+                            <div class="form-group">
+                                <label>Isi Catatan</label>
+                                <textarea class="form-input" id="newNoteContentInput" rows="5" placeholder="Tulis isi catatan di sini..." style="resize: vertical; min-height: 80px; font-family: inherit;"></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary" data-close="modalAddNote">Batal</button>
+                            <button class="btn btn-primary" id="saveNoteSubmitBtn">Simpan</button>
                         </div>
                     </div>
                 </div>
