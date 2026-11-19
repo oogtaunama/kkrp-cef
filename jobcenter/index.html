@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KKRP Disnaker - Pusat Pekerjaan Sipil</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../common/common.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Main Container (Initial Hidden for CEF 0-Lag Preload) -->
+    <div class="jobcenter-wrapper" id="jobcenterApp" style="display: none;">
+        <div class="jobcenter-panel glass-panel">
+            
+            <!-- Glow Highlights -->
+            <div class="glow-accent-top"></div>
+
+            <!-- Header Section -->
+            <header class="jc-header">
+                <div class="header-branding">
+                    <div class="jc-badge-icon">
+                        <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor">
+                            <path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/>
+                        </svg>
+                    </div>
+                    <div class="header-titles">
+                        <div class="sys-tag">DEPARTEMEN KETENAGAKERJAAN</div>
+                        <h1 class="sys-title">Bursa Karir & Pekerjaan Sipil</h1>
+                        <p class="sys-sub">Pilih pekerjaan legal resmi untuk memulai karir dan penghasilan harian Anda di Los Santos</p>
+                    </div>
+                </div>
+
+                <div class="header-citizen-info">
+                    <div class="citizen-card">
+                        <div class="citizen-avatar">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                            </svg>
+                        </div>
+                        <div class="citizen-meta">
+                            <span class="citizen-name" id="citizenName">Warga Los Santos</span>
+                            <div class="current-job-pill">
+                                <span class="status-dot"></span>
+                                <span id="currentJobLabel">Status: Pengangguran</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn-close-jc" id="btnCloseJc" title="Tutup Menu [ESC]">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/>
+                        </svg>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Navigation Filter & Search Bar -->
+            <div class="jc-toolbar">
+                <div class="category-tabs" id="categoryTabs">
+                    <button class="tab-btn active" data-category="all">Semua Karir (<span id="countAll">9</span>)</button>
+                    <button class="tab-btn" data-category="transport">Angkutan & Kargo</button>
+                    <button class="tab-btn" data-category="industry">Industri & Pabrik</button>
+                    <button class="tab-btn" data-category="natural">Sumber Daya Alam</button>
+                </div>
+
+                <div class="search-box">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="var(--text-muted)">
+                        <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                    </svg>
+                    <input type="text" id="jobSearchInput" placeholder="Cari nama pekerjaan..." autocomplete="off">
+                </div>
+            </div>
+
+            <!-- Job Cards Grid Section -->
+            <main class="jc-grid" id="jobsGrid">
+                <!-- Di-render dinamis oleh script.js -->
+            </main>
+
+            <!-- Footer Resign & Legal Notice -->
+            <footer class="jc-footer">
+                <div class="footer-notice">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="var(--primary-orange)">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                    </svg>
+                    <span>Mengambil pekerjaan baru akan otomatis mengganti pekerjaan lama Anda. Anda dapat mengundurkan diri kapan saja.</span>
+                </div>
+
+                <button class="btn-resign" id="btnResignJob">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor">
+                        <path d="M13 3h-2v10h2V3zm4.83 2.17l-1.42 1.42C17.99 7.86 19 9.81 19 12c0 3.87-3.13 7-7 7s-7-3.13-7-7c0-2.19 1.01-4.14 2.58-5.42L6.17 5.17C4.23 6.82 3 9.26 3 12c0 4.97 4.03 9 9 9s9-4.03 9-9c0-2.74-1.23-5.18-3.17-6.83z"/>
+                    </svg>
+                    <span>Berhenti / Menjadi Pengangguran</span>
+                </button>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Confirm Apply Modal -->
+    <div class="modal-overlay" id="confirmModal" style="display: none;">
+        <div class="modal-card glass-panel">
+            <div class="modal-icon">
+                <svg viewBox="0 0 24 24" width="32" height="32" fill="var(--primary-orange)">
+                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                </svg>
+            </div>
+            <h2 class="modal-title">Konfirmasi Pilihan Karir</h2>
+            <p class="modal-desc" id="modalConfirmText">Apakah Anda yakin ingin bekerja sebagai <b>Petani</b>?</p>
+            
+            <div class="modal-actions">
+                <button class="btn-cancel" id="btnModalCancel">Batal</button>
+                <button class="btn-confirm" id="btnModalConfirm">Ya, Ambil Pekerjaan</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../common/cef-bridge.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
