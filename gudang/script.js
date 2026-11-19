@@ -96,25 +96,41 @@
     const btnModalCancel = document.getElementById('btnWhModalCancel');
     const btnModalConfirm = document.getElementById('btnWhModalConfirm');
 
+    // Helper Focus Management (Penting agar mouse CEF bisa di-klik di GTA SA / open.mp)
+    function captureFocus(focused = true) {
+        try {
+            if (typeof CefBridge !== 'undefined' && typeof CefBridge.setFocus === 'function') {
+                CefBridge.setFocus(focused);
+            }
+        } catch (e) {}
+
+        try {
+            if (typeof cef !== 'undefined' && cef && typeof cef.set_focus === 'function') {
+                cef.set_focus(focused);
+            }
+        } catch (e) {}
+    }
+
     // Helper: Format Uang ($10,000)
     function formatMoney(amount) {
         return '$' + Number(amount).toLocaleString('en-US');
     }
 
     // Helper: Emit ke Game Engine
-    function emitToGame(eventName, data) {
+    function emitToGame(eventName, ...args) {
         if (typeof CefBridge !== 'undefined' && CefBridge && typeof CefBridge.emit === 'function') {
-            CefBridge.emit(eventName, data);
+            CefBridge.emit(eventName, ...args);
         } else if (typeof cef !== 'undefined' && cef && typeof cef.emit === 'function') {
-            cef.emit(eventName, data);
+            cef.emit(eventName, ...args);
         }
 
         try {
             if (window.GetParentResourceName) {
+                const payload = args.length === 1 ? args[0] : args;
                 fetch(`https://${GetParentResourceName()}/${eventName}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json; charset=UTF-8' },
-                    body: JSON.stringify(data || {})
+                    body: JSON.stringify(payload || {})
                 }).catch(() => {});
             }
         } catch (e) {}
@@ -203,7 +219,9 @@
             `;
 
             const btnRent = card.querySelector('.btn-rent-unit');
-            btnRent.addEventListener('click', () => {
+            btnRent.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
                 if (isRentedByMe) return;
                 openRentModal(unit);
             });
@@ -219,23 +237,28 @@
         modalTitle.textContent = 'Konfirmasi Penyewaan Gudang';
         modalDesc.innerHTML = `Anda akan menyewa <b>${unit.name}</b> (${unit.capacityKg} kg) dengan biaya sebesar <b style="color: #22c55e;">${formatMoney(unit.price)}</b> untuk durasi <b>30 Hari</b>. Lanjutkan transaksi?`;
         confirmModal.style.display = 'flex';
+        captureFocus(true);
     }
 
     // Modal Konfirmasi Berhenti Sewa
-    btnCancelRental.addEventListener('click', () => {
+    btnCancelRental.addEventListener('click', (e) => {
+        e.preventDefault();
         if (rentedUnitId === -1) return;
         modalMode = 'cancel';
         modalTitle.textContent = 'Batalkan Kontrak Sewa';
         modalDesc.innerHTML = 'Apakah Anda yakin ingin berhenti menyewa gudang ini? Pastikan seluruh barang Anda di dalam brankas telah diambil sebelum membatalkan kontrak.';
         confirmModal.style.display = 'flex';
+        captureFocus(true);
     });
 
-    btnModalCancel.addEventListener('click', () => {
+    btnModalCancel.addEventListener('click', (e) => {
+        e.preventDefault();
         confirmModal.style.display = 'none';
         selectedUnitForModal = null;
     });
 
-    btnModalConfirm.addEventListener('click', () => {
+    btnModalConfirm.addEventListener('click', (e) => {
+        e.preventDefault();
         confirmModal.style.display = 'none';
 
         if (modalMode === 'rent' && selectedUnitForModal) {
@@ -243,34 +266,40 @@
             rentedUnitId = unit.id;
             renderStatusBanner(30, 0);
             renderUnits();
-            emitToGame('cef_onRentWarehouse', { unitId: unit.id, price: unit.price, name: unit.name });
+            // Kirim integer unitId dan integer price sesuai Argument_Integer di Pawn
+            emitToGame('cef_onRentWarehouse', parseInt(unit.id, 10), parseInt(unit.price, 10));
         } else if (modalMode === 'cancel') {
             rentedUnitId = -1;
             renderStatusBanner();
             renderUnits();
-            emitToGame('cef_onUnrentWarehouse', {});
+            emitToGame('cef_onUnrentWarehouse');
         }
         selectedUnitForModal = null;
     });
 
     // Tombol Set GPS
-    btnGps.addEventListener('click', () => {
+    btnGps.addEventListener('click', (e) => {
+        e.preventDefault();
         if (rentedUnitId === -1) return;
-        const unit = WAREHOUSE_UNITS.find(u => u.id === rentedUnitId) || WAREHOUSE_UNITS[0];
-        emitToGame('cef_onGpsWarehouse', { unitId: rentedUnitId, name: unit.name });
+        emitToGame('cef_onGpsWarehouse', parseInt(rentedUnitId, 10));
     });
 
     // Tutup UI
     function closeWarehouseUI() {
         appWrapper.style.display = 'none';
         confirmModal.style.display = 'none';
-        emitToGame('cef_onWarehouseClose', {});
+        captureFocus(false);
+        emitToGame('cef_onWarehouseClose');
     }
 
-    btnClose.addEventListener('click', closeWarehouseUI);
+    btnClose.addEventListener('click', (e) => {
+        e.preventDefault();
+        closeWarehouseUI();
+    });
 
     window.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' || e.keyCode === 27) {
+            e.preventDefault();
             if (confirmModal.style.display === 'flex') {
                 confirmModal.style.display = 'none';
             } else if (appWrapper.style.display !== 'none') {
@@ -284,11 +313,11 @@
         payload = payload || {};
         if (payload.citizenName) citizenNameEl.textContent = payload.citizenName;
         if (typeof payload.cash !== 'undefined') {
-            playerCash = payload.cash;
+            playerCash = Number(payload.cash);
             citizenCashEl.textContent = `Saldo Tunai: ${formatMoney(playerCash)}`;
         }
 
-        rentedUnitId = typeof payload.rentedUnitId !== 'undefined' ? payload.rentedUnitId : -1;
+        rentedUnitId = typeof payload.rentedUnitId !== 'undefined' ? Number(payload.rentedUnitId) : -1;
         const remainingDays = payload.remainingDays || 30;
         const usedWeight = payload.usedWeight || 0.0;
 
@@ -296,49 +325,66 @@
         renderUnits();
 
         appWrapper.style.display = 'flex';
+        // Aktifkan kursor & tangkap input mouse CEF
+        captureFocus(true);
     }
 
-    // Event Listener (FiveM & open.mp CEF)
-    window.addEventListener('message', (event) => {
-        const item = event.data;
-        if (!item) return;
+    // Inisialisasi Bridge
+    function setupBridge() {
+        // Beritahu game engine bahwa JS sudah siap menerima data
+        emitToGame('cef_onWarehouseReady');
 
-        if (item.action === 'warehouse:open' || item.action === 'openWarehouse') {
-            showWarehouse(item.data || item);
-        } else if (item.action === 'warehouse:close' || item.action === 'closeWarehouse') {
-            appWrapper.style.display = 'none';
+        if (typeof CefBridge !== 'undefined' && CefBridge && typeof CefBridge.on === 'function') {
+            CefBridge.on('cef:openWarehouse', (data) => {
+                let parsed = data;
+                if (typeof data === 'string') {
+                    try { parsed = JSON.parse(data); } catch(e) {}
+                }
+                showWarehouse(parsed);
+            });
+
+            CefBridge.on('cef:setWarehouseData', (data) => {
+                let parsed = data;
+                if (typeof data === 'string') {
+                    try { parsed = JSON.parse(data); } catch(e) {}
+                }
+                showWarehouse(parsed);
+            });
+
+            CefBridge.on('cef:closeWarehouse', () => {
+                appWrapper.style.display = 'none';
+                captureFocus(false);
+            });
         }
-    });
 
-    if (typeof CefBridge !== 'undefined' && CefBridge && typeof CefBridge.on === 'function') {
-        CefBridge.on('cef:openWarehouse', (data) => {
-            let parsed = data;
-            if (typeof data === 'string') {
-                try { parsed = JSON.parse(data); } catch(e) {}
+        // Event Listener (FiveM & window.cef event)
+        window.addEventListener('message', (event) => {
+            const item = event.data;
+            if (!item) return;
+
+            if (item.action === 'warehouse:open' || item.action === 'openWarehouse') {
+                showWarehouse(item.data || item);
+            } else if (item.action === 'warehouse:close' || item.action === 'closeWarehouse') {
+                appWrapper.style.display = 'none';
+                captureFocus(false);
             }
-            showWarehouse(parsed);
-        });
-
-        CefBridge.on('cef:closeWarehouse', () => {
-            appWrapper.style.display = 'none';
         });
     }
 
-    // Inisialisasi awal (Preload: hidden)
+    // Inisialisasi awal
     renderStatusBanner();
     renderUnits();
+    setupBridge();
 
-    // Mode Preview Mandiri di Browser
-    if (!window.GetParentResourceName && (typeof cef === 'undefined' || !cef)) {
+    // Mode Preview HANYA jika query ?preview=true
+    if (window.location.search.includes('preview=true')) {
         document.body.classList.add('preview-mode');
-        setTimeout(() => {
-            showWarehouse({
-                citizenName: 'Brenden Randall [ID: 24]',
-                cash: 45000,
-                rentedUnitId: 2,
-                remainingDays: 28,
-                usedWeight: 84.5
-            });
-        }, 300);
+        showWarehouse({
+            citizenName: 'Brenden Randall [ID: 24]',
+            cash: 45000,
+            rentedUnitId: 2,
+            remainingDays: 28,
+            usedWeight: 84.5
+        });
     }
 })();

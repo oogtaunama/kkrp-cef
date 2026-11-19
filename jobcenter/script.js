@@ -127,21 +127,37 @@
     const btnModalCancel = document.getElementById('btnModalCancel');
     const btnModalConfirm = document.getElementById('btnModalConfirm');
 
+    // Helper Focus Management (Penting agar mouse CEF bisa di-klik di GTA SA / open.mp)
+    function captureFocus(focused = true) {
+        try {
+            if (typeof CefBridge !== 'undefined' && typeof CefBridge.setFocus === 'function') {
+                CefBridge.setFocus(focused);
+            }
+        } catch (e) {}
+
+        try {
+            if (typeof cef !== 'undefined' && cef && typeof cef.set_focus === 'function') {
+                cef.set_focus(focused);
+            }
+        } catch (e) {}
+    }
+
     // Helper: Trigger event ke Game Client (FiveM NUI atau open.mp CEF)
-    function emitToGame(eventName, data) {
+    function emitToGame(eventName, ...args) {
         if (typeof CefBridge !== 'undefined' && CefBridge && typeof CefBridge.emit === 'function') {
-            CefBridge.emit(eventName, data);
+            CefBridge.emit(eventName, ...args);
         } else if (typeof cef !== 'undefined' && cef && typeof cef.emit === 'function') {
-            cef.emit(eventName, data);
+            cef.emit(eventName, ...args);
         }
 
         // Dukungan FiveM fetch NUI
         try {
             if (window.GetParentResourceName) {
+                const payload = args.length === 1 ? args[0] : args;
                 fetch(`https://${GetParentResourceName()}/${eventName}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json; charset=UTF-8' },
-                    body: JSON.stringify(data || {})
+                    body: JSON.stringify(payload || {})
                 }).catch(() => {});
             }
         } catch (e) {}
@@ -214,15 +230,18 @@
 
             // Action Listeners
             const btnApply = card.querySelector('.btn-apply');
-            btnApply.addEventListener('click', () => {
+            btnApply.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
                 if (isCurrent) return;
                 openConfirmModal(job);
             });
 
             const btnGps = card.querySelector('.btn-gps');
             btnGps.addEventListener('click', (e) => {
+                e.preventDefault();
                 e.stopPropagation();
-                emitToGame('cef_onJobSetGPS', { jobId: job.id, key: job.key, hq: job.hq });
+                emitToGame('cef_onJobSetGPS', parseInt(job.id, 10));
             });
 
             jobsGrid.appendChild(card);
@@ -234,6 +253,7 @@
         selectedJobForModal = job;
         modalConfirmText.innerHTML = `Apakah Anda yakin ingin mendaftar dan mulai bekerja sebagai <b>${job.title}</b>?`;
         confirmModal.style.display = 'flex';
+        captureFocus(true);
     }
 
     function closeConfirmModal() {
@@ -241,9 +261,13 @@
         selectedJobForModal = null;
     }
 
-    btnModalCancel.addEventListener('click', closeConfirmModal);
+    btnModalCancel.addEventListener('click', (e) => {
+        e.preventDefault();
+        closeConfirmModal();
+    });
 
-    btnModalConfirm.addEventListener('click', () => {
+    btnModalConfirm.addEventListener('click', (e) => {
+        e.preventDefault();
         if (!selectedJobForModal) return;
         const job = selectedJobForModal;
         closeConfirmModal();
@@ -252,29 +276,36 @@
         currentJobLabelEl.textContent = `Status: ${job.title}`;
         renderJobs();
 
-        emitToGame('cef_onJobSelect', { jobId: job.id, key: job.key });
+        // Kirim integer ID sesuai ekspektasi Argument_Integer di Pawn
+        emitToGame('cef_onJobSelect', parseInt(job.id, 10));
     });
 
     // Berhenti Kerja
-    btnResign.addEventListener('click', () => {
+    btnResign.addEventListener('click', (e) => {
+        e.preventDefault();
         if (currentJobId === 0) return;
         currentJobId = 0;
         currentJobLabelEl.textContent = 'Status: Pengangguran';
         renderJobs();
-        emitToGame('cef_onJobResign', {});
+        emitToGame('cef_onJobResign');
     });
 
     // Tutup UI
     function closeJobCenterUI() {
         appWrapper.style.display = 'none';
         closeConfirmModal();
-        emitToGame('cef_onJobCenterClose', {});
+        captureFocus(false);
+        emitToGame('cef_onJobCenterClose');
     }
 
-    btnClose.addEventListener('click', closeJobCenterUI);
+    btnClose.addEventListener('click', (e) => {
+        e.preventDefault();
+        closeJobCenterUI();
+    });
 
     window.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' || e.keyCode === 27) {
+            e.preventDefault();
             if (confirmModal.style.display === 'flex') {
                 closeConfirmModal();
             } else if (appWrapper.style.display !== 'none') {
@@ -305,53 +336,69 @@
         if (payload.citizenName) {
             citizenNameEl.textContent = payload.citizenName;
         }
-        currentJobId = typeof payload.currentJobId !== 'undefined' ? payload.currentJobId : 0;
+        currentJobId = typeof payload.currentJobId !== 'undefined' ? Number(payload.currentJobId) : 0;
 
         const currentJobObj = JOBS_DATA.find(j => j.id === currentJobId);
         currentJobLabelEl.textContent = currentJobObj ? `Status: ${currentJobObj.title}` : 'Status: Pengangguran';
 
         renderJobs();
         appWrapper.style.display = 'flex';
+        // Aktifkan kursor & tangkap input mouse CEF
+        captureFocus(true);
     }
 
-    // Listener Event Masuk (FiveM NUI & open.mp CEF)
-    window.addEventListener('message', (event) => {
-        const item = event.data;
-        if (!item) return;
+    // Inisialisasi Bridge Listeners
+    function setupBridge() {
+        // Beritahu game engine bahwa JS sudah siap menerima data
+        emitToGame('cef_onJobReady');
 
-        if (item.action === 'jobcenter:open' || item.action === 'openJobCenter') {
-            showJobCenter(item.data || item);
-        } else if (item.action === 'jobcenter:close' || item.action === 'closeJobCenter') {
-            appWrapper.style.display = 'none';
-        }
-    });
-
-    if (typeof CefBridge !== 'undefined' && CefBridge && typeof CefBridge.on === 'function') {
-        CefBridge.on('cef:openJobCenter', (data) => {
-            let parsed = data;
-            if (typeof data === 'string') {
-                try { parsed = JSON.parse(data); } catch(e) {}
-            }
-            showJobCenter(parsed);
-        });
-
-        CefBridge.on('cef:closeJobCenter', () => {
-            appWrapper.style.display = 'none';
-        });
-    }
-
-    // Inisialisasi awal (CEF Preloaded State: hidden)
-    renderJobs();
-
-    // Mode Preview Mandiri di Browser
-    if (!window.GetParentResourceName && (typeof cef === 'undefined' || !cef)) {
-        document.body.classList.add('preview-mode');
-        // Tampilkan preview otomatis untuk pengujian browser lokal
-        setTimeout(() => {
-            showJobCenter({
-                citizenName: 'Brenden Randall [ID: 24]',
-                currentJobId: 1
+        if (typeof CefBridge !== 'undefined' && CefBridge && typeof CefBridge.on === 'function') {
+            CefBridge.on('cef:openJobCenter', (data) => {
+                let parsed = data;
+                if (typeof data === 'string') {
+                    try { parsed = JSON.parse(data); } catch(e) {}
+                }
+                showJobCenter(parsed);
             });
-        }, 300);
+
+            CefBridge.on('cef:setJobCenterData', (data) => {
+                let parsed = data;
+                if (typeof data === 'string') {
+                    try { parsed = JSON.parse(data); } catch(e) {}
+                }
+                showJobCenter(parsed);
+            });
+
+            CefBridge.on('cef:closeJobCenter', () => {
+                appWrapper.style.display = 'none';
+                captureFocus(false);
+            });
+        }
+
+        // Listener Event Masuk (FiveM NUI & window.cef event)
+        window.addEventListener('message', (event) => {
+            const item = event.data;
+            if (!item) return;
+
+            if (item.action === 'jobcenter:open' || item.action === 'openJobCenter') {
+                showJobCenter(item.data || item);
+            } else if (item.action === 'jobcenter:close' || item.action === 'closeJobCenter') {
+                appWrapper.style.display = 'none';
+                captureFocus(false);
+            }
+        });
+    }
+
+    // Inisialisasi awal
+    renderJobs();
+    setupBridge();
+
+    // Mode Preview HANYA bila dibuka langsung di browser dengan query ?preview=true
+    if (window.location.search.includes('preview=true')) {
+        document.body.classList.add('preview-mode');
+        showJobCenter({
+            citizenName: 'Brenden Randall [ID: 24]',
+            currentJobId: 1
+        });
     }
 })();
