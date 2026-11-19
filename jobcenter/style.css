@@ -44,7 +44,7 @@ body, html {
 }
 
 /* Background Standalone Preview */
-body.preview-mode {
+body.preview-mode, html:has(body.preview-mode) {
     background: radial-gradient(circle at center, #1a202c 0%, #080a0f 100%) !important;
 }
 

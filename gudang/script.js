@@ -264,6 +264,10 @@
         if (modalMode === 'rent' && selectedUnitForModal) {
             const unit = selectedUnitForModal;
             rentedUnitId = unit.id;
+            if (!isGameClient()) {
+                playerCash = Math.max(0, (playerCash || 45000) - unit.price);
+                citizenCashEl.textContent = `Saldo Tunai: ${formatMoney(playerCash)}`;
+            }
             renderStatusBanner(30, 0);
             renderUnits();
             // Kirim integer unitId dan integer price sesuai Argument_Integer di Pawn
@@ -282,7 +286,64 @@
         e.preventDefault();
         if (rentedUnitId === -1) return;
         emitToGame('cef_onGpsWarehouse', parseInt(rentedUnitId, 10));
+        if (!isGameClient()) {
+            alert('GPS Checkpoint disetel ke lokasi unit gudang Anda!');
+        }
     });
+
+    // Deteksi apakah sedang berjalan di dalam engine game (CEF open.mp / FiveM)
+    const isGameClient = () => {
+        return !!(
+            (typeof window.GetParentResourceName === 'function') ||
+            (typeof cef !== 'undefined' && cef !== null) ||
+            (typeof window.cef !== 'undefined' && window.cef !== null)
+        );
+    };
+
+    function showReopenBtn() {
+        let btn = document.getElementById('previewReopenBtn');
+        if (!btn) {
+            btn = document.createElement('button');
+            btn.id = 'previewReopenBtn';
+            btn.innerHTML = `
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="vertical-align: middle; margin-right: 6px;">
+                    <path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/>
+                </svg>
+                Buka Kembali UI Sewa Gudang (Pratinjau)
+            `;
+            btn.style.cssText = `
+                position: fixed;
+                bottom: 30px;
+                left: 50%;
+                transform: translateX(-50%);
+                padding: 12px 24px;
+                background: linear-gradient(135deg, #ff9e44, #ff7a18);
+                color: #0c0e12;
+                font-family: 'Inter', sans-serif;
+                font-weight: 700;
+                font-size: 14px;
+                border: none;
+                border-radius: 30px;
+                cursor: pointer;
+                box-shadow: 0 8px 24px rgba(255, 122, 24, 0.4);
+                z-index: 99999;
+                transition: transform 0.2s, box-shadow 0.2s;
+            `;
+            btn.addEventListener('mouseenter', () => btn.style.transform = 'translateX(-50%) scale(1.05)');
+            btn.addEventListener('mouseleave', () => btn.style.transform = 'translateX(-50%) scale(1)');
+            btn.addEventListener('click', () => {
+                btn.remove();
+                showWarehouse({
+                    citizenName: 'Brenden Randall [ID: 24]',
+                    cash: playerCash || 45000,
+                    rentedUnitId: rentedUnitId,
+                    remainingDays: 28,
+                    usedWeight: 84.5
+                });
+            });
+            document.body.appendChild(btn);
+        }
+    }
 
     // Tutup UI
     function closeWarehouseUI() {
@@ -290,6 +351,11 @@
         confirmModal.style.display = 'none';
         captureFocus(false);
         emitToGame('cef_onWarehouseClose');
+
+        // Jika dibuka di browser web biasa (bukan game), tampilkan tombol buka kembali
+        if (!isGameClient()) {
+            showReopenBtn();
+        }
     }
 
     btnClose.addEventListener('click', (e) => {
@@ -325,7 +391,7 @@
         renderUnits();
 
         appWrapper.style.display = 'flex';
-        // Aktifkan kursor & tangkap input mouse CEF
+        // Aktifkan kursor & tangkap input mouse CEF jika di dalam game
         captureFocus(true);
     }
 
@@ -376,8 +442,8 @@
     renderUnits();
     setupBridge();
 
-    // Mode Preview HANYA jika query ?preview=true
-    if (window.location.search.includes('preview=true')) {
+    // Jika dibuka di browser web biasa (GitHub Pages, Edge, Chrome) ATAU dengan query ?preview=true
+    if (!isGameClient() || window.location.search.includes('preview=true')) {
         document.body.classList.add('preview-mode');
         showWarehouse({
             citizenName: 'Brenden Randall [ID: 24]',
