@@ -43,8 +43,14 @@ body, html {
     color: var(--text-primary);
 }
 
+html.preview-mode, html.preview-mode body,
 body.preview-mode, html:has(body.preview-mode) {
     background: radial-gradient(circle at center, #1a202c 0%, #080a0f 100%) !important;
+}
+
+/* In-game CEF starts hidden until opened, while browser preview is always visible */
+body.in-game:not(.active) .warehouse-wrapper {
+    display: none !important;
 }
 
 /* Wrapper & Container */

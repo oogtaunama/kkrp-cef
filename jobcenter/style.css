@@ -44,8 +44,14 @@ body, html {
 }
 
 /* Background Standalone Preview */
+html.preview-mode, html.preview-mode body,
 body.preview-mode, html:has(body.preview-mode) {
     background: radial-gradient(circle at center, #1a202c 0%, #080a0f 100%) !important;
+}
+
+/* In-game CEF starts hidden until opened, while browser preview is always visible */
+body.in-game:not(.active) .jobcenter-wrapper {
+    display: none !important;
 }
 
 /* Wrapper & Overlay */

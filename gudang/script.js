@@ -390,6 +390,7 @@
         renderStatusBanner(remainingDays, usedWeight);
         renderUnits();
 
+        document.body.classList.add('active');
         appWrapper.style.display = 'flex';
         // Aktifkan kursor & tangkap input mouse CEF jika di dalam game
         captureFocus(true);
@@ -442,9 +443,13 @@
     renderUnits();
     setupBridge();
 
-    // Jika dibuka di browser web biasa (GitHub Pages, Edge, Chrome) ATAU dengan query ?preview=true
-    if (!isGameClient() || window.location.search.includes('preview=true')) {
+    // Jika di dalam engine game (CEF / FiveM), atur in-game state
+    if (isGameClient()) {
+        document.body.classList.add('in-game');
+    } else {
+        // Jika dibuka di browser web biasa (GitHub Pages, Edge, Chrome), langsung aktifkan preview
         document.body.classList.add('preview-mode');
+        document.documentElement.classList.add('preview-mode');
         showWarehouse({
             citizenName: 'Brenden Randall [ID: 24]',
             cash: 45000,
