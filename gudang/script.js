@@ -96,6 +96,16 @@
     const btnModalCancel = document.getElementById('btnWhModalCancel');
     const btnModalConfirm = document.getElementById('btnWhModalConfirm');
 
+    // Action Bar Sewa Gudang (Pilih Unit)
+    const actionUnitTag = document.getElementById('actionUnitTag');
+    const actionUnitTitle = document.getElementById('actionUnitTitle');
+    const actionUnitSpecs = document.getElementById('actionUnitSpecs');
+    const actionPriceBox = document.getElementById('actionPriceBox');
+    const actionPriceVal = document.getElementById('actionPriceVal');
+    const btnMainRent = document.getElementById('btnMainRent');
+    const btnMainRentText = document.getElementById('btnMainRentText');
+    let selectedUnit = null;
+
     // Helper Focus Management (Penting agar mouse CEF bisa di-klik di GTA SA / open.mp)
     function captureFocus(focused = true) {
         try {
@@ -153,14 +163,54 @@
         }
     }
 
+    // Fungsi Pilih Unit Gudang (Munculkan Detail & Tombol Sewa)
+    function selectWarehouseUnit(unit) {
+        if (!unit) return;
+        selectedUnit = unit;
+        selectedUnitForModal = unit;
+
+        // Berikan highlight class 'selected' pada kartu yang dipilih
+        document.querySelectorAll('.unit-card').forEach(c => {
+            if (Number(c.getAttribute('data-unitid')) === unit.id) {
+                c.classList.add('selected');
+            } else {
+                c.classList.remove('selected');
+            }
+        });
+
+        // Update Action Bar di bagian bawah
+        if (actionUnitTag) actionUnitTag.textContent = `UNIT TERPILIH (#${unit.id} • ${unit.type.toUpperCase()})`;
+        if (actionUnitTitle) actionUnitTitle.textContent = unit.name;
+        if (actionUnitSpecs) actionUnitSpecs.textContent = `${unit.location} • Kapasitas: ${unit.capacityKg} KG (${unit.capacitySlots} Slot)`;
+
+        if (actionPriceBox) actionPriceBox.style.display = 'flex';
+        if (actionPriceVal) actionPriceVal.textContent = formatMoney(unit.price);
+
+        if (btnMainRent && btnMainRentText) {
+            if (rentedUnitId === unit.id) {
+                btnMainRent.classList.add('disabled');
+                btnMainRent.setAttribute('disabled', 'disabled');
+                btnMainRent.disabled = true;
+                btnMainRentText.textContent = 'Unit Ini Sedang Anda Sewa';
+            } else {
+                btnMainRent.classList.remove('disabled');
+                btnMainRent.removeAttribute('disabled');
+                btnMainRent.disabled = false;
+                btnMainRentText.textContent = `Sewa ${unit.name} (${formatMoney(unit.price)})`;
+            }
+        }
+    }
+
     // Render Grid Unit Gudang
     function renderUnits() {
         unitsGrid.innerHTML = '';
 
         WAREHOUSE_UNITS.forEach(unit => {
             const isRentedByMe = (rentedUnitId === unit.id);
+            const isSelected = selectedUnit ? (selectedUnit.id === unit.id) : false;
             const card = document.createElement('div');
-            card.className = `unit-card ${isRentedByMe ? 'active-unit' : ''}`;
+            card.className = `unit-card ${isRentedByMe ? 'active-unit' : ''} ${isSelected ? 'selected' : ''}`;
+            card.setAttribute('data-unitid', unit.id);
 
             card.innerHTML = `
                 <div>
@@ -211,23 +261,36 @@
                             <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
                             Sedang Digunakan
                         ` : `
-                            <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 14h-2v-2h2v2zm0-4h-2V7h2v5z"/></svg>
-                            Sewa Unit Ini
+                            <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                            Pilih & Sewa Unit Ini
                         `}
                     </button>
                 </div>
             `;
 
+            // Klik kartu untuk memilih unit gudang
+            card.addEventListener('click', () => {
+                selectWarehouseUnit(unit);
+            });
+
+            // Klik tombol langsung pada kartu
             const btnRent = card.querySelector('.btn-rent-unit');
             btnRent.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
+                selectWarehouseUnit(unit);
                 if (isRentedByMe) return;
                 openRentModal(unit);
             });
 
             unitsGrid.appendChild(card);
         });
+
+        // Pilih unit pertama secara default jika belum ada yang terpilih
+        if (!selectedUnit && WAREHOUSE_UNITS.length > 0) {
+            selectWarehouseUnit(WAREHOUSE_UNITS[0]);
+        }
+    }
     }
 
     // Modal Konfirmasi Sewa
@@ -238,6 +301,16 @@
         modalDesc.innerHTML = `Anda akan menyewa <b>${unit.name}</b> (${unit.capacityKg} kg) dengan biaya sebesar <b style="color: #22c55e;">${formatMoney(unit.price)}</b> untuk durasi <b>30 Hari</b>. Lanjutkan transaksi?`;
         confirmModal.style.display = 'flex';
         captureFocus(true);
+    }
+
+    // Tombol Utama Sewa Gudang (dari Action Bar Terpilih)
+    if (btnMainRent) {
+        btnMainRent.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (selectedUnit && rentedUnitId !== selectedUnit.id) {
+                openRentModal(selectedUnit);
+            }
+        });
     }
 
     // Modal Konfirmasi Berhenti Sewa
@@ -389,6 +462,12 @@
 
         renderStatusBanner(remainingDays, usedWeight);
         renderUnits();
+
+        if (selectedUnit) {
+            selectWarehouseUnit(selectedUnit);
+        } else if (WAREHOUSE_UNITS.length > 0) {
+            selectWarehouseUnit(WAREHOUSE_UNITS[0]);
+        }
 
         document.body.classList.add('active');
         appWrapper.style.display = 'flex';

@@ -11,8 +11,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../common/common.css?v=1.0.2">
-    <link rel="stylesheet" href="style.css?v=1.0.2">
+    <link rel="stylesheet" href="../common/common.css?v=1.0.3">
+    <link rel="stylesheet" href="style.css?v=1.0.3">
     <script>
         // Deteksi awal sebelum DOM selesai di-render
         if (!window.GetParentResourceName && (typeof cef === 'undefined' || !cef) && !window.cef) {
@@ -106,6 +106,35 @@
                 <!-- Di-render dinamis oleh script.js -->
             </main>
 
+            <!-- Action Bar Sewa Gudang (Muncul dinamis saat unit dipilih) -->
+            <section class="warehouse-action-bar" id="warehouseActionBar">
+                <div class="action-bar-left">
+                    <div class="action-unit-badge">
+                        <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+                            <path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3zm0 3.5c1.38 0 2.5 1.12 2.5 2.5S13.38 11.5 12 11.5 9.5 10.38 9.5 9s1.12-2.5 2.5-2.5z"/>
+                        </svg>
+                    </div>
+                    <div class="action-unit-details">
+                        <span class="action-tag" id="actionUnitTag">PILIH UNIT GUDANG</span>
+                        <h3 class="action-unit-title" id="actionUnitTitle">Silakan Pilih Unit Gudang di Atas</h3>
+                        <p class="action-unit-specs" id="actionUnitSpecs">Klik salah satu paket gudang untuk memilih dan mengaktifkan tombol sewa.</p>
+                    </div>
+                </div>
+
+                <div class="action-bar-right">
+                    <div class="action-price-box" id="actionPriceBox">
+                        <span class="action-price-label">Biaya Sewa (30 Hari)</span>
+                        <span class="action-price-val" id="actionPriceVal">$5,000</span>
+                    </div>
+                    <button class="btn-main-rent" id="btnMainRent">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                        </svg>
+                        <span id="btnMainRentText">Sewa Unit Starter (Depot A-1)</span>
+                    </button>
+                </div>
+            </section>
+
             <!-- Footer Section -->
             <footer class="wh-footer">
                 <div class="footer-info">
@@ -136,7 +165,7 @@
         </div>
     </div>
 
-    <script src="../common/cef-bridge.js?v=1.0.2"></script>
-    <script src="script.js?v=1.0.2"></script>
+    <script src="../common/cef-bridge.js?v=1.0.3"></script>
+    <script src="script.js?v=1.0.3"></script>
 </body>
 </html>
