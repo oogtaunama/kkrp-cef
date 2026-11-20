@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>KKRP Police In-Car ALPR Radar</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Share+Tech+Mono&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../common/common.css?v=1.0.4">
+    <link rel="stylesheet" href="style.css?v=1.0.4">
+    <script>
+        if (!window.GetParentResourceName && (typeof cef === 'undefined' || !cef) && !window.cef) {
+            document.documentElement.classList.add('preview-mode');
+        }
+    </script>
+</head>
+<body>
+
+    <!-- Floating In-Car Police Radar Unit -->
+    <div class="alpr-container" id="alprApp">
+        <div class="radar-device glass-panel">
+            
+            <!-- Glow Accent -->
+            <div class="glow-accent-top"></div>
+
+            <!-- Radar Device Header -->
+            <div class="radar-header">
+                <div class="header-left">
+                    <span class="radar-badge">POLICE PATROL RADAR</span>
+                    <span class="radar-sub">DUAL ALPR-X9000 • AUTO SCAN</span>
+                </div>
+                <div class="header-right">
+                    <span class="radar-status-dot"></span>
+                    <span id="patrolSpeed">PATROL: 65 MPH</span>
+                    <button class="btn-radar-power" id="btnRadarPower" title="Power / Tutup [ESC]">⏻</button>
+                </div>
+            </div>
+
+            <!-- Dual Antenna Display (Front & Rear) -->
+            <div class="radar-antennas-grid">
+                
+                <!-- FRONT ANTENNA -->
+                <div class="antenna-box" id="frontAntenna">
+                    <div class="antenna-label-row">
+                        <span class="antenna-title">FRONT ANTENNA (DEPAN)</span>
+                        <span class="antenna-state" id="frontLockState">SCANNING</span>
+                    </div>
+
+                    <div class="speed-display-box">
+                        <span class="speed-val" id="frontSpeed">68</span>
+                        <span class="speed-unit">MPH</span>
+                    </div>
+
+                    <div class="plate-scanner-box">
+                        <span class="plate-label">PLAT NOMOR:</span>
+                        <span class="plate-number" id="frontPlate">LS-4928</span>
+                    </div>
+
+                    <div class="target-meta-box">
+                        <div class="meta-row">
+                            <span class="lbl">MODEL:</span>
+                            <span class="val" id="frontModel">Sultan Sedan 2.5L</span>
+                        </div>
+                        <div class="meta-row">
+                            <span class="lbl">PEMILIK:</span>
+                            <span class="val" id="frontOwner">Brenden Randall</span>
+                        </div>
+                        <div class="meta-row">
+                            <span class="lbl">STATUS:</span>
+                            <span class="val val-green" id="frontStatus">PAJAK AKTIF • BERSIH</span>
+                        </div>
+                    </div>
+
+                    <div class="antenna-actions">
+                        <button class="btn-lock" id="btnLockFront">LOCK [NUM 8]</button>
+                    </div>
+                </div>
+
+                <!-- REAR ANTENNA -->
+                <div class="antenna-box" id="rearAntenna">
+                    <div class="antenna-label-row">
+                        <span class="antenna-title">REAR ANTENNA (BELAKANG)</span>
+                        <span class="antenna-state alert-state" id="rearLockState">FAST LOCKED</span>
+                    </div>
+
+                    <div class="speed-display-box alert-speed">
+                        <span class="speed-val" id="rearSpeed">94</span>
+                        <span class="speed-unit">MPH</span>
+                    </div>
+
+                    <div class="plate-scanner-box alert-plate">
+                        <span class="plate-label">PLAT NOMOR:</span>
+                        <span class="plate-number" id="rearPlate">LS-6699</span>
+                    </div>
+
+                    <div class="target-meta-box alert-bg">
+                        <div class="meta-row">
+                            <span class="lbl">MODEL:</span>
+                            <span class="val" id="rearModel">Buffalo S V8 Muscle</span>
+                        </div>
+                        <div class="meta-row">
+                            <span class="lbl">PEMILIK:</span>
+                            <span class="val" id="rearOwner">Marcus Brody</span>
+                        </div>
+                        <div class="meta-row">
+                            <span class="lbl">PERINGATAN:</span>
+                            <span class="val val-red pulse-text" id="rearStatus">DPO BURON • BOLO CURANMOR</span>
+                        </div>
+                    </div>
+
+                    <div class="antenna-actions">
+                        <button class="btn-lock btn-locked" id="btnLockRear">LOCKED [NUM 2]</button>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Radar Footer Controls -->
+            <div class="radar-footer">
+                <span class="radar-hint">Tekan [NUMPAD 5] Buka MDT • [NUMPAD 8] Kunci Depan • [NUMPAD 2] Kunci Belakang</span>
+                <button class="btn-open-mdt-quick" id="btnQuickMdt">BUKA DI MDT</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../common/cef-bridge.js?v=1.0.4"></script>
+    <script src="script.js?v=1.0.4"></script>
+</body>
+</html>
