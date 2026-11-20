@@ -11,10 +11,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../common/common.css?v=1.0.3">
-    <link rel="stylesheet" href="style.css?v=1.0.3">
+    <link rel="stylesheet" href="../common/common.css?v=1.0.4">
+    <link rel="stylesheet" href="style.css?v=1.0.4">
     <script>
-        // Deteksi awal sebelum DOM selesai di-render
+        // Deteksi awal mode pratinjau browser
         if (!window.GetParentResourceName && (typeof cef === 'undefined' || !cef) && !window.cef) {
             document.documentElement.classList.add('preview-mode');
         }
@@ -40,7 +40,7 @@
                     <div class="header-titles">
                         <div class="sys-tag">LOGISTIK & PENYIMPANAN PUBLIK</div>
                         <h1 class="sys-title">Katalog Penyewaan Gudang Kota</h1>
-                        <p class="sys-sub">Sewa unit brankas gudang aman 24 jam dengan kapasitas besar dan proteksi keamanan tingkat tinggi</p>
+                        <p class="sys-sub">Semua unit brankas gudang aman 24 jam dengan kapasitas besar dan protokol keamanan tingkat tinggi</p>
                     </div>
                 </div>
 
@@ -52,8 +52,8 @@
                             </svg>
                         </div>
                         <div class="citizen-meta">
-                            <span class="citizen-name" id="whCitizenName">Warga Los Santos</span>
-                            <span class="citizen-cash" id="whCitizenCash">Saldo Tunai: $0</span>
+                            <span class="citizen-name" id="whCitizenName">Brenden Randall [ID: 24]</span>
+                            <span class="citizen-cash" id="whCitizenCash">Saldo Tunai: $45,000</span>
                         </div>
                     </div>
 
@@ -101,39 +101,204 @@
                 </div>
             </section>
 
-            <!-- Unit Grid Section -->
+            <!-- Unit Grid Section (Pre-rendered default untuk render instan) -->
             <main class="warehouse-grid" id="unitsGrid">
-                <!-- Di-render dinamis oleh script.js -->
+                <!-- Unit 1 -->
+                <div class="unit-card selected" data-unitid="1">
+                    <span class="unit-card-badge badge-available">Tersedia Disewa</span>
+                    <div class="unit-top-info">
+                        <span class="unit-type-tag">Small Storage</span>
+                        <h3 class="unit-name">Unit Gudang Starter (Depot A-1)</h3>
+                        <div class="unit-location">
+                            <svg viewBox="0 0 24 24" width="13" height="13" fill="var(--primary-orange)"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                            <span>Willowfield Industrial Zone</span>
+                        </div>
+                    </div>
+                    <div class="unit-specs-box">
+                        <div class="spec-item">
+                            <span class="spec-label">Kapasitas Berat</span>
+                            <span class="spec-value">150 KG</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Kapasitas Slot</span>
+                            <span class="spec-value">40 Slot</span>
+                        </div>
+                    </div>
+                    <ul class="unit-features-list">
+                        <li>
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                            <span>Pintu Kunci Digital PIN</span>
+                        </li>
+                        <li>
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                            <span>Kamera Pengawas CCTV 24 Jam</span>
+                        </li>
+                        <li>
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                            <span>Ventilasi Udara Kering</span>
+                        </li>
+                    </ul>
+                    <div class="unit-card-action">
+                        <div class="unit-price-display">
+                            <span class="price-label">Biaya Sewa (30 Hari)</span>
+                            <span class="price-val">$5,000</span>
+                        </div>
+                        <button class="btn-rent-card" data-unitid="1">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                            </svg>
+                            <span>Sewa Unit Ini</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Unit 2 -->
+                <div class="unit-card" data-unitid="2">
+                    <span class="unit-card-badge badge-available">Tersedia Disewa</span>
+                    <div class="unit-top-info">
+                        <span class="unit-type-tag">Standard Warehouse</span>
+                        <h3 class="unit-name">Unit Gudang Standar (Depot B-4)</h3>
+                        <div class="unit-location">
+                            <svg viewBox="0 0 24 24" width="13" height="13" fill="var(--primary-orange)"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                            <span>Ocean Docks Logistics Bay</span>
+                        </div>
+                    </div>
+                    <div class="unit-specs-box">
+                        <div class="spec-item">
+                            <span class="spec-label">Kapasitas Berat</span>
+                            <span class="spec-value">300 KG</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Kapasitas Slot</span>
+                            <span class="spec-value">80 Slot</span>
+                        </div>
+                    </div>
+                    <ul class="unit-features-list">
+                        <li>
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                            <span>Akses Keycard RFID Cerdas</span>
+                        </li>
+                        <li>
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                            <span>Sistem Alarm Kebakaran & Deteksi</span>
+                        </li>
+                        <li>
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                            <span>Pintu Baja Rolling Door Otomatis</span>
+                        </li>
+                    </ul>
+                    <div class="unit-card-action">
+                        <div class="unit-price-display">
+                            <span class="price-label">Biaya Sewa (30 Hari)</span>
+                            <span class="price-val">$10,000</span>
+                        </div>
+                        <button class="btn-rent-card" data-unitid="2">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                            </svg>
+                            <span>Sewa Unit Ini</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Unit 3 -->
+                <div class="unit-card" data-unitid="3">
+                    <span class="unit-card-badge badge-available">Tersedia Disewa</span>
+                    <div class="unit-top-info">
+                        <span class="unit-type-tag">Large Distribution Hub</span>
+                        <h3 class="unit-name">Unit Gudang Besar (Depot C-7)</h3>
+                        <div class="unit-location">
+                            <svg viewBox="0 0 24 24" width="13" height="13" fill="var(--primary-orange)"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                            <span>Montgomery Freight Center</span>
+                        </div>
+                    </div>
+                    <div class="unit-specs-box">
+                        <div class="spec-item">
+                            <span class="spec-label">Kapasitas Berat</span>
+                            <span class="spec-value">600 KG</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Kapasitas Slot</span>
+                            <span class="spec-value">150 Slot</span>
+                        </div>
+                    </div>
+                    <ul class="unit-features-list">
+                        <li>
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                            <span>Pengawasan Petugas Keamanan Khusus</span>
+                        </li>
+                        <li>
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                            <span>Ruang Penyimpanan Suhu Terkontrol</span>
+                        </li>
+                        <li>
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                            <span>Dermaga Bongkar Muat Truk Pribadi</span>
+                        </li>
+                    </ul>
+                    <div class="unit-card-action">
+                        <div class="unit-price-display">
+                            <span class="price-label">Biaya Sewa (30 Hari)</span>
+                            <span class="price-val">$18,000</span>
+                        </div>
+                        <button class="btn-rent-card" data-unitid="3">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                            </svg>
+                            <span>Sewa Unit Ini</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Unit 4 -->
+                <div class="unit-card" data-unitid="4">
+                    <span class="unit-card-badge badge-available">Tersedia Disewa</span>
+                    <div class="unit-top-info">
+                        <span class="unit-type-tag">Heavy Industrial Depot</span>
+                        <h3 class="unit-name">Unit Gudang Industri (Vault D-9)</h3>
+                        <div class="unit-location">
+                            <svg viewBox="0 0 24 24" width="13" height="13" fill="var(--primary-orange)"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                            <span>Terminal Island Freezone</span>
+                        </div>
+                    </div>
+                    <div class="unit-specs-box">
+                        <div class="spec-item">
+                            <span class="spec-label">Kapasitas Berat</span>
+                            <span class="spec-value">1200 KG</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Kapasitas Slot</span>
+                            <span class="spec-value">300 Slot</span>
+                        </div>
+                    </div>
+                    <ul class="unit-features-list">
+                        <li>
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                            <span>Proteksi Brankas Baja Anti-Ledakan</span>
+                        </li>
+                        <li>
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                            <span>Sensor Biometrik Sidik Jari</span>
+                        </li>
+                        <li>
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                            <span>Integrasi Sensor Gerak Inframerah</span>
+                        </li>
+                    </ul>
+                    <div class="unit-card-action">
+                        <div class="unit-price-display">
+                            <span class="price-label">Biaya Sewa (30 Hari)</span>
+                            <span class="price-val">$30,000</span>
+                        </div>
+                        <button class="btn-rent-card" data-unitid="4">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                            </svg>
+                            <span>Sewa Unit Ini</span>
+                        </button>
+                    </div>
+                </div>
             </main>
-
-            <!-- Action Bar Sewa Gudang (Muncul dinamis saat unit dipilih) -->
-            <section class="warehouse-action-bar" id="warehouseActionBar">
-                <div class="action-bar-left">
-                    <div class="action-unit-badge">
-                        <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
-                            <path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3zm0 3.5c1.38 0 2.5 1.12 2.5 2.5S13.38 11.5 12 11.5 9.5 10.38 9.5 9s1.12-2.5 2.5-2.5z"/>
-                        </svg>
-                    </div>
-                    <div class="action-unit-details">
-                        <span class="action-tag" id="actionUnitTag">PILIH UNIT GUDANG</span>
-                        <h3 class="action-unit-title" id="actionUnitTitle">Silakan Pilih Unit Gudang di Atas</h3>
-                        <p class="action-unit-specs" id="actionUnitSpecs">Klik salah satu paket gudang untuk memilih dan mengaktifkan tombol sewa.</p>
-                    </div>
-                </div>
-
-                <div class="action-bar-right">
-                    <div class="action-price-box" id="actionPriceBox">
-                        <span class="action-price-label">Biaya Sewa (30 Hari)</span>
-                        <span class="action-price-val" id="actionPriceVal">$5,000</span>
-                    </div>
-                    <button class="btn-main-rent" id="btnMainRent">
-                        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
-                            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
-                        </svg>
-                        <span id="btnMainRentText">Sewa Unit Starter (Depot A-1)</span>
-                    </button>
-                </div>
-            </section>
 
             <!-- Footer Section -->
             <footer class="wh-footer">
@@ -165,7 +330,7 @@
         </div>
     </div>
 
-    <script src="../common/cef-bridge.js?v=1.0.3"></script>
-    <script src="script.js?v=1.0.3"></script>
+    <script src="../common/cef-bridge.js?v=1.0.4"></script>
+    <script src="script.js?v=1.0.4"></script>
 </body>
 </html>

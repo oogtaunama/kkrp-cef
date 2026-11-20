@@ -70,10 +70,11 @@
         }
     ];
 
-    let rentedUnitId = -1; // -1 = Tidak ada sewa
-    let playerCash = 0;
+    let rentedUnitId = -1; // -1 = Belum sewa gudang
+    let playerCash = 45000;
+    let selectedUnitId = 1;
     let selectedUnitForModal = null;
-    let modalMode = 'rent'; // 'rent' or 'cancel'
+    let modalMode = 'rent'; // 'rent' atau 'cancel'
 
     // DOM Elements
     const appWrapper = document.getElementById('warehouseApp');
@@ -89,24 +90,14 @@
     const btnGps = document.getElementById('btnGpsWarehouse');
     const btnCancelRental = document.getElementById('btnCancelRental');
 
-    // Modal
+    // Modal Konfirmasi
     const confirmModal = document.getElementById('whConfirmModal');
     const modalTitle = document.getElementById('whModalTitle');
     const modalDesc = document.getElementById('whModalDesc');
     const btnModalCancel = document.getElementById('btnWhModalCancel');
     const btnModalConfirm = document.getElementById('btnWhModalConfirm');
 
-    // Action Bar Sewa Gudang (Pilih Unit)
-    const actionUnitTag = document.getElementById('actionUnitTag');
-    const actionUnitTitle = document.getElementById('actionUnitTitle');
-    const actionUnitSpecs = document.getElementById('actionUnitSpecs');
-    const actionPriceBox = document.getElementById('actionPriceBox');
-    const actionPriceVal = document.getElementById('actionPriceVal');
-    const btnMainRent = document.getElementById('btnMainRent');
-    const btnMainRentText = document.getElementById('btnMainRentText');
-    let selectedUnit = null;
-
-    // Helper Focus Management (Penting agar mouse CEF bisa di-klik di GTA SA / open.mp)
+    // Helper Focus Management (Penting untuk GTA SA / open.mp CEF)
     function captureFocus(focused = true) {
         try {
             if (typeof CefBridge !== 'undefined' && typeof CefBridge.setFocus === 'function') {
@@ -126,7 +117,16 @@
         return '$' + Number(amount).toLocaleString('en-US');
     }
 
-    // Helper: Emit ke Game Engine
+    // Deteksi apakah sedang berjalan di dalam engine game (CEF open.mp / FiveM)
+    function isGameClient() {
+        return !!(
+            (typeof window.GetParentResourceName === 'function') ||
+            (typeof cef !== 'undefined' && cef !== null) ||
+            (typeof window.cef !== 'undefined' && window.cef !== null)
+        );
+    }
+
+    // Helper: Emit Event ke Game Engine
     function emitToGame(eventName, ...args) {
         if (typeof CefBridge !== 'undefined' && CefBridge && typeof CefBridge.emit === 'function') {
             CefBridge.emit(eventName, ...args);
@@ -149,7 +149,7 @@
     // Render Banner Status Sewa
     function renderStatusBanner(remainingDays, usedWeight) {
         if (rentedUnitId !== -1) {
-            const unit = WAREHOUSE_UNITS.find(u => u.id === rentedUnitId) || WAREHOUSE_UNITS[1];
+            const unit = WAREHOUSE_UNITS.find(u => u.id === rentedUnitId) || WAREHOUSE_UNITS[0];
             statusPulse.className = 'status-pulse active';
             currentRentalTitle.textContent = `Status Sewa: ${unit.name}`;
             currentRentalSub.textContent = `Lokasi: ${unit.location} | Terpakai: ${usedWeight || 0.0} / ${unit.capacityKg} kg`;
@@ -163,42 +163,18 @@
         }
     }
 
-    // Fungsi Pilih Unit Gudang (Munculkan Detail & Tombol Sewa)
-    function selectWarehouseUnit(unit) {
-        if (!unit) return;
-        selectedUnit = unit;
-        selectedUnitForModal = unit;
-
-        // Berikan highlight class 'selected' pada kartu yang dipilih
-        document.querySelectorAll('.unit-card').forEach(c => {
-            if (Number(c.getAttribute('data-unitid')) === unit.id) {
-                c.classList.add('selected');
+    // Pilih Unit Gudang
+    function selectWarehouseUnit(unitId) {
+        selectedUnitId = unitId;
+        const allCards = document.querySelectorAll('.unit-card');
+        allCards.forEach(card => {
+            const id = Number(card.getAttribute('data-unitid'));
+            if (id === unitId) {
+                card.classList.add('selected');
             } else {
-                c.classList.remove('selected');
+                card.classList.remove('selected');
             }
         });
-
-        // Update Action Bar di bagian bawah
-        if (actionUnitTag) actionUnitTag.textContent = `UNIT TERPILIH (#${unit.id} • ${unit.type.toUpperCase()})`;
-        if (actionUnitTitle) actionUnitTitle.textContent = unit.name;
-        if (actionUnitSpecs) actionUnitSpecs.textContent = `${unit.location} • Kapasitas: ${unit.capacityKg} KG (${unit.capacitySlots} Slot)`;
-
-        if (actionPriceBox) actionPriceBox.style.display = 'flex';
-        if (actionPriceVal) actionPriceVal.textContent = formatMoney(unit.price);
-
-        if (btnMainRent && btnMainRentText) {
-            if (rentedUnitId === unit.id) {
-                btnMainRent.classList.add('disabled');
-                btnMainRent.setAttribute('disabled', 'disabled');
-                btnMainRent.disabled = true;
-                btnMainRentText.textContent = 'Unit Ini Sedang Anda Sewa';
-            } else {
-                btnMainRent.classList.remove('disabled');
-                btnMainRent.removeAttribute('disabled');
-                btnMainRent.disabled = false;
-                btnMainRentText.textContent = `Sewa ${unit.name} (${formatMoney(unit.price)})`;
-            }
-        }
     }
 
     // Render Grid Unit Gudang
@@ -207,7 +183,7 @@
 
         WAREHOUSE_UNITS.forEach(unit => {
             const isRentedByMe = (rentedUnitId === unit.id);
-            const isSelected = selectedUnit ? (selectedUnit.id === unit.id) : false;
+            const isSelected = (selectedUnitId === unit.id);
             const card = document.createElement('div');
             card.className = `unit-card ${isRentedByMe ? 'active-unit' : ''} ${isSelected ? 'selected' : ''}`;
             card.setAttribute('data-unitid', unit.id);
@@ -222,7 +198,9 @@
                         <span class="unit-type-tag">${unit.type}</span>
                         <h3 class="unit-name">${unit.name}</h3>
                         <div class="unit-location">
-                            <svg viewBox="0 0 24 24" width="13" height="13" fill="var(--primary-orange)"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                            <svg viewBox="0 0 24 24" width="13" height="13" fill="var(--primary-orange)">
+                                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                            </svg>
                             <span>${unit.location}</span>
                         </div>
                     </div>
@@ -241,76 +219,65 @@
                     <ul class="unit-features-list">
                         ${unit.features.map(f => `
                             <li>
-                                <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                                <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
+                                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                                </svg>
                                 <span>${f}</span>
                             </li>
                         `).join('')}
                     </ul>
                 </div>
 
-                <div>
-                    <div class="unit-price-row">
-                        <div>
-                            <span class="price-title">Biaya Sewa (30 Hari):</span>
-                        </div>
+                <div class="unit-card-action">
+                    <div class="unit-price-display">
+                        <span class="price-label">Biaya Sewa (30 Hari)</span>
                         <span class="price-val">${formatMoney(unit.price)}</span>
                     </div>
 
-                    <button class="btn-rent-unit" data-unitid="${unit.id}">
+                    <button class="btn-rent-card" data-unitid="${unit.id}">
                         ${isRentedByMe ? `
-                            <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
-                            Sedang Digunakan
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                            </svg>
+                            <span>Sedang Digunakan</span>
                         ` : `
-                            <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-                            Pilih & Sewa Unit Ini
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                            </svg>
+                            <span>Sewa Unit Ini</span>
                         `}
                     </button>
                 </div>
             `;
 
-            // Klik kartu untuk memilih unit gudang
+            // Klik kartu untuk memilih gudang
             card.addEventListener('click', () => {
-                selectWarehouseUnit(unit);
+                selectWarehouseUnit(unit.id);
             });
 
-            // Klik tombol langsung pada kartu
-            const btnRent = card.querySelector('.btn-rent-unit');
+            // Klik tombol sewa
+            const btnRent = card.querySelector('.btn-rent-card');
             btnRent.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                selectWarehouseUnit(unit);
+                selectWarehouseUnit(unit.id);
                 if (isRentedByMe) return;
                 openRentModal(unit);
             });
 
             unitsGrid.appendChild(card);
         });
-
-        // Pilih unit pertama secara default jika belum ada yang terpilih
-        if (!selectedUnit && WAREHOUSE_UNITS.length > 0) {
-            selectWarehouseUnit(WAREHOUSE_UNITS[0]);
-        }
-    }
     }
 
-    // Modal Konfirmasi Sewa
+    // Buka Modal Konfirmasi Sewa
     function openRentModal(unit) {
         modalMode = 'rent';
         selectedUnitForModal = unit;
         modalTitle.textContent = 'Konfirmasi Penyewaan Gudang';
         modalDesc.innerHTML = `Anda akan menyewa <b>${unit.name}</b> (${unit.capacityKg} kg) dengan biaya sebesar <b style="color: #22c55e;">${formatMoney(unit.price)}</b> untuk durasi <b>30 Hari</b>. Lanjutkan transaksi?`;
+        btnModalConfirm.textContent = `Ya, Bayar ${formatMoney(unit.price)}`;
         confirmModal.style.display = 'flex';
         captureFocus(true);
-    }
-
-    // Tombol Utama Sewa Gudang (dari Action Bar Terpilih)
-    if (btnMainRent) {
-        btnMainRent.addEventListener('click', (e) => {
-            e.preventDefault();
-            if (selectedUnit && rentedUnitId !== selectedUnit.id) {
-                openRentModal(selectedUnit);
-            }
-        });
     }
 
     // Modal Konfirmasi Berhenti Sewa
@@ -320,6 +287,7 @@
         modalMode = 'cancel';
         modalTitle.textContent = 'Batalkan Kontrak Sewa';
         modalDesc.innerHTML = 'Apakah Anda yakin ingin berhenti menyewa gudang ini? Pastikan seluruh barang Anda di dalam brankas telah diambil sebelum membatalkan kontrak.';
+        btnModalConfirm.textContent = 'Ya, Berhenti Sewa';
         confirmModal.style.display = 'flex';
         captureFocus(true);
     });
@@ -338,12 +306,11 @@
             const unit = selectedUnitForModal;
             rentedUnitId = unit.id;
             if (!isGameClient()) {
-                playerCash = Math.max(0, (playerCash || 45000) - unit.price);
+                playerCash = Math.max(0, playerCash - unit.price);
                 citizenCashEl.textContent = `Saldo Tunai: ${formatMoney(playerCash)}`;
             }
             renderStatusBanner(30, 0);
             renderUnits();
-            // Kirim integer unitId dan integer price sesuai Argument_Integer di Pawn
             emitToGame('cef_onRentWarehouse', parseInt(unit.id, 10), parseInt(unit.price, 10));
         } else if (modalMode === 'cancel') {
             rentedUnitId = -1;
@@ -363,15 +330,6 @@
             alert('GPS Checkpoint disetel ke lokasi unit gudang Anda!');
         }
     });
-
-    // Deteksi apakah sedang berjalan di dalam engine game (CEF open.mp / FiveM)
-    const isGameClient = () => {
-        return !!(
-            (typeof window.GetParentResourceName === 'function') ||
-            (typeof cef !== 'undefined' && cef !== null) ||
-            (typeof window.cef !== 'undefined' && window.cef !== null)
-        );
-    };
 
     function showReopenBtn() {
         let btn = document.getElementById('previewReopenBtn');
@@ -408,7 +366,7 @@
                 btn.remove();
                 showWarehouse({
                     citizenName: 'Brenden Randall [ID: 24]',
-                    cash: playerCash || 45000,
+                    cash: playerCash,
                     rentedUnitId: rentedUnitId,
                     remainingDays: 28,
                     usedWeight: 84.5
@@ -425,7 +383,6 @@
         captureFocus(false);
         emitToGame('cef_onWarehouseClose');
 
-        // Jika dibuka di browser web biasa (bukan game), tampilkan tombol buka kembali
         if (!isGameClient()) {
             showReopenBtn();
         }
@@ -462,22 +419,15 @@
 
         renderStatusBanner(remainingDays, usedWeight);
         renderUnits();
-
-        if (selectedUnit) {
-            selectWarehouseUnit(selectedUnit);
-        } else if (WAREHOUSE_UNITS.length > 0) {
-            selectWarehouseUnit(WAREHOUSE_UNITS[0]);
-        }
+        selectWarehouseUnit(selectedUnitId || 1);
 
         document.body.classList.add('active');
         appWrapper.style.display = 'flex';
-        // Aktifkan kursor & tangkap input mouse CEF jika di dalam game
         captureFocus(true);
     }
 
     // Inisialisasi Bridge
     function setupBridge() {
-        // Beritahu game engine bahwa JS sudah siap menerima data
         emitToGame('cef_onWarehouseReady');
 
         if (typeof CefBridge !== 'undefined' && CefBridge && typeof CefBridge.on === 'function') {
@@ -503,7 +453,6 @@
             });
         }
 
-        // Event Listener (FiveM & window.cef event)
         window.addEventListener('message', (event) => {
             const item = event.data;
             if (!item) return;
@@ -522,19 +471,17 @@
     renderUnits();
     setupBridge();
 
-    // Jika di dalam engine game (CEF / FiveM), atur in-game state
     if (isGameClient()) {
         document.body.classList.add('in-game');
     } else {
-        // Jika dibuka di browser web biasa (GitHub Pages, Edge, Chrome), langsung aktifkan preview
         document.body.classList.add('preview-mode');
         document.documentElement.classList.add('preview-mode');
         showWarehouse({
             citizenName: 'Brenden Randall [ID: 24]',
             cash: 45000,
-            rentedUnitId: 2,
-            remainingDays: 28,
-            usedWeight: 84.5
+            rentedUnitId: -1,
+            remainingDays: 0,
+            usedWeight: 0.0
         });
     }
 })();
