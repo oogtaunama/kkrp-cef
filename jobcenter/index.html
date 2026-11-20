@@ -11,10 +11,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../common/common.css?v=1.0.2">
-    <link rel="stylesheet" href="style.css?v=1.0.2">
+    <link rel="stylesheet" href="../common/common.css?v=1.0.3">
+    <link rel="stylesheet" href="style.css?v=1.0.3">
     <script>
-        // Deteksi awal sebelum DOM selesai di-render
+        // Deteksi awal mode preview browser
         if (!window.GetParentResourceName && (typeof cef === 'undefined' || !cef) && !window.cef) {
             document.documentElement.classList.add('preview-mode');
         }
@@ -40,7 +40,7 @@
                     <div class="header-titles">
                         <div class="sys-tag">DEPARTEMEN KETENAGAKERJAAN</div>
                         <h1 class="sys-title">Bursa Karir & Pekerjaan Sipil</h1>
-                        <p class="sys-sub">Pilih pekerjaan legal resmi untuk memulai karir dan penghasilan harian Anda di Los Santos</p>
+                        <p class="sys-sub">Pilih pekerjaan legal resmi untuk memulai karir dan berpenghasilan harian Anda di Los Santos</p>
                     </div>
                 </div>
 
@@ -52,9 +52,9 @@
                             </svg>
                         </div>
                         <div class="citizen-meta">
-                            <span class="citizen-name" id="citizenName">Warga Los Santos</span>
+                            <span class="citizen-name" id="citizenName">Brenden Randall [ID: 24]</span>
                             <div class="current-job-pill">
-                                <span class="status-dot"></span>
+                                <span class="status-dot" id="statusDot"></span>
                                 <span id="currentJobLabel">Status: Pengangguran</span>
                             </div>
                         </div>
@@ -68,13 +68,11 @@
                 </div>
             </header>
 
-            <!-- Navigation Filter & Search Bar -->
+            <!-- 1 Layar Toolbar: Semua Karir tanpa Tab Kategori -->
             <div class="jc-toolbar">
-                <div class="category-tabs" id="categoryTabs">
-                    <button class="tab-btn active" data-category="all">Semua Karir (<span id="countAll">9</span>)</button>
-                    <button class="tab-btn" data-category="transport">Angkutan & Kargo</button>
-                    <button class="tab-btn" data-category="industry">Industri & Pabrik</button>
-                    <button class="tab-btn" data-category="natural">Sumber Daya Alam</button>
+                <div class="toolbar-info">
+                    <span class="toolbar-title">SEMUA KARIR & LOWONGAN TERSEDIA</span>
+                    <span class="toolbar-sub">Klik salah satu pekerjaan di bawah untuk memilih dan bergabung atau keluar dari karir</span>
                 </div>
 
                 <div class="search-box">
@@ -90,44 +88,46 @@
                 <!-- Di-render dinamis oleh script.js -->
             </main>
 
-            <!-- Footer Resign & Legal Notice -->
+            <!-- Footer: Dinamis Gabung Job / Keluar Job -->
             <footer class="jc-footer">
                 <div class="footer-notice">
                     <svg viewBox="0 0 24 24" width="15" height="15" fill="var(--primary-orange)">
                         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
                     </svg>
-                    <span>Mengambil pekerjaan baru akan otomatis mengganti pekerjaan lama Anda. Anda dapat mengundurkan diri kapan saja.</span>
+                    <span id="footerNoticeText">Pilih pekerjaan untuk bergabung atau mengundurkan diri dari pekerjaan Anda saat ini.</span>
                 </div>
 
-                <button class="btn-resign" id="btnResignJob">
-                    <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor">
-                        <path d="M13 3h-2v10h2V3zm4.83 2.17l-1.42 1.42C17.99 7.86 19 9.81 19 12c0 3.87-3.13 7-7 7s-7-3.13-7-7c0-2.19 1.01-4.14 2.58-5.42L6.17 5.17C4.23 6.82 3 9.26 3 12c0 4.97 4.03 9 9 9s9-4.03 9-9c0-2.74-1.23-5.18-3.17-6.83z"/>
-                    </svg>
-                    <span>Berhenti / Menjadi Pengangguran</span>
-                </button>
+                <div class="footer-actions">
+                    <button class="btn-job-action btn-join" id="btnJobAction">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" id="btnJobActionIcon">
+                            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                        </svg>
+                        <span id="btnJobActionText">Gabung Pekerjaan</span>
+                    </button>
+                </div>
             </footer>
         </div>
     </div>
 
-    <!-- Confirm Apply Modal -->
+    <!-- Confirm Apply / Resign Modal -->
     <div class="modal-overlay" id="confirmModal" style="display: none;">
         <div class="modal-card glass-panel">
-            <div class="modal-icon">
+            <div class="modal-icon" id="modalIcon">
                 <svg viewBox="0 0 24 24" width="32" height="32" fill="var(--primary-orange)">
                     <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
                 </svg>
             </div>
-            <h2 class="modal-title">Konfirmasi Pilihan Karir</h2>
-            <p class="modal-desc" id="modalConfirmText">Apakah Anda yakin ingin bekerja sebagai <b>Petani</b>?</p>
+            <h2 class="modal-title" id="modalTitle">Konfirmasi Karir</h2>
+            <p class="modal-desc" id="modalConfirmText">Apakah Anda yakin ingin bergabung sebagai <b>Petani</b>?</p>
             
             <div class="modal-actions">
                 <button class="btn-cancel" id="btnModalCancel">Batal</button>
-                <button class="btn-confirm" id="btnModalConfirm">Ya, Ambil Pekerjaan</button>
+                <button class="btn-confirm" id="btnModalConfirm">Ya, Lanjutkan</button>
             </div>
         </div>
     </div>
 
-    <script src="../common/cef-bridge.js?v=1.0.2"></script>
-    <script src="script.js?v=1.0.2"></script>
+    <script src="../common/cef-bridge.js?v=1.0.3"></script>
+    <script src="script.js?v=1.0.3"></script>
 </body>
 </html>

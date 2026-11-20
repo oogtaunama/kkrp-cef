@@ -61,8 +61,8 @@ body.in-game:not(.active) .jobcenter-wrapper {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 30px;
-    background: rgba(0, 0, 0, 0.6);
+    padding: 24px;
+    background: rgba(0, 0, 0, 0.65);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
     position: fixed;
@@ -73,9 +73,9 @@ body.in-game:not(.active) .jobcenter-wrapper {
 
 .jobcenter-panel {
     width: 100%;
-    max-width: 1140px;
+    max-width: 1180px;
     height: 90vh;
-    max-height: 820px;
+    max-height: 840px;
     background: var(--bg-dark-base);
     border: 1px solid var(--border-glass);
     border-radius: 16px;
@@ -113,9 +113,10 @@ body.in-game:not(.active) .jobcenter-wrapper {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 22px 28px;
+    padding: 20px 28px;
     border-bottom: 1px solid var(--border-glass);
     background: rgba(18, 21, 28, 0.5);
+    flex-shrink: 0;
 }
 
 .header-branding {
@@ -135,6 +136,12 @@ body.in-game:not(.active) .jobcenter-wrapper {
     justify-content: center;
     color: var(--primary-orange);
     box-shadow: 0 0 20px var(--primary-orange-glow);
+    flex-shrink: 0;
+}
+
+.header-titles {
+    display: flex;
+    flex-direction: column;
 }
 
 .sys-tag {
@@ -164,6 +171,7 @@ body.in-game:not(.active) .jobcenter-wrapper {
     display: flex;
     align-items: center;
     gap: 16px;
+    flex-shrink: 0;
 }
 
 .citizen-card {
@@ -210,6 +218,10 @@ body.in-game:not(.active) .jobcenter-wrapper {
     width: 6px;
     height: 6px;
     border-radius: 50%;
+    background: var(--text-muted);
+}
+
+.status-dot.active {
     background: var(--status-success);
     box-shadow: 0 0 6px var(--status-success);
 }
@@ -234,7 +246,7 @@ body.in-game:not(.active) .jobcenter-wrapper {
     color: #ef4444;
 }
 
-/* Toolbar: Tabs & Search */
+/* 1 Layar Toolbar: Semua Karir Tanpa Tab Kategori */
 .jc-toolbar {
     display: flex;
     justify-content: space-between;
@@ -243,36 +255,27 @@ body.in-game:not(.active) .jobcenter-wrapper {
     background: rgba(14, 17, 24, 0.6);
     border-bottom: 1px solid var(--border-glass);
     gap: 20px;
+    flex-shrink: 0;
 }
 
-.category-tabs {
+.toolbar-info {
     display: flex;
-    gap: 8px;
+    flex-direction: column;
 }
 
-.tab-btn {
-    padding: 7px 14px;
-    border-radius: 8px;
-    background: transparent;
-    border: 1px solid transparent;
-    color: var(--text-secondary);
-    font-family: var(--font-body);
-    font-size: 12px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.tab-btn:hover {
-    color: #fff;
-    background: rgba(255, 255, 255, 0.04);
-}
-
-.tab-btn.active {
-    background: var(--primary-orange-subtle);
-    border-color: var(--primary-orange-border);
+.toolbar-title {
+    font-family: var(--font-heading);
+    font-size: 13px;
+    font-weight: 700;
     color: var(--primary-orange);
-    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.toolbar-sub {
+    font-size: 11.5px;
+    color: var(--text-secondary);
+    margin-top: 1px;
 }
 
 .search-box {
@@ -308,10 +311,11 @@ body.in-game:not(.active) .jobcenter-wrapper {
 .jc-grid {
     flex: 1;
     overflow-y: auto;
-    padding: 24px 28px;
+    padding: 22px 28px;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 18px;
+    gap: 16px;
+    align-content: start;
     scrollbar-width: thin;
     scrollbar-color: rgba(255, 158, 68, 0.3) transparent;
 }
@@ -329,36 +333,67 @@ body.in-game:not(.active) .jobcenter-wrapper {
     background: var(--bg-card);
     border: 1px solid var(--border-glass);
     border-radius: 12px;
-    padding: 20px;
+    padding: 18px 20px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
     position: relative;
-    overflow: hidden;
+    cursor: pointer;
 }
 
 .job-card:hover {
     background: var(--bg-card-hover);
-    border-color: var(--primary-orange-border);
-    transform: translateY(-3px);
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4), 0 0 16px var(--primary-orange-glow);
+    border-color: rgba(255, 158, 68, 0.45);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4), 0 0 14px var(--primary-orange-glow);
+}
+
+.job-card.selected {
+    border-color: var(--primary-orange) !important;
+    background: linear-gradient(135deg, rgba(255, 158, 68, 0.12), rgba(22, 26, 35, 0.95)) !important;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5), 0 0 18px rgba(255, 122, 24, 0.45) !important;
+    transform: translateY(-2px);
 }
 
 .job-card.current-active {
-    border-color: var(--primary-orange);
-    background: linear-gradient(135deg, rgba(255, 158, 68, 0.12), rgba(22, 26, 35, 0.85));
+    border-color: #22c55e !important;
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.12), rgba(22, 26, 35, 0.9)) !important;
+}
+
+.job-card-badge {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.badge-active {
+    background: rgba(34, 197, 94, 0.15);
+    border: 1px solid rgba(34, 197, 94, 0.35);
+    color: #22c55e;
+}
+
+.badge-selected {
+    background: rgba(255, 158, 68, 0.15);
+    border: 1px solid var(--primary-orange-border);
+    color: var(--primary-orange);
 }
 
 .card-top {
     display: flex;
     gap: 14px;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
 }
 
 .job-icon-wrap {
-    width: 46px;
-    height: 46px;
+    width: 44px;
+    height: 44px;
     border-radius: 10px;
     background: rgba(255, 158, 68, 0.12);
     border: 1px solid var(--primary-orange-border);
@@ -371,6 +406,7 @@ body.in-game:not(.active) .jobcenter-wrapper {
 
 .job-header-info {
     flex: 1;
+    padding-right: 60px; /* Memberi ruang badge */
 }
 
 .job-category-tag {
@@ -383,7 +419,7 @@ body.in-game:not(.active) .jobcenter-wrapper {
 
 .job-title {
     font-family: var(--font-heading);
-    font-size: 17px;
+    font-size: 16px;
     font-weight: 700;
     color: #fff;
     margin-top: 2px;
@@ -393,89 +429,54 @@ body.in-game:not(.active) .jobcenter-wrapper {
     font-size: 12px;
     color: var(--text-secondary);
     line-height: 1.5;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
 }
 
-.job-details-row {
+.card-bottom-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: rgba(0, 0, 0, 0.3);
-    border-radius: 8px;
-    padding: 8px 12px;
-    margin-bottom: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.04);
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.salary-label {
+.job-status-hint {
     font-size: 11px;
     color: var(--text-muted);
 }
 
-.salary-val {
-    font-family: var(--font-heading);
-    font-size: 13px;
-    font-weight: 700;
+.job-card.selected .job-status-hint {
+    color: var(--primary-orange);
+    font-weight: 600;
+}
+
+.job-card.current-active .job-status-hint {
     color: #22c55e;
+    font-weight: 600;
 }
 
-.job-actions {
-    display: flex;
-    gap: 10px;
-}
-
-.btn-apply {
-    flex: 1;
-    padding: 9px 14px;
-    background: linear-gradient(135deg, var(--primary-orange), var(--primary-orange-warm));
-    border: none;
-    border-radius: 8px;
-    color: #0b0d13;
-    font-family: var(--font-heading);
-    font-size: 13px;
-    font-weight: 700;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    transition: all 0.2s;
-    box-shadow: 0 4px 12px var(--primary-orange-glow);
-}
-
-.btn-apply:hover {
-    filter: brightness(1.1);
-    transform: translateY(-1px);
-}
-
-.job-card.current-active .btn-apply {
-    background: rgba(34, 197, 94, 0.15);
-    border: 1px solid rgba(34, 197, 94, 0.4);
-    color: #22c55e;
-    cursor: default;
-    box-shadow: none;
-}
-
-.btn-gps {
-    padding: 9px 12px;
-    border-radius: 8px;
-    background: rgba(255, 255, 255, 0.05);
+.btn-gps-card {
+    padding: 6px 10px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.04);
     border: 1px solid var(--border-glass);
     color: var(--text-secondary);
+    font-size: 11px;
+    font-weight: 600;
     cursor: pointer;
     display: flex;
     align-items: center;
-    justify-content: center;
+    gap: 4px;
     transition: all 0.2s;
 }
 
-.btn-gps:hover {
+.btn-gps-card:hover {
     background: rgba(255, 158, 68, 0.15);
     border-color: var(--primary-orange-border);
     color: var(--primary-orange);
 }
 
-/* Footer */
+/* Footer Section */
 .jc-footer {
     display: flex;
     justify-content: space-between;
@@ -483,37 +484,66 @@ body.in-game:not(.active) .jobcenter-wrapper {
     padding: 14px 28px;
     background: rgba(14, 17, 24, 0.7);
     border-top: 1px solid var(--border-glass);
+    flex-shrink: 0;
 }
 
 .footer-notice {
     display: flex;
     align-items: center;
     gap: 10px;
-    font-size: 11px;
+    font-size: 11.5px;
     color: var(--text-secondary);
-    max-width: 65%;
+    max-width: 60%;
 }
 
-.btn-resign {
-    padding: 8px 16px;
+.footer-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Tombol Aksi Dinamis Gabung / Keluar Job */
+.btn-job-action {
+    padding: 10px 22px;
     border-radius: 8px;
-    background: rgba(239, 68, 68, 0.12);
-    border: 1px solid rgba(239, 68, 68, 0.35);
-    color: #fca5a5;
-    font-family: var(--font-body);
-    font-size: 12px;
-    font-weight: 600;
+    font-family: var(--font-heading);
+    font-size: 13.5px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
     cursor: pointer;
     display: flex;
     align-items: center;
     gap: 8px;
-    transition: all 0.2s;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.btn-resign:hover {
-    background: rgba(239, 68, 68, 0.25);
-    color: #fff;
+/* Tipe Gabung Pekerjaan */
+.btn-job-action.btn-join {
+    background: linear-gradient(135deg, var(--primary-orange), var(--primary-orange-warm));
+    border: none;
+    color: #0c0e12;
+    box-shadow: 0 4px 14px var(--primary-orange-glow);
+}
+
+.btn-job-action.btn-join:hover {
+    filter: brightness(1.12);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(255, 122, 24, 0.55);
+}
+
+/* Tipe Keluar Pekerjaan */
+.btn-job-action.btn-leave {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.45);
+    color: #fca5a5;
+    box-shadow: 0 4px 14px rgba(239, 68, 68, 0.2);
+}
+
+.btn-job-action.btn-leave:hover {
+    background: rgba(239, 68, 68, 0.3);
+    color: #ffffff;
     border-color: #ef4444;
+    transform: translateY(-1px);
 }
 
 /* Modal */
@@ -529,17 +559,35 @@ body.in-game:not(.active) .jobcenter-wrapper {
     align-items: center;
     justify-content: center;
     z-index: 2000;
+    animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 .modal-card {
-    background: var(--bg-dark-base);
+    background: rgba(16, 20, 28, 0.96);
     border: 1px solid var(--primary-orange-border);
     border-radius: 14px;
-    padding: 26px;
-    width: 380px;
+    padding: 24px;
+    width: 420px;
+    max-width: 90vw;
     text-align: center;
     box-shadow: 0 20px 48px rgba(0, 0, 0, 0.8), 0 0 24px var(--primary-orange-glow);
-    animation: jcPopIn 0.2s ease;
+    animation: modalPop 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalPop {
+    from {
+        opacity: 0;
+        transform: scale(0.92);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 .modal-icon {
@@ -554,9 +602,16 @@ body.in-game:not(.active) .jobcenter-wrapper {
     margin: 0 auto 16px auto;
 }
 
+.modal-icon.icon-danger {
+    background: rgba(239, 68, 68, 0.15);
+    border-color: rgba(239, 68, 68, 0.4);
+    color: #ef4444;
+}
+
 .modal-title {
     font-family: var(--font-heading);
     font-size: 18px;
+    font-weight: 700;
     color: #fff;
     margin-bottom: 8px;
 }
@@ -575,26 +630,43 @@ body.in-game:not(.active) .jobcenter-wrapper {
 
 .btn-cancel {
     flex: 1;
-    padding: 9px;
-    border-radius: 8px;
-    background: rgba(255, 255, 255, 0.05);
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.06);
     border: 1px solid var(--border-glass);
+    border-radius: 8px;
     color: var(--text-secondary);
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-cancel:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
 }
 
 .btn-confirm {
-    flex: 1;
-    padding: 9px;
-    border-radius: 8px;
+    flex: 1.3;
+    padding: 10px;
     background: linear-gradient(135deg, var(--primary-orange), var(--primary-orange-warm));
     border: none;
-    color: #0b0d13;
+    border-radius: 8px;
+    color: #0c0e12;
     font-family: var(--font-heading);
     font-size: 13px;
     font-weight: 700;
     cursor: pointer;
-    box-shadow: 0 4px 12px var(--primary-orange-glow);
+    transition: all 0.2s;
+    box-shadow: 0 4px 14px var(--primary-orange-glow);
+}
+
+.btn-confirm:hover {
+    filter: brightness(1.12);
+}
+
+.btn-confirm.confirm-danger {
+    background: #ef4444;
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
 }

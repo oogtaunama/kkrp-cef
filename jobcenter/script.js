@@ -1,21 +1,20 @@
 /**
  * KKRP Modern Disnaker (Job Center) - JavaScript Logic
  * Kompatibel dengan FiveM NUI dan SA-MP / open.mp CEF
+ * Palet Warna: Oranye Muda (#ff9e44) & Oranye Hangat (#ff7a18)
  */
 
 (function () {
     'use strict';
 
-    // Database Pekerjaan Sipil Resmi Kota
+    // Database Pekerjaan Sipil Resmi Kota (9 Pilihan Karir)
     const JOBS_DATA = [
         {
             id: 1,
             key: 'farmer',
             title: 'Petani (Farmer)',
-            category: 'natural',
             categoryLabel: 'Sumber Daya Alam',
             desc: 'Mengolah ladang subur di Flint County, menanam bibit gandum & jagung, serta memanen hasil tani berkualitas tinggi.',
-            salary: '$350 - $650 / Siklus',
             hq: 'Flint County Farm',
             icon: `<svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>`
         },
@@ -23,10 +22,8 @@
             id: 2,
             key: 'miner',
             title: 'Penambang (Miner)',
-            category: 'natural',
             categoryLabel: 'Sumber Daya Alam',
             desc: 'Mengebor batu batuan di area Hunter Quarry untuk menemukan mineral tembaga, besi, dan emas berharga.',
-            salary: '$400 - $750 / Tas Mineral',
             hq: 'Hunter Quarry Digsite',
             icon: `<svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M19.78 2.22l-2.02 2.02-2.12-2.12a.996.996 0 0 0-1.41 0L12 4.34l-2.22-2.22c-.39-.39-1.02-.39-1.41 0L6.24 4.24a.996.996 0 0 0 0 1.41l2.12 2.12-6.14 6.14a2 2 0 0 0 0 2.83l3.54 3.54a2 2 0 0 0 2.83 0l6.14-6.14 2.12 2.12c.39.39 1.02.39 1.41 0l2.12-2.12c.39-.39.39-1.02 0-1.41L18.24 10.1l2.12-2.12a.996.996 0 0 0 0-1.41l-2.02-2.02 1.44-1.44a.996.996 0 0 0 0-1.41l-.5-.5a.996.996 0 0 0-1.41 0l-1.44 1.44z"/></svg>`
         },
@@ -34,10 +31,8 @@
             id: 3,
             key: 'butcher',
             title: 'Jagal / Peternak Ayam (Butcher)',
-            category: 'industry',
             categoryLabel: 'Industri & Pabrik',
             desc: 'Memproses peternakan ayam potong di pabrik pengolahan daging Bone County untuk pasokan restoran cepat saji.',
-            salary: '$300 - $550 / Ekor',
             hq: 'Bone County Meat Processing',
             icon: `<svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M18.06 22.99h1.66c.84 0 1.53-.64 1.63-1.48L22 7.05h-3.47l-.37 3.33-1.07-1.07c-.39-.39-1.02-.39-1.41 0l-1.77 1.77-1.06-1.06a.996.996 0 0 0-1.41 0L2.7 18.82c-.39.39-.39 1.02 0 1.41l2.83 2.83c.39.39 1.02.39 1.41 0l8.79-8.79 1.06 1.06-1.77 1.77c-.39.39-.39 1.02 0 1.41l1.07 1.07-.37 3.33c.18.9 1.01 1.08 2.34 1.08z"/></svg>`
         },
@@ -45,10 +40,8 @@
             id: 4,
             key: 'oilman',
             title: 'Pekerja Kilang Minyak (Oilman)',
-            category: 'industry',
             categoryLabel: 'Industri & Minyak',
             desc: 'Mengoperasikan anjungan pompa minyak dan tangki distilasi minyak mentah untuk mensuplai SPBU seantero kota.',
-            salary: '$450 - $800 / Barel',
             hq: 'Green Palms Oil Fields',
             icon: `<svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>`
         },
@@ -56,10 +49,8 @@
             id: 5,
             key: 'bus',
             title: 'Supir Bus (Bus Driver)',
-            category: 'transport',
             categoryLabel: 'Angkutan & Transportasi',
             desc: 'Mengemudikan armada bus transit kota menyusuri rute halte penting dari Los Santos hingga San Fierro.',
-            salary: '$300 - $600 / Rute',
             hq: 'Los Santos Central Bus Station',
             icon: `<svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M4 16c0 .88.39 1.67 1 2.22V20c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h8v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1.78c.61-.55 1-1.34 1-2.22V6c0-3.5-3.58-4-8-4s-8 .5-8 4v10zm3.5 1c-.83 0-1.5-.67-1.5-1.5S6.67 14 7.5 14s1.5.67 1.5 1.5S8.33 17 7.5 17zm9 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm1.5-6H6V6h12v5z"/></svg>`
         },
@@ -67,10 +58,8 @@
             id: 6,
             key: 'fisherman',
             title: 'Nelayan Laut (Fisherman)',
-            category: 'natural',
             categoryLabel: 'Sumber Daya Alam',
             desc: 'Berlayar dari dermaga ke perairan lepas samudra untuk menjaring ikan tuna, salmon, dan kepiting laut segar.',
-            salary: '$350 - $700 / Keranjang Ikan',
             hq: 'Bayside Marina Pier',
             icon: `<svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M12 2c-5.33 4-8 8.67-8 14 0 4.42 3.58 8 8 8s8-3.58 8-8c0-5.33-2.67-10-8-14zm0 20c-3.31 0-6-2.69-6-6 0-3.41 1.76-7.07 6-10.82 4.24 3.75 6 7.41 6 10.82 0 3.31-2.69 6-6 6z"/></svg>`
         },
@@ -78,10 +67,8 @@
             id: 7,
             key: 'cargo',
             title: 'Supir Logistik Kargo (Cargo Driver)',
-            category: 'transport',
             categoryLabel: 'Angkutan & Kargo',
             desc: 'Distribusi barang industri dan peti kemas dari pelabuhan Ocean Docks ke gudang-gudang distributor di pedalaman.',
-            salary: '$500 - $900 / Pengiriman',
             hq: 'Ocean Docks Logistics Yard',
             icon: `<svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zm-.5 1.5l1.96 2.5H17V9.5h2.5zM6 18c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm12 0c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z"/></svg>`
         },
@@ -89,10 +76,8 @@
             id: 8,
             key: 'lumberjack',
             title: 'Penebang Kayu (Lumberjack)',
-            category: 'natural',
             categoryLabel: 'Sumber Daya Alam',
             desc: 'Menebang pohon pinus dewasa di hutan lereng Gunung Chiliad / Angel Pine dan mengirim kayu balak ke sawmill.',
-            salary: '$380 - $680 / Muatan Kayu',
             hq: 'Angel Pine Sawmill',
             icon: `<svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M14 2l-4 4 1.41 1.41L13 5.83V14h2V5.83l1.59 1.58L18 6l-4-4zm-8 8l-4 4 1.41 1.41L5 13.83V22h2v-8.17l1.59 1.58L10 14l-4-4zm14 4l-4 4 1.41 1.41L19 19.83V22h2v-2.17l1.59 1.58L24 20l-4-4z"/></svg>`
         },
@@ -100,30 +85,35 @@
             id: 9,
             key: 'tailor',
             title: 'Penjahit Konveksi (Tailor)',
-            category: 'industry',
             categoryLabel: 'Industri & Pabrik',
             desc: 'Memotong pola kain, menyulam tekstil, dan memproduksi baju berkualitas tinggi untuk butik ternama Rodeo.',
-            salary: '$320 - $580 / Pakaian',
             hq: 'Doherty Garment Factory',
             icon: `<svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M12 2c-4.41 0-8 3.59-8 8 0 2.21.9 4.21 2.34 5.66L12 21.31l5.66-5.65C19.1 14.21 20 12.21 20 10c0-4.41-3.59-8-8-8zm0 11c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z"/></svg>`
         }
     ];
 
     let currentJobId = 0; // 0 = Pengangguran
-    let selectedJobForModal = null;
-    let activeFilter = 'all';
+    let selectedJobId = 1; // Default job yang sedang dipilih/diklik
+    let modalAction = 'join'; // 'join' atau 'resign'
 
     // DOM Elements
     const appWrapper = document.getElementById('jobcenterApp');
     const jobsGrid = document.getElementById('jobsGrid');
     const citizenNameEl = document.getElementById('citizenName');
     const currentJobLabelEl = document.getElementById('currentJobLabel');
+    const statusDotEl = document.getElementById('statusDot');
     const btnClose = document.getElementById('btnCloseJc');
-    const btnResign = document.getElementById('btnResignJob');
     const searchInput = document.getElementById('jobSearchInput');
-    const categoryTabs = document.getElementById('categoryTabs');
+    const footerNoticeText = document.getElementById('footerNoticeText');
+    const btnJobAction = document.getElementById('btnJobAction');
+    const btnJobActionText = document.getElementById('btnJobActionText');
+    const btnJobActionIcon = document.getElementById('btnJobActionIcon');
+
+    // Modal
     const confirmModal = document.getElementById('confirmModal');
+    const modalTitle = document.getElementById('modalTitle');
     const modalConfirmText = document.getElementById('modalConfirmText');
+    const modalIcon = document.getElementById('modalIcon');
     const btnModalCancel = document.getElementById('btnModalCancel');
     const btnModalConfirm = document.getElementById('btnModalConfirm');
 
@@ -150,7 +140,6 @@
             cef.emit(eventName, ...args);
         }
 
-        // Dukungan FiveM fetch NUI
         try {
             if (window.GetParentResourceName) {
                 const payload = args.length === 1 ? args[0] : args;
@@ -163,15 +152,50 @@
         } catch (e) {}
     }
 
-    // Render Kartu Pekerjaan
+    // Update Bilah Tombol Aksi Bawah Dinamis
+    function updateActionFooter() {
+        const selectedJob = JOBS_DATA.find(j => j.id === selectedJobId) || JOBS_DATA[0];
+        const isCurrentActive = (currentJobId === selectedJob.id);
+
+        if (isCurrentActive) {
+            // Pemain sedang memilih pekerjaan yang sudah ia miliki -> Tombol KELUAR PEKERJAAN
+            btnJobAction.className = 'btn-job-action btn-leave';
+            btnJobActionText.textContent = `Keluar Pekerjaan (${selectedJob.title})`;
+            btnJobActionIcon.innerHTML = `<path d="M13 3h-2v10h2V3zm4.83 2.17l-1.42 1.42C17.99 7.86 19 9.81 19 12c0 3.87-3.13 7-7 7s-7-3.13-7-7c0-2.19 1.01-4.14 2.58-5.42L6.17 5.17C4.23 6.82 3 9.26 3 12c0 4.97 4.03 9 9 9s9-4.03 9-9c0-2.74-1.23-5.18-3.17-6.83z"/>`;
+            footerNoticeText.textContent = `Anda saat ini aktif bekerja sebagai ${selectedJob.title}. Klik tombol di samping untuk mengundurkan diri.`;
+        } else {
+            // Pemain memilih pekerjaan lain atau belum memiliki pekerjaan -> Tombol GABUNG PEKERJAAN
+            btnJobAction.className = 'btn-job-action btn-join';
+            btnJobActionText.textContent = `Gabung Pekerjaan (${selectedJob.title})`;
+            btnJobActionIcon.innerHTML = `<path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>`;
+            footerNoticeText.textContent = `Pilihan Anda: ${selectedJob.title}. Klik tombol di samping untuk langsung bergabung ke pekerjaan ini.`;
+        }
+    }
+
+    // Pilih Job (Klik Kartu)
+    function selectJob(jobId) {
+        selectedJobId = jobId;
+
+        // Berikan highlight visual pada kartu yang dipilih
+        document.querySelectorAll('.job-card').forEach(card => {
+            const id = Number(card.getAttribute('data-jobid'));
+            if (id === jobId) {
+                card.classList.add('selected');
+            } else {
+                card.classList.remove('selected');
+            }
+        });
+
+        updateActionFooter();
+    }
+
+    // Render 1 Layar Pilihan Pekerjaan
     function renderJobs() {
         jobsGrid.innerHTML = '';
-        const query = searchInput.value.toLowerCase().trim();
+        const query = (searchInput.value || '').toLowerCase().trim();
 
         const filtered = JOBS_DATA.filter(job => {
-            const matchCategory = (activeFilter === 'all') || (job.category === activeFilter);
-            const matchSearch = job.title.toLowerCase().includes(query) || job.desc.toLowerCase().includes(query);
-            return matchCategory && matchSearch;
+            return job.title.toLowerCase().includes(query) || job.desc.toLowerCase().includes(query);
         });
 
         if (filtered.length === 0) {
@@ -188,11 +212,19 @@
 
         filtered.forEach(job => {
             const isCurrent = (currentJobId === job.id);
+            const isSelected = (selectedJobId === job.id);
             const card = document.createElement('div');
-            card.className = `job-card ${isCurrent ? 'current-active' : ''}`;
+            card.className = `job-card ${isCurrent ? 'current-active' : ''} ${isSelected ? 'selected' : ''}`;
+            card.setAttribute('data-jobid', job.id);
 
             card.innerHTML = `
                 <div>
+                    ${isCurrent ? `
+                        <span class="job-card-badge badge-active">Pekerjaan Aktif</span>
+                    ` : (isSelected ? `
+                        <span class="job-card-badge badge-selected">Terpilih</span>
+                    ` : '')}
+
                     <div class="card-top">
                         <div class="job-icon-wrap">
                             ${job.icon}
@@ -205,39 +237,28 @@
                     <p class="job-desc">${job.desc}</p>
                 </div>
 
-                <div>
-                    <div class="job-details-row">
-                        <span class="salary-label">Estimasi Gaji:</span>
-                        <span class="salary-val">${job.salary}</span>
-                    </div>
+                <div class="card-bottom-row">
+                    <span class="job-status-hint">
+                        ${isCurrent ? 'Pekerjaan Anda Saat Ini' : (isSelected ? 'Unit Karir Terpilih' : 'Klik untuk memilih pekerjaan')}
+                    </span>
 
-                    <div class="job-actions">
-                        <button class="btn-apply" data-jobid="${job.id}">
-                            ${isCurrent ? `
-                                <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
-                                Pekerjaan Aktif
-                            ` : `
-                                <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-                                Ambil Pekerjaan
-                            `}
-                        </button>
-                        <button class="btn-gps" data-jobid="${job.id}" title="Set GPS ke Markas ${job.hq}">
-                            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-                        </button>
-                    </div>
+                    <button class="btn-gps-card" data-jobid="${job.id}" title="Set GPS ke Markas ${job.hq}">
+                        <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor">
+                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                        </svg>
+                        <span>Set GPS</span>
+                    </button>
                 </div>
             `;
 
-            // Action Listeners
-            const btnApply = card.querySelector('.btn-apply');
-            btnApply.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                if (isCurrent) return;
-                openConfirmModal(job);
+            // Klik Kartu untuk Memilih Job
+            card.addEventListener('click', (e) => {
+                if (e.target.closest('.btn-gps-card')) return;
+                selectJob(job.id);
             });
 
-            const btnGps = card.querySelector('.btn-gps');
+            // Klik Tombol GPS
+            const btnGps = card.querySelector('.btn-gps-card');
             btnGps.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -249,48 +270,73 @@
 
             jobsGrid.appendChild(card);
         });
+
+        updateActionFooter();
     }
 
-    // Modal Konfirmasi
-    function openConfirmModal(job) {
-        selectedJobForModal = job;
-        modalConfirmText.innerHTML = `Apakah Anda yakin ingin mendaftar dan mulai bekerja sebagai <b>${job.title}</b>?`;
+    // Modal Konfirmasi Karir
+    function openModal(mode, job) {
+        modalAction = mode;
+        if (mode === 'join') {
+            modalTitle.textContent = 'Konfirmasi Pilihan Karir';
+            modalConfirmText.innerHTML = `Apakah Anda yakin ingin bergabung dan mulai bekerja sebagai <b>${job.title}</b>?`;
+            modalIcon.className = 'modal-icon';
+            modalIcon.innerHTML = `<svg viewBox="0 0 24 24" width="30" height="30" fill="var(--primary-orange)"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>`;
+            btnModalConfirm.textContent = 'Ya, Gabung Pekerjaan';
+            btnModalConfirm.className = 'btn-confirm';
+        } else {
+            modalTitle.textContent = 'Konfirmasi Mengundurkan Diri';
+            modalConfirmText.innerHTML = `Apakah Anda yakin ingin keluar dari pekerjaan <b>${job.title}</b> dan menjadi <b>Pengangguran</b>?`;
+            modalIcon.className = 'modal-icon icon-danger';
+            modalIcon.innerHTML = `<svg viewBox="0 0 24 24" width="30" height="30" fill="#ef4444"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>`;
+            btnModalConfirm.textContent = 'Ya, Keluar Pekerjaan';
+            btnModalConfirm.className = 'btn-confirm confirm-danger';
+        }
         confirmModal.style.display = 'flex';
         captureFocus(true);
     }
 
-    function closeConfirmModal() {
+    function closeModal() {
         confirmModal.style.display = 'none';
-        selectedJobForModal = null;
     }
 
     btnModalCancel.addEventListener('click', (e) => {
         e.preventDefault();
-        closeConfirmModal();
+        closeModal();
     });
 
     btnModalConfirm.addEventListener('click', (e) => {
         e.preventDefault();
-        if (!selectedJobForModal) return;
-        const job = selectedJobForModal;
-        closeConfirmModal();
+        closeModal();
 
-        currentJobId = job.id;
-        currentJobLabelEl.textContent = `Status: ${job.title}`;
-        renderJobs();
+        const selectedJob = JOBS_DATA.find(j => j.id === selectedJobId) || JOBS_DATA[0];
 
-        // Kirim integer ID sesuai ekspektasi Argument_Integer di Pawn
-        emitToGame('cef_onJobSelect', parseInt(job.id, 10));
+        if (modalAction === 'join') {
+            currentJobId = selectedJob.id;
+            currentJobLabelEl.textContent = `Status: ${selectedJob.title}`;
+            if (statusDotEl) statusDotEl.className = 'status-dot active';
+            renderJobs();
+            emitToGame('cef_onJobSelect', parseInt(selectedJob.id, 10));
+        } else {
+            currentJobId = 0;
+            currentJobLabelEl.textContent = 'Status: Pengangguran';
+            if (statusDotEl) statusDotEl.className = 'status-dot';
+            renderJobs();
+            emitToGame('cef_onJobResign');
+        }
     });
 
-    // Berhenti Kerja
-    btnResign.addEventListener('click', (e) => {
+    // Klik Tombol Aksi Utama di Bawah
+    btnJobAction.addEventListener('click', (e) => {
         e.preventDefault();
-        if (currentJobId === 0) return;
-        currentJobId = 0;
-        currentJobLabelEl.textContent = 'Status: Pengangguran';
-        renderJobs();
-        emitToGame('cef_onJobResign');
+        const selectedJob = JOBS_DATA.find(j => j.id === selectedJobId) || JOBS_DATA[0];
+        if (currentJobId === selectedJob.id) {
+            // Sedang aktif di pekerjaan ini -> Keluar
+            openModal('resign', selectedJob);
+        } else {
+            // Belum aktif di pekerjaan ini -> Gabung
+            openModal('join', selectedJob);
+        }
     });
 
     // Deteksi apakah sedang berjalan di dalam engine game (CEF open.mp / FiveM)
@@ -347,7 +393,7 @@
     // Tutup UI
     function closeJobCenterUI() {
         appWrapper.style.display = 'none';
-        closeConfirmModal();
+        closeModal();
         captureFocus(false);
         emitToGame('cef_onJobCenterClose');
 
@@ -365,22 +411,11 @@
         if (e.key === 'Escape' || e.keyCode === 27) {
             e.preventDefault();
             if (confirmModal.style.display === 'flex') {
-                closeConfirmModal();
+                closeModal();
             } else if (appWrapper.style.display !== 'none') {
                 closeJobCenterUI();
             }
         }
-    });
-
-    // Kategori Tabs
-    categoryTabs.addEventListener('click', (e) => {
-        const btn = e.target.closest('.tab-btn');
-        if (!btn) return;
-
-        categoryTabs.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        activeFilter = btn.getAttribute('data-category');
-        renderJobs();
     });
 
     // Pencarian
@@ -395,20 +430,27 @@
             citizenNameEl.textContent = payload.citizenName;
         }
         currentJobId = typeof payload.currentJobId !== 'undefined' ? Number(payload.currentJobId) : 0;
+        selectedJobId = currentJobId > 0 ? currentJobId : 1;
 
         const currentJobObj = JOBS_DATA.find(j => j.id === currentJobId);
-        currentJobLabelEl.textContent = currentJobObj ? `Status: ${currentJobObj.title}` : 'Status: Pengangguran';
+        if (currentJobObj) {
+            currentJobLabelEl.textContent = `Status: ${currentJobObj.title}`;
+            if (statusDotEl) statusDotEl.className = 'status-dot active';
+        } else {
+            currentJobLabelEl.textContent = 'Status: Pengangguran';
+            if (statusDotEl) statusDotEl.className = 'status-dot';
+        }
 
         renderJobs();
+        selectJob(selectedJobId);
+
         document.body.classList.add('active');
         appWrapper.style.display = 'flex';
-        // Aktifkan kursor & tangkap input mouse CEF jika di dalam game
         captureFocus(true);
     }
 
     // Inisialisasi Bridge Listeners
     function setupBridge() {
-        // Beritahu game engine bahwa JS sudah siap menerima data
         emitToGame('cef_onJobReady');
 
         if (typeof CefBridge !== 'undefined' && CefBridge && typeof CefBridge.on === 'function') {
@@ -456,7 +498,6 @@
     if (isGameClient()) {
         document.body.classList.add('in-game');
     } else {
-        // Jika dibuka di browser web biasa (GitHub Pages, Edge, Chrome), langsung aktifkan preview
         document.body.classList.add('preview-mode');
         document.documentElement.classList.add('preview-mode');
         showJobCenter({
