@@ -152,10 +152,46 @@
     }
 
     function closeRadar() {
+        document.body.classList.remove('active');
         appWrapper.style.display = 'none';
         emitToGame('cef_onAlprClose');
         if (!isGameClient()) {
             showAlprReopenBtn();
+        }
+    }
+
+    function showRadar(data) {
+        document.body.classList.add('active');
+        appWrapper.style.display = 'block';
+        if (data) {
+            updateAlprData(data);
+        }
+    }
+
+    function updateAlprData(parsed) {
+        if (!parsed) return;
+        if (parsed.patrolSpeed) patrolSpeedEl.textContent = `PATROL: ${parsed.patrolSpeed} MPH`;
+        if (parsed.front && !isFrontLocked) {
+            frontSpeedEl.textContent = parsed.front.speed || '0';
+            frontPlateEl.textContent = parsed.front.plate || '---';
+            frontModelEl.textContent = parsed.front.model || 'Unknown';
+            frontOwnerEl.textContent = parsed.front.owner || 'Unknown';
+            if (parsed.front.bolo) {
+                frontPlateEl.style.color = '#ef4444';
+            } else {
+                frontPlateEl.style.color = '#ff9e44';
+            }
+        }
+        if (parsed.rear && !isRearLocked) {
+            rearSpeedEl.textContent = parsed.rear.speed || '0';
+            rearPlateEl.textContent = parsed.rear.plate || '---';
+            rearModelEl.textContent = parsed.rear.model || 'Unknown';
+            rearOwnerEl.textContent = parsed.rear.owner || 'Unknown';
+            if (parsed.rear.bolo) {
+                rearPlateEl.style.color = '#ef4444';
+            } else {
+                rearPlateEl.style.color = '#ff9e44';
+            }
         }
     }
 
@@ -164,32 +200,64 @@
         emitToGame('cef_onAlprReady');
 
         if (typeof CefBridge !== 'undefined' && CefBridge && typeof CefBridge.on === 'function') {
+            CefBridge.on('cef:openAlpr', (data) => {
+                let parsed = data;
+                if (typeof data === 'string') {
+                    try { parsed = JSON.parse(data); } catch(e) {}
+                }
+                showRadar(parsed);
+            });
+
+            CefBridge.on('cef:closeAlpr', () => {
+                closeRadar();
+            });
+
             CefBridge.on('cef:updateAlpr', (data) => {
                 let parsed = data;
                 if (typeof data === 'string') {
                     try { parsed = JSON.parse(data); } catch(e) {}
                 }
-                if (parsed) {
-                    if (parsed.patrolSpeed) patrolSpeedEl.textContent = `PATROL: ${parsed.patrolSpeed} MPH`;
-                    if (parsed.front && !isFrontLocked) {
-                        frontSpeedEl.textContent = parsed.front.speed || '0';
-                        frontPlateEl.textContent = parsed.front.plate || '---';
-                        frontModelEl.textContent = parsed.front.model || 'Unknown';
-                        frontOwnerEl.textContent = parsed.front.owner || 'Unknown';
-                    }
-                    if (parsed.rear && !isRearLocked) {
-                        rearSpeedEl.textContent = parsed.rear.speed || '0';
-                        rearPlateEl.textContent = parsed.rear.plate || '---';
-                        rearModelEl.textContent = parsed.rear.model || 'Unknown';
-                        rearOwnerEl.textContent = parsed.rear.owner || 'Unknown';
-                    }
-                }
+                updateAlprData(parsed);
             });
 
             CefBridge.on('cef:toggleAlpr', (show) => {
-                appWrapper.style.display = show ? 'block' : 'none';
+                if (show) showRadar();
+                else closeRadar();
             });
         }
+
+        if (typeof cef !== 'undefined' && cef && typeof cef.on === 'function') {
+            cef.on('cef:openAlpr', (data) => {
+                let parsed = data;
+                if (typeof data === 'string') {
+                    try { parsed = JSON.parse(data); } catch(e) {}
+                }
+                showRadar(parsed);
+            });
+            cef.on('cef:closeAlpr', () => {
+                closeRadar();
+            });
+            cef.on('cef:updateAlpr', (data) => {
+                let parsed = data;
+                if (typeof data === 'string') {
+                    try { parsed = JSON.parse(data); } catch(e) {}
+                }
+                updateAlprData(parsed);
+            });
+        }
+
+        window.addEventListener('message', (event) => {
+            const item = event.data;
+            if (!item) return;
+
+            if (item.action === 'showAlpr' || item.action === 'openAlpr') {
+                showRadar(item.data);
+            } else if (item.action === 'hideAlpr' || item.action === 'closeAlpr') {
+                closeRadar();
+            } else if (item.action === 'updateAlpr') {
+                updateAlprData(item.data);
+            }
+        });
     }
 
     setupBridge();
@@ -199,6 +267,6 @@
     } else {
         document.body.classList.add('preview-mode');
         document.documentElement.classList.add('preview-mode');
-        appWrapper.style.display = 'block';
+        showRadar();
     }
 })();

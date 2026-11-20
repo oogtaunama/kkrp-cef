@@ -497,7 +497,56 @@
 
             CefBridge.on('cef:closeMdt', () => {
                 appWrapper.style.display = 'none';
+                document.body.classList.remove('active');
                 captureFocus(false);
+            });
+
+            CefBridge.on('cef:setCitizenData', (data) => {
+                let parsed = data;
+                if (typeof data === 'string') {
+                    try { parsed = JSON.parse(data); } catch(e) {}
+                }
+                if (parsed) displayCitizen(parsed);
+            });
+
+            CefBridge.on('cef:setVehicleData', (data) => {
+                let parsed = data;
+                if (typeof data === 'string') {
+                    try { parsed = JSON.parse(data); } catch(e) {}
+                }
+                if (parsed) displayVehicle(parsed);
+            });
+        }
+
+        if (typeof cef !== 'undefined' && cef && typeof cef.on === 'function') {
+            cef.on('cef:openMdt', (data) => {
+                let parsed = data;
+                if (typeof data === 'string') {
+                    try { parsed = JSON.parse(data); } catch(e) {}
+                }
+                showMdt(parsed);
+            });
+
+            cef.on('cef:closeMdt', () => {
+                appWrapper.style.display = 'none';
+                document.body.classList.remove('active');
+                captureFocus(false);
+            });
+
+            cef.on('cef:setCitizenData', (data) => {
+                let parsed = data;
+                if (typeof data === 'string') {
+                    try { parsed = JSON.parse(data); } catch(e) {}
+                }
+                if (parsed) displayCitizen(parsed);
+            });
+
+            cef.on('cef:setVehicleData', (data) => {
+                let parsed = data;
+                if (typeof data === 'string') {
+                    try { parsed = JSON.parse(data); } catch(e) {}
+                }
+                if (parsed) displayVehicle(parsed);
             });
         }
 

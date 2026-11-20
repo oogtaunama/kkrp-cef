@@ -449,6 +449,31 @@
 
             CefBridge.on('cef:closeWarehouse', () => {
                 appWrapper.style.display = 'none';
+                document.body.classList.remove('active');
+                captureFocus(false);
+            });
+        }
+
+        if (typeof cef !== 'undefined' && cef && typeof cef.on === 'function') {
+            cef.on('cef:openWarehouse', (data) => {
+                let parsed = data;
+                if (typeof data === 'string') {
+                    try { parsed = JSON.parse(data); } catch(e) {}
+                }
+                showWarehouse(parsed);
+            });
+
+            cef.on('cef:setWarehouseData', (data) => {
+                let parsed = data;
+                if (typeof data === 'string') {
+                    try { parsed = JSON.parse(data); } catch(e) {}
+                }
+                showWarehouse(parsed);
+            });
+
+            cef.on('cef:closeWarehouse', () => {
+                appWrapper.style.display = 'none';
+                document.body.classList.remove('active');
                 captureFocus(false);
             });
         }

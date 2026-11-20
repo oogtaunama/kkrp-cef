@@ -52,6 +52,10 @@ body.in-game:not(.active) .alpr-container {
     display: none !important;
 }
 
+body.active .alpr-container {
+    display: block !important;
+}
+
 /* Container di kanan bawah layar (HUD In-Car) */
 .alpr-container {
     position: fixed;
