@@ -468,6 +468,10 @@
         payload = payload || {};
         if (payload.officerName) officerNameEl.textContent = payload.officerName;
         if (payload.rank) officerRankEl.textContent = payload.rank;
+        if (payload.dutyCount !== undefined) {
+            const statDuty = document.getElementById('statDutyOfficers');
+            if (statDuty) statDuty.textContent = `${payload.dutyCount} Personel`;
+        }
 
         document.body.classList.add('active');
         appWrapper.style.display = 'flex';

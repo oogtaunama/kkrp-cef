@@ -6,42 +6,11 @@
 (function () {
     'use strict';
 
-    // Mock Dispatch Alerts
-    let ALERTS_DATA = [
-        {
-            id: 'CALL-1082',
-            code: '10-71',
-            codeClass: 'code-red',
-            priority: 'high',
-            title: 'Penembakan Senjata Api',
-            desc: 'Warga melaporkan beberapa kali letusan senjata api di dekat pom bensin. 2 orang melarikan diri menggunakan motor.',
-            location: 'Idlewood Gas Station',
-            time: '1 Menit Lalu',
-            attachedUnits: ['Unit 2-ADAM (Hayes)']
-        },
-        {
-            id: 'CALL-1081',
-            code: '10-90',
-            codeClass: 'code-orange',
-            priority: 'medium',
-            title: 'Alarm Perampokan Toko 24/7',
-            desc: 'Sistem keamanan otomatis mendeteksi pintu kasir dijebol paksa. Tersangka diduga masih berada di dalam.',
-            location: 'Rodeo 24/7 Supermarket',
-            time: '4 Menit Lalu',
-            attachedUnits: []
-        },
-        {
-            id: 'CALL-1080',
-            code: '10-31',
-            codeClass: 'code-blue',
-            priority: 'low',
-            title: 'Aktivitas Mencurigakan',
-            desc: 'Laporan satpam pelabuhan melihat pemindahan boks peti kemas tanpa izin resmi di dermaga timur.',
-            location: 'Ocean Docks Logistics Yard',
-            time: '10 Menit Lalu',
-            attachedUnits: ['Unit 1-LINCOLN (Miller)']
-        }
-    ];
+    // Mock Dispatch Alerts (Kosong secara default, diisi saat ada alert masuk dari server)
+    let ALERTS_DATA = [];
+
+    // Notification HUD Timer
+    let miniHudTimeout = null;
 
     // DOM Elements
     const appWrapper = document.getElementById('dispatchApp');
@@ -248,6 +217,46 @@
         captureFocus(true);
     }
 
+    // Tampilkan mini HUD notifikasi popup yang otomatis hilang
+    function showMiniNotification(alert) {
+        if (!miniHud) return;
+        const miniCode = document.getElementById('miniCode');
+        const miniTitle = document.getElementById('miniTitle');
+        const miniTime = document.getElementById('miniTime');
+        const miniDesc = document.getElementById('miniDesc');
+        const miniLoc = document.getElementById('miniLoc');
+        const btnMiniRespond = document.getElementById('btnMiniRespond');
+
+        if (miniCode) miniCode.textContent = alert.code || '10-99';
+        if (miniTitle) miniTitle.textContent = alert.title || 'Panggilan Darurat';
+        if (miniTime) miniTime.textContent = alert.time || 'Baru saja';
+        if (miniDesc) miniDesc.textContent = alert.desc || '';
+        if (miniLoc) miniLoc.textContent = alert.location || 'Los Santos';
+
+        if (btnMiniRespond) {
+            btnMiniRespond.onclick = () => {
+                emitToGame('cef_onDispatchAttachGps', alert.id, alert.x || 0.0, alert.y || 0.0, alert.z || 0.0);
+                miniHud.style.display = 'none';
+                if (!isGameClient()) {
+                    window.alert(`GPS Checkpoint disetel ke: ${alert.location}`);
+                }
+            };
+        }
+
+        miniHud.style.display = 'block';
+        miniHud.classList.remove('fade-out');
+
+        if (miniHudTimeout) clearTimeout(miniHudTimeout);
+        // Otomatis hilang setelah 8 detik
+        miniHudTimeout = setTimeout(() => {
+            miniHud.classList.add('fade-out');
+            setTimeout(() => {
+                miniHud.style.display = 'none';
+                miniHud.classList.remove('fade-out');
+            }, 500);
+        }, 8000);
+    }
+
     // Bridge Listeners
     function setupBridge() {
         emitToGame('cef_onDispatchReady');
@@ -255,6 +264,24 @@
         if (typeof CefBridge !== 'undefined' && CefBridge && typeof CefBridge.on === 'function') {
             CefBridge.on('cef:openDispatch', () => {
                 showDispatch();
+            });
+
+            CefBridge.on('cef:pushDispatchAlert', (data) => {
+                let parsed = data;
+                if (typeof data === 'string') {
+                    try { parsed = JSON.parse(data); } catch(e) {}
+                }
+                if (parsed) {
+                    parsed.id = parsed.id || 'CALL-' + Math.floor(1000 + Math.random() * 9000);
+                    parsed.time = parsed.time || 'Baru saja';
+                    parsed.priority = parsed.urgent ? 'high' : 'medium';
+                    parsed.codeClass = parsed.urgent ? 'code-red' : 'code-orange';
+                    parsed.desc = parsed.description || parsed.desc || '';
+                    parsed.attachedUnits = [];
+                    ALERTS_DATA.unshift(parsed);
+                    renderAlerts();
+                    showMiniNotification(parsed);
+                }
             });
 
             CefBridge.on('cef:newAlert', (data) => {
@@ -265,10 +292,40 @@
                 if (parsed) {
                     ALERTS_DATA.unshift(parsed);
                     renderAlerts();
+                    showMiniNotification(parsed);
                 }
             });
 
             CefBridge.on('cef:closeDispatch', () => {
+                appWrapper.style.display = 'none';
+                captureFocus(false);
+            });
+        }
+
+        if (typeof cef !== 'undefined' && cef && typeof cef.on === 'function') {
+            cef.on('cef:openDispatch', () => {
+                showDispatch();
+            });
+
+            cef.on('cef:pushDispatchAlert', (data) => {
+                let parsed = data;
+                if (typeof data === 'string') {
+                    try { parsed = JSON.parse(data); } catch(e) {}
+                }
+                if (parsed) {
+                    parsed.id = parsed.id || 'CALL-' + Math.floor(1000 + Math.random() * 9000);
+                    parsed.time = parsed.time || 'Baru saja';
+                    parsed.priority = parsed.urgent ? 'high' : 'medium';
+                    parsed.codeClass = parsed.urgent ? 'code-red' : 'code-orange';
+                    parsed.desc = parsed.description || parsed.desc || '';
+                    parsed.attachedUnits = [];
+                    ALERTS_DATA.unshift(parsed);
+                    renderAlerts();
+                    showMiniNotification(parsed);
+                }
+            });
+
+            cef.on('cef:closeDispatch', () => {
                 appWrapper.style.display = 'none';
                 captureFocus(false);
             });

@@ -14,7 +14,6 @@
     const appWrapper = document.getElementById('alprApp');
     const patrolSpeedEl = document.getElementById('patrolSpeed');
     const btnRadarPower = document.getElementById('btnRadarPower');
-    const btnQuickMdt = document.getElementById('btnQuickMdt');
 
     // Front
     const frontSpeedEl = document.getElementById('frontSpeed');
@@ -87,31 +86,22 @@
         emitToGame('cef_onAlprLock', 'rear', isRearLocked ? 1 : 0);
     });
 
-    // Buka di MDT
-    btnQuickMdt.addEventListener('click', () => {
-        const plateToSearch = isRearLocked ? rearPlateEl.textContent : frontPlateEl.textContent;
-        emitToGame('cef_onAlprOpenMdt', plateToSearch);
-        if (!isGameClient()) {
-            window.alert(`Membuka profil kendaraan ${plateToSearch} di database MDT Kepolisian!`);
-        }
-    });
-
     // Keyboard Shortcuts
     window.addEventListener('keydown', (e) => {
         if (e.key === 'Num8' || e.code === 'Numpad8') {
             btnLockFront.click();
         } else if (e.key === 'Num2' || e.code === 'Numpad2') {
             btnLockRear.click();
-        } else if (e.key === 'Num5' || e.code === 'Numpad5') {
-            btnQuickMdt.click();
         } else if (e.key === 'Escape') {
             closeRadar();
         }
     });
 
-    btnRadarPower.addEventListener('click', () => {
-        closeRadar();
-    });
+    if (btnRadarPower) {
+        btnRadarPower.addEventListener('click', () => {
+            closeRadar();
+        });
+    }
 
     const isGameClient = () => {
         return !!(

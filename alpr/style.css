@@ -41,6 +41,8 @@ body, html {
     background: transparent !important;
     font-family: var(--font-body);
     color: var(--text-primary);
+    cursor: default;
+    pointer-events: none;
 }
 
 html.preview-mode, html.preview-mode body,

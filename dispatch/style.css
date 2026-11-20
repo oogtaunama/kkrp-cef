@@ -367,6 +367,13 @@ body.in-game:not(.active) .dispatch-wrapper {
     width: 360px;
     z-index: 9999;
     animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.dispatch-mini-hud.fade-out {
+    opacity: 0;
+    transform: translateX(40px);
+    pointer-events: none;
 }
 
 @keyframes slideInRight {
