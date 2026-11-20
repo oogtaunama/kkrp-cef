@@ -151,6 +151,7 @@
     }
 
     function showRadar(data) {
+        document.body.classList.remove('in-game');
         document.body.classList.add('active');
         appWrapper.style.display = 'block';
         if (data) {

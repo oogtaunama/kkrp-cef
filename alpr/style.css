@@ -50,21 +50,17 @@ body.preview-mode, html:has(body.preview-mode) {
     background: radial-gradient(circle at center, #1a202c 0%, #080a0f 100%) !important;
 }
 
-body.in-game:not(.active) .alpr-container {
-    display: none !important;
-}
-
-body.active .alpr-container {
-    display: block !important;
-}
-
-/* Container di kanan bawah layar (HUD In-Car) */
 .alpr-container {
+    display: none;
     position: fixed;
     bottom: 30px;
     right: 30px;
     z-index: 1000;
     animation: radarSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+body.active .alpr-container {
+    display: block !important;
 }
 
 @keyframes radarSlideUp {

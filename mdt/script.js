@@ -6,94 +6,11 @@
 (function () {
     'use strict';
 
-    // Database Mock Warga
-    const CITIZEN_DB = [
-        {
-            id: 24,
-            name: 'Brenden Randall',
-            ktp: 'KTP-109482',
-            job: 'Petani (Farmer)',
-            phone: '555-0192',
-            driverLic: true,
-            gunLic: false,
-            warrant: false,
-            records: [
-                {
-                    title: 'Pelanggaran Batas Kecepatan (Speeding)',
-                    date: '14/11/2026',
-                    desc: 'Melaju 140 km/jam di zona pemukiman Marina Boulevard. Diberikan sanksi tilang administrasi.',
-                    officer: 'Ofc. Nathan Hayes',
-                    fine: '$1,500'
-                },
-                {
-                    title: 'Menerobos Lampu Merah (Traffic Violation)',
-                    date: '10/11/2026',
-                    desc: 'Mengabaikan rambu lalu lintas di perempatan Pershing Square.',
-                    officer: 'Ofc. Sarah Miller',
-                    fine: '$500'
-                }
-            ]
-        },
-        {
-            id: 88,
-            name: 'Marcus Brody',
-            ktp: 'KTP-004812',
-            job: 'Pengangguran',
-            phone: '555-0811',
-            driverLic: false,
-            gunLic: false,
-            warrant: true,
-            records: [
-                {
-                    title: 'DPO: Pembunuhan Berencana & Perampokan',
-                    date: '18/11/2026',
-                    desc: 'Tersangka penembakan mematikan di Idlewood. Membawa senjata api laras panjang.',
-                    officer: 'Capt. Nathan Hayes',
-                    fine: 'Jail: 120 Bulan + $25,000'
-                }
-            ]
-        }
-    ];
+    // Database Mock Warga (Default kosong, diisi saat pencarian live ke server/database)
+    const CITIZEN_DB = [];
 
-    // Database Mock Kendaraan
-    const VEHICLE_DB = [
-        {
-            plate: 'LS-4928',
-            model: 'Sultan Sedan 2.5L Turbo',
-            owner: 'Brenden Randall',
-            color: 'Midnight Black / Orange Pearl',
-            tax: true,
-            stolen: false,
-            bolo: false,
-            records: [
-                {
-                    title: 'Pemeriksaan Rutin Traffic Stop',
-                    date: '12/11/2026',
-                    desc: 'Kendaraan dihentikan di Commerce Avenue. Surat-surat lengkap, tidak ditemukan barang ilegal.',
-                    officer: 'Unit 2-Adam (Ofc. Nathan Hayes)',
-                    status: 'Dilepaskan'
-                }
-            ]
-        },
-        {
-            plate: 'LS-6699',
-            model: 'Buffalo S Muscle V8',
-            owner: 'Marcus Brody',
-            color: 'Matte Black',
-            tax: false,
-            stolen: true,
-            bolo: true,
-            records: [
-                {
-                    title: 'Pengejaran Kendaraan (10-80 Pursuit)',
-                    date: '19/11/2026',
-                    desc: 'Melarikan diri dari TKP perampokan bank Palomino Creek. Sangat berbahaya.',
-                    officer: 'Sergeant Davis',
-                    status: 'BOLO AKTIF'
-                }
-            ]
-        }
-    ];
+    // Database Mock Kendaraan (Default kosong, diisi saat pencarian live ke server/database)
+    const VEHICLE_DB = [];
 
     // DOM Elements
     const appWrapper = document.getElementById('mdtApp');
@@ -568,8 +485,27 @@
     }
 
     // Inisialisasi
-    displayCitizen(CITIZEN_DB[0]);
-    displayVehicle(VEHICLE_DB[0]);
+    displayCitizen({
+        id: 0,
+        name: 'Belum Ada Data Terpilih',
+        ktp: 'KTP-NONE',
+        job: '-',
+        phone: '-',
+        driverLic: false,
+        gunLic: false,
+        warrant: false,
+        records: []
+    });
+    displayVehicle({
+        plate: '---',
+        model: 'Tidak Ada Data Kendaraan',
+        owner: '-',
+        color: '-',
+        tax: false,
+        stolen: false,
+        bolo: false,
+        records: []
+    });
     setupBridge();
 
     if (isGameClient()) {
