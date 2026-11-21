@@ -512,7 +512,7 @@
                         slots = JSON.parse(slotsData);
                     }
                     if (Array.isArray(slots)) {
-                        this.player.slots = slots;
+                        this.player.slots = this.applySlotPersistence(slots);
                     }
                     if (weight !== undefined) this.player.weight = parseFloat(weight) || 0;
                     if (maxWeight !== undefined) this.player.maxWeight = parseFloat(maxWeight) || 50;
@@ -1109,6 +1109,7 @@
 
                 let targetName = 'Kontainer';
                 if (this.rightContainer.mode === 'trunk') targetName = 'Bagasi';
+                else if (this.rightContainer.mode === 'glovebox') targetName = 'Glovebox';
                 else if (this.rightContainer.mode === 'ground') targetName = 'Sekitar';
                 else if (this.rightContainer.mode === 'safe') targetName = 'Brankas';
                 else if (this.rightContainer.mode === 'shop') targetName = 'Jual ke Toko';
@@ -1442,7 +1443,63 @@
             }
         },
 
+        saveSlotPersistence() {
+            try {
+                if (!this.player.slots) return;
+                const slotOrder = {};
+                this.player.slots.forEach((item, index) => {
+                    if (item && item.exists && item.name) {
+                        slotOrder[item.name] = index;
+                    }
+                });
+                const key = `kkrp_inv_slots_${this.player.citizenId || 'default'}`;
+                localStorage.setItem(key, JSON.stringify(slotOrder));
+            } catch (e) {
+                console.warn('[Inventory] Gagal menyimpan persistensi slot:', e);
+            }
+        },
+
+        applySlotPersistence(incomingSlots) {
+            if (!Array.isArray(incomingSlots) || incomingSlots.length === 0) return incomingSlots;
+            try {
+                const key = `kkrp_inv_slots_${this.player.citizenId || 'default'}`;
+                const savedJson = localStorage.getItem(key);
+                if (!savedJson) return incomingSlots;
+                const slotMap = JSON.parse(savedJson);
+
+                const finalSlots = Array.from({ length: this.MAX_PLAYER_SLOTS }, (_, i) => ({
+                    slotIndex: i,
+                    exists: false
+                }));
+
+                const remainingItems = [];
+                incomingSlots.forEach(item => {
+                    if (item && item.exists) {
+                        const preferredSlot = slotMap[item.name];
+                        if (preferredSlot !== undefined && preferredSlot >= 0 && preferredSlot < this.MAX_PLAYER_SLOTS && !finalSlots[preferredSlot].exists) {
+                            finalSlots[preferredSlot] = { ...item, slotIndex: preferredSlot };
+                        } else {
+                            remainingItems.push(item);
+                        }
+                    }
+                });
+
+                remainingItems.forEach(item => {
+                    const freeIdx = finalSlots.findIndex(s => !s.exists);
+                    if (freeIdx !== -1) {
+                        finalSlots[freeIdx] = { ...item, slotIndex: freeIdx };
+                    }
+                });
+
+                return finalSlots;
+            } catch (e) {
+                console.warn('[Inventory] Gagal menerapkan persistensi slot:', e);
+                return incomingSlots;
+            }
+        },
+
         closeInventory(notifyServer = true) {
+            this.saveSlotPersistence();
             SoundFx.play('click');
             const root = document.getElementById('inventoryRoot');
             if (root) root.style.display = 'none';

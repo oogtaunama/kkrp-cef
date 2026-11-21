@@ -188,8 +188,6 @@
 
     // Bridge Update Data Live
     function setupBridge() {
-        emitToGame('cef_onAlprReady');
-
         if (typeof CefBridge !== 'undefined' && CefBridge && typeof CefBridge.on === 'function') {
             CefBridge.on('cef:openAlpr', (data) => {
                 let parsed = data;
@@ -249,6 +247,9 @@
                 updateAlprData(item.data);
             }
         });
+
+        // Beritahu client bahwa bridge ALPR telah siap
+        emitToGame('cef_onAlprReady');
     }
 
     setupBridge();

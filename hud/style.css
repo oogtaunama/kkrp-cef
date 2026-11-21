@@ -163,8 +163,19 @@ body {
     color: #94a3b8;
 }
 
-.info-pill.family-pill .pill-icon {
-    color: #f59e0b;
+.info-pill.job-pill {
+    background: rgba(28, 29, 36, 0.92);
+    border: 1px solid rgba(255, 122, 24, 0.35);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45), 0 0 10px rgba(255, 122, 24, 0.15);
+}
+
+.info-pill.job-pill .pill-icon {
+    color: #ff9e44;
+}
+
+.info-pill.job-pill .pill-text {
+    color: #ffb168;
+    font-weight: 700;
 }
 
 .info-pill .pill-text {

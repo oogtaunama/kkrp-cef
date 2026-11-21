@@ -1361,20 +1361,34 @@
             if (!feedEl) return;
 
             feedEl.innerHTML = '';
+
+            if (!PhoneState.twitterFeed || PhoneState.twitterFeed.length === 0) {
+                feedEl.innerHTML = `
+                    <div class="empty-feed-state" style="text-align: center; padding: 48px 16px; color: #8e8e93;">
+                        <svg viewBox="0 0 24 24" width="40" height="40" fill="currentColor" style="opacity: 0.35; margin-bottom: 12px;">
+                            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                        </svg>
+                        <div style="font-weight: 600; font-size: 14px; color: #e2e8f0;">Belum Ada Kicauan</div>
+                        <div style="font-size: 12px; margin-top: 4px; color: #94a3b8;">Jadilah warga pertama yang membagikan momen di Twitter!</div>
+                    </div>
+                `;
+                return;
+            }
+
             PhoneState.twitterFeed.forEach(chirp => {
                 const card = document.createElement('div');
                 card.className = 'chirp-card';
                 card.innerHTML = `
                     <div class="chirp-header">
-                        <div class="chirp-avatar">${chirp.author.substring(0, 2).toUpperCase()}</div>
+                        <div class="chirp-avatar">${(chirp.author || 'U').substring(0, 2).toUpperCase()}</div>
                         <div class="chirp-user-meta">
                             <span class="chirp-author">${chirp.author}</span>
-                            <span class="chirp-handle">@${chirp.handle || chirp.author.toLowerCase().replace(/\s+/g, '')}</span>
+                            <span class="chirp-handle">@${chirp.handle || (chirp.author ? chirp.author.toLowerCase().replace(/\s+/g, '') : 'user')}</span>
                         </div>
                     </div>
                     <div class="chirp-content">${chirp.content}</div>
                     <div class="chirp-footer">
-                        <span>${chirp.time || '10m lalu'}</span>
+                        <span>${chirp.time || 'Baru saja'}</span>
                         <button class="chirp-like-btn ${chirp.isLiked ? 'liked' : ''}">
                             ${chirp.isLiked ? PhoneSvg.heart : PhoneSvg.heartEmpty}
                             <span>${chirp.likes || 0}</span>
@@ -2584,10 +2598,7 @@
                 { id: 2, modelName: 'Sanchez Enduro', plate: 'KK 2024 LS', engineHealth: 94, status: 'Luar (Terparkir)' }
             ];
 
-            PhoneState.twitterFeed = [
-                { id: 1, author: 'Franklin Clinton', handle: 'franklin_c', content: 'Hari yang cerah di Los Santos! Siap untuk misi baru 🚗💨 #KKRP', time: '15m lalu', likes: 12, isLiked: false },
-                { id: 2, author: 'Weazel News', handle: 'weazel_news', content: 'Info Lalu Lintas: Ruas jalan Commerce terpantau lancar terkendali.', time: '1j lalu', likes: 45, isLiked: true }
-            ];
+            PhoneState.twitterFeed = [];
 
             PhoneState.yellowpages = [
                 { id: 1, category: 'Kendaraan', description: 'Jual Elegy Full Modif Custom, mesin sehat siap gas! Hubungi nomor di bawah.', author: 'Alex Murphy', phone: '5550881' },

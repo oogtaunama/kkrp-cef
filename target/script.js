@@ -456,8 +456,7 @@
                     { id: 1, action: 'veh_lock', label: 'Buka / Kunci Pintu', desc: 'Beralih status kunci kendaraan', icon: 'fa-lock', key: '1' },
                     { id: 2, action: 'veh_trunk', label: 'Buka Bagasi (Trunk)', desc: 'Akses kompartemen penyimpanan bagasi', icon: 'fa-box-open', key: '2' },
                     { id: 3, action: 'veh_hood', label: 'Periksa Kap Mesin', desc: 'Membuka kap mesin untuk perbaikan', icon: 'fa-screwdriver-wrench', key: '3' },
-                    { id: 4, action: 'veh_engine', label: 'Nyalakan / Matikan Mesin', desc: 'Mengontrol starter mesin kendaraan', icon: 'fa-key', key: '4' },
-                    { id: 5, action: 'veh_refuel', label: 'Isi Bahan Bakar', desc: 'Mengisi tangki bensin kendaraan', icon: 'fa-gas-pump', key: '5' }
+                    { id: 4, action: 'veh_refuel', label: 'Isi Bahan Bakar', desc: 'Mengisi tangki bensin kendaraan', icon: 'fa-gas-pump', key: '4' }
                 ]
             });
         },

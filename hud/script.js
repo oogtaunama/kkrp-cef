@@ -287,7 +287,14 @@ window.addEventListener('DOMContentLoaded', () => {
         }
         if (data.job !== undefined) {
             const jobEl = document.getElementById('hudPlayerJob');
-            if (jobEl) jobEl.innerText = String(data.job);
+            const jobPill = document.getElementById('pillJob');
+            if (jobEl) {
+                const jobStr = String(data.job).trim();
+                jobEl.innerText = jobStr || 'Pengangguran';
+            }
+            if (jobPill) {
+                jobPill.style.display = 'flex';
+            }
         }
         if (data.family !== undefined) {
             const famEl = document.getElementById('hudPlayerFamily');
