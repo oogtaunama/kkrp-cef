@@ -224,11 +224,14 @@ class TabletController {
         // Citizen profile data
         this.profile = {
             name: "Rey Simanjuntak",
-            cash: 12500,
-            bank: 74200,
-            crypto: 0.148,
-            phone: "0812-7789",
-            ucp: "ReyS"
+            cash: 18500,
+            bank: 84000,
+            crypto: 0.225,
+            phone: "0812-3456",
+            ucp: "ReyS",
+            level: 5,
+            family: -1,
+            admin: 0
         };
 
         this.init();
@@ -244,14 +247,7 @@ class TabletController {
         if (!this.isCefAvailable()) {
             console.log('[TABLET] Running in Standalone Browser Preview Mode.');
             setTimeout(() => {
-                this.open({
-                    name: "Rey Simanjuntak",
-                    cash: 18500,
-                    bank: 84000,
-                    crypto: 0.225,
-                    phone: "0812-3456",
-                    ucp: "ReyS"
-                }, [
+                this.open(this.profile, [
                     { id: 1, modelName: "Sultan", modelId: 560, plate: "KKRP-778", health: 95, fuel: 82, status: "Di Luar", isSpawned: true },
                     { id: 2, modelName: "Elegy", modelId: 562, plate: "KKRP-104", health: 80, fuel: 55, status: "Di Garasi", isSpawned: false },
                     { id: 3, modelName: "Sanchez", modelId: 468, plate: "KKRP-992", health: 100, fuel: 90, status: "Di Garasi", isSpawned: false }
@@ -305,6 +301,18 @@ class TabletController {
             });
             CefBridge.on('tablet:trackResult', (success, info, x, y, z) => {
                 GarageApp.onTrackResult(success, info, x, y, z);
+            });
+            CefBridge.on('tablet:tdmResult', (success, msg) => {
+                if (!success) {
+                    AudioPlayer.playError();
+                    this.showToast("TeamDeathmatch", msg, "error");
+                }
+            });
+            CefBridge.on('tablet:dwebResult', (success, msg) => {
+                if (!success) {
+                    AudioPlayer.playError();
+                    this.showToast("DarkWeb", msg, "error");
+                }
             });
         }
 
@@ -517,20 +525,11 @@ class TabletController {
         const hud = document.getElementById('volumeHud');
         const fill = document.getElementById('volumeBarFill');
         const text = document.getElementById('volumeText');
-        const icon = document.getElementById('volumeIcon');
 
         if (!hud || !fill || !text) return;
 
         fill.style.width = `${pct}%`;
         text.textContent = `${pct}%`;
-
-        if (pct === 0) {
-            icon.className = 'fa-solid fa-volume-xmark volume-icon text-muted';
-        } else if (pct < 45) {
-            icon.className = 'fa-solid fa-volume-low volume-icon text-orange';
-        } else {
-            icon.className = 'fa-solid fa-volume-high volume-icon text-orange';
-        }
 
         hud.classList.add('visible');
         clearTimeout(this._volHudTimer);
@@ -547,7 +546,23 @@ class TabletController {
         if (elName) elName.textContent = this.profile.name || "Warga Los Santos";
 
         const elUcp = document.getElementById('citizenUcp');
-        if (elUcp) elUcp.textContent = `UCP: ${this.profile.ucp || "Player"} • No. HP: ${this.profile.phone || "0812-0001"}`;
+        const levelVal = this.profile.level !== undefined ? this.profile.level : 5;
+        if (elUcp) elUcp.textContent = `UCP: ${this.profile.ucp || "Player"} • No. HP: ${this.profile.phone || "0812-0001"} • Level: ${levelVal}`;
+
+        const elLevel = document.getElementById('citizenLevel');
+        if (elLevel) elLevel.textContent = levelVal;
+
+        // Status Level untuk TeamDeathmatch
+        const tdmReq = document.getElementById('tdmPlayerStatus');
+        if (tdmReq) {
+            if (levelVal >= 5) {
+                tdmReq.className = 'req-v text-green';
+                tdmReq.textContent = `Memenuhi Syarat (Level ${levelVal})`;
+            } else {
+                tdmReq.className = 'req-v text-red';
+                tdmReq.textContent = `Level Belum Cukup (${levelVal}/5)`;
+            }
+        }
 
         const elCash = document.getElementById('homeCash');
         if (elCash) elCash.textContent = `$${this._formatNumber(this.profile.cash || 0)}`;
@@ -574,6 +589,8 @@ class TabletController {
         // Tampilkan view yang dipilih
         const viewMap = {
             home: 'viewHome',
+            tdm: 'viewTdm',
+            race: 'viewRace',
             maps: 'viewMaps',
             darkweb: 'viewDarkweb',
             garage: 'viewGarage',
@@ -592,6 +609,8 @@ class TabletController {
         });
         const dockMap = {
             home: 'dockHome',
+            tdm: 'dockTdm',
+            race: 'dockRace',
             maps: 'dockMaps',
             darkweb: 'dockDarkweb',
             garage: 'dockGarage',
@@ -602,6 +621,40 @@ class TabletController {
             const activeDock = document.getElementById(activeDockId);
             if (activeDock) activeDock.classList.add('active');
         }
+    }
+
+    // Meluncurkan TeamDeathmatch (Perang Simulator) sesuai fungsi tablet textdraw
+    launchTDM() {
+        AudioPlayer.playClick();
+        const level = this.profile.level !== undefined ? this.profile.level : 5;
+        if (level < 5) {
+            AudioPlayer.playError();
+            this.showToast("Syarat TDM", "Minimal Level 5 untuk mengakses aplikasi TeamDeathmatch!", "error");
+            return;
+        }
+
+        this.emit('tablet:openTDM');
+        this.showToast("TeamDeathmatch", "Membuka sistem lobby pertempuran TDM...", "info");
+    }
+
+    // Meluncurkan Balap Mobil (Street Race) sesuai fungsi tablet textdraw
+    launchRace() {
+        AudioPlayer.playClick();
+        this.emit('tablet:openRace');
+        this.showToast("Balap Mobil", "Membuka antarmuka sirkuit balap liar...", "info");
+    }
+
+    // Meluncurkan Menu Dialog Darkweb Keluarga in-game
+    launchDarkwebMenu() {
+        AudioPlayer.playClick();
+        if (this.profile.family === -1 && (this.profile.admin || 0) < 4) {
+            AudioPlayer.playError();
+            this.showToast("DarkWeb Keluarga", "Anda tidak tergabung di keluarga manapun!", "error");
+            return;
+        }
+
+        this.emit('tablet:openDarkwebMenu');
+        this.showToast("DarkWeb", "Membuka menu pasar gelap keluarga...", "info");
     }
 
     setGPS(name, x, y, z) {
@@ -668,9 +721,9 @@ class TabletController {
         const toast = document.createElement('div');
         toast.className = `toast-card toast-${type}`;
 
-        const iconClass = type === 'success' ? 'fa-circle-check' : (type === 'error' ? 'fa-circle-exclamation' : 'fa-bell');
+        const iconRef = type === 'success' ? '#icon-tdm' : (type === 'error' ? '#icon-close' : '#icon-maps');
         toast.innerHTML = `
-            <i class="fa-solid ${iconClass} toast-icon"></i>
+            <svg class="toast-icon" viewBox="0 0 24 24" width="20" height="20"><use href="${iconRef}"></use></svg>
             <div class="toast-body">
                 <div class="toast-title">${title}</div>
                 <div class="toast-desc">${message}</div>
@@ -701,18 +754,18 @@ class MapsController {
 
         // Katalog titik lokasi penting Kota Kecilku (GTA San Andreas open.mp coordinates)
         this.waypoints = [
-            { id: 1, name: "Bank Central Fleeca", category: "finance", categoryLabel: "Finansial", icon: "fa-building-columns", x: 1458.2, y: -1014.5, z: 26.8, desc: "Pusat perbankan, setor tunai, & pembuatan rekening" },
-            { id: 2, name: "Kantor Polisi Pusat SAPD", category: "security", categoryLabel: "Polisi & Medis", icon: "fa-shield-halved", x: 1554.8, y: -1675.6, z: 16.2, desc: "Markas Kepolisian Los Santos & pelayanan warga" },
-            { id: 3, name: "Rumah Sakit Umum ASGH", category: "security", categoryLabel: "Polisi & Medis", icon: "fa-hospital", x: 1172.5, y: -1323.8, z: 15.4, desc: "Pelayanan rawat darurat SAMD & pengobatan medis" },
-            { id: 4, name: "Kantor Samsat & DMV", category: "public", categoryLabel: "Layanan Publik", icon: "fa-id-card", x: 1109.3, y: -1796.3, z: 16.5, desc: "Pembuatan SIM Mengemudi & legalitas kendaraan" },
-            { id: 5, name: "Dealer Mobil Los Santos", category: "auto", categoryLabel: "Otomotif", icon: "fa-car", x: 2131.7, y: -1150.8, z: 24.1, desc: "Showroom jual-beli kendaraan baru & bekas" },
-            { id: 6, name: "Workshop Mekanik Idlewood", category: "auto", categoryLabel: "Otomotif", icon: "fa-wrench", x: 1980.2, y: -1774.5, z: 13.5, desc: "Reparasi mesin, pasang modifikasi & ganti warna" },
-            { id: 7, name: "Balai Kota Los Santos (City Hall)", category: "public", categoryLabel: "Layanan Publik", icon: "fa-landmark", x: 1481.0, y: -1771.3, z: 18.8, desc: "Pusat pemerintahan kota, legalitas KTP, & izin usaha" },
-            { id: 8, name: "Bandara Internasional LS", category: "public", categoryLabel: "Layanan Publik", icon: "fa-plane-departure", x: 1686.1, y: -2238.2, z: 13.5, desc: "Terminal kedatangan & landasan penerbangan pesawat" },
-            { id: 9, name: "Pelabuhan Ocean Docks", category: "commerce", categoryLabel: "Bisnis", icon: "fa-ship", x: 2758.1, y: -2392.4, z: 13.6, desc: "Dermaga kargo kapal kontainer & industri laut" },
-            { id: 10, name: "Toko Senjata Ammu-Nation", category: "commerce", categoryLabel: "Bisnis", icon: "fa-crosshairs", x: 1368.5, y: -1279.7, z: 13.5, desc: "Lisensi kepemilikan senjata resmi & amunisi berizin" },
-            { id: 11, name: "Kasino Four Dragons LV", category: "commerce", categoryLabel: "Bisnis", icon: "fa-dice", x: 2026.5, y: 1007.8, z: 10.8, desc: "Pusat hiburan malam blackjack, poker & roulette" },
-            { id: 12, name: "Pasar Tradisional Los Flores", category: "commerce", categoryLabel: "Bisnis", icon: "fa-shop", x: 2503.2, y: -1684.8, z: 13.5, desc: "Sentra bahan makanan segar & perdagangan warga" }
+            { id: 1, name: "Bank Central Fleeca", category: "finance", categoryLabel: "Finansial", iconRef: "#icon-bank", x: 1458.2, y: -1014.5, z: 26.8, desc: "Pusat perbankan, setor tunai, & pembuatan rekening" },
+            { id: 2, name: "Kantor Polisi Pusat SAPD", category: "security", categoryLabel: "Polisi & Medis", iconRef: "#icon-tdm", x: 1554.8, y: -1675.6, z: 16.2, desc: "Markas Kepolisian Los Santos & pelayanan warga" },
+            { id: 3, name: "Rumah Sakit Umum ASGH", category: "security", categoryLabel: "Polisi & Medis", iconRef: "#icon-tdm", x: 1172.5, y: -1323.8, z: 15.4, desc: "Pelayanan rawat darurat SAMD & pengobatan medis" },
+            { id: 4, name: "Kantor Samsat & DMV", category: "public", categoryLabel: "Layanan Publik", iconRef: "#icon-news", x: 1109.3, y: -1796.3, z: 16.5, desc: "Pembuatan SIM Mengemudi & legalitas kendaraan" },
+            { id: 5, name: "Dealer Mobil Los Santos", category: "auto", categoryLabel: "Otomotif", iconRef: "#icon-garage", x: 2131.7, y: -1150.8, z: 24.1, desc: "Showroom jual-beli kendaraan baru & bekas" },
+            { id: 6, name: "Workshop Mekanik Idlewood", category: "auto", categoryLabel: "Otomotif", iconRef: "#icon-speed", x: 1980.2, y: -1774.5, z: 13.5, desc: "Reparasi mesin, pasang modifikasi & ganti warna" },
+            { id: 7, name: "Balai Kota Los Santos (City Hall)", category: "public", categoryLabel: "Layanan Publik", iconRef: "#icon-bank", x: 1481.0, y: -1771.3, z: 18.8, desc: "Pusat pemerintahan kota, legalitas KTP, & izin usaha" },
+            { id: 8, name: "Bandara Internasional LS", category: "public", categoryLabel: "Layanan Publik", iconRef: "#icon-maps", x: 1686.1, y: -2238.2, z: 13.5, desc: "Terminal kedatangan & landasan penerbangan pesawat" },
+            { id: 9, name: "Pelabuhan Ocean Docks", category: "commerce", categoryLabel: "Bisnis", iconRef: "#icon-maps", x: 2758.1, y: -2392.4, z: 13.6, desc: "Dermaga kargo kapal kontainer & industri laut" },
+            { id: 10, name: "Toko Senjata Ammu-Nation", category: "commerce", categoryLabel: "Bisnis", iconRef: "#icon-tdm", x: 1368.5, y: -1279.7, z: 13.5, desc: "Lisensi kepemilikan senjata resmi & amunisi berizin" },
+            { id: 11, name: "Kasino Four Dragons LV", category: "commerce", categoryLabel: "Bisnis", iconRef: "#icon-calc", x: 2026.5, y: 1007.8, z: 10.8, desc: "Pusat hiburan malam blackjack, poker & roulette" },
+            { id: 12, name: "Pasar Tradisional Los Flores", category: "commerce", categoryLabel: "Bisnis", iconRef: "#icon-cart", x: 2503.2, y: -1684.8, z: 13.5, desc: "Sentra bahan makanan segar & perdagangan warga" }
         ];
 
         this.render();
@@ -733,7 +786,7 @@ class MapsController {
         if (filtered.length === 0) {
             grid.innerHTML = `
                 <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--text-dim);">
-                    <i class="fa-solid fa-map-pin" style="font-size: 32px; opacity: 0.4; margin-bottom: 8px;"></i>
+                    <svg viewBox="0 0 24 24" width="36" height="36" style="opacity: 0.4; margin-bottom: 8px;"><use href="#icon-maps"></use></svg>
                     <p>Lokasi tidak ditemukan dalam pencarian.</p>
                 </div>
             `;
@@ -746,7 +799,7 @@ class MapsController {
                 <div class="waypoint-card ${isActive ? 'is-active-gps' : ''}" data-name="${wp.name}">
                     <div class="wp-meta">
                         <div class="wp-icon-box">
-                            <i class="fa-solid ${wp.icon}"></i>
+                            <svg viewBox="0 0 24 24" width="22" height="22"><use href="${wp.iconRef || '#icon-maps'}"></use></svg>
                         </div>
                         <div>
                             <div class="wp-title">${wp.name}</div>
@@ -755,7 +808,7 @@ class MapsController {
                         </div>
                     </div>
                     <button class="btn-set-gps ${isActive ? 'active-state' : ''}" onclick="TabletApp.setGPS('${wp.name}', ${wp.x}, ${wp.y}, ${wp.z})">
-                        <i class="fa-solid ${isActive ? 'fa-check' : 'fa-location-arrow'}"></i>
+                        <svg viewBox="0 0 24 24" width="14" height="14"><use href="#icon-crosshairs"></use></svg>
                         <span>${isActive ? 'Aktif' : 'Set GPS'}</span>
                     </button>
                 </div>
@@ -783,13 +836,13 @@ class MapsController {
                 card.classList.add('is-active-gps');
                 if (btn) {
                     btn.classList.add('active-state');
-                    btn.innerHTML = `<i class="fa-solid fa-check"></i> <span>Aktif</span>`;
+                    btn.innerHTML = `<svg viewBox="0 0 24 24" width="14" height="14"><use href="#icon-crosshairs"></use></svg> <span>Aktif</span>`;
                 }
             } else {
                 card.classList.remove('is-active-gps');
                 if (btn) {
                     btn.classList.remove('active-state');
-                    btn.innerHTML = `<i class="fa-solid fa-location-arrow"></i> <span>Set GPS</span>`;
+                    btn.innerHTML = `<svg viewBox="0 0 24 24" width="14" height="14"><use href="#icon-crosshairs"></use></svg> <span>Set GPS</span>`;
                 }
             }
         });
@@ -806,14 +859,14 @@ class DarkwebController {
 
         // Katalog Barang Ilegal Eksklusif
         this.items = [
-            { code: "lockpick", name: "Advanced Lockpick", priceBtc: 0.015, priceUsd: 750, icon: "fa-key", desc: "Alat bobol kunci presisi tinggi untuk membuka pintu tanpa memicu alarm" },
-            { code: "hacker_device", name: "Cyber Decrypt Pad", priceBtc: 0.045, priceUsd: 2250, icon: "fa-laptop-code", desc: "Perangkat peretas terminal bank, brankas ATM & enkripsi keamanan kota" },
-            { code: "signal_jammer", name: "Police Radio Jammer", priceBtc: 0.060, priceUsd: 3000, icon: "fa-tower-broadcast", desc: "Pengacak frekuensi sinyal dispatch polisi dan kamera tilang ALPR" },
-            { code: "thermite", name: "Thermite Compound", priceBtc: 0.080, priceUsd: 4000, icon: "fa-fire-flame-curved", desc: "Bahan peledak suhu termal ekstrem untuk melelehkan pintu brankas baja" },
-            { code: "armor_vest", name: "Heavy Kevlar Vest", priceBtc: 0.050, priceUsd: 2500, icon: "fa-vest", desc: "Rompi antipeluru tebal standar taktis militer Grade IV" },
-            { code: "medkit", name: "Trauma Adrenaline Kit", priceBtc: 0.020, priceUsd: 1000, icon: "fa-kit-medical", desc: "Injeksi medis darurat pemulih kondisi kritis di lapangan" },
-            { code: "weapon_parts", name: "Micro SMG Frame Kit", priceBtc: 0.120, priceUsd: 6000, icon: "fa-gun", desc: "Komponen rahasia untuk merakit senjata api otomatis tak terlacak" },
-            { code: "fake_id", name: "Fake Identity Card", priceBtc: 0.035, priceUsd: 1750, icon: "fa-id-badge", desc: "Identitas KTP palsu terselubung untuk penyamaran status sipil" }
+            { code: "lockpick", name: "Advanced Lockpick", priceBtc: 0.015, priceUsd: 750, iconRef: "#icon-lock", desc: "Alat bobol kunci presisi tinggi untuk membuka pintu tanpa memicu alarm" },
+            { code: "hacker_device", name: "Cyber Decrypt Pad", priceBtc: 0.045, priceUsd: 2250, iconRef: "#icon-calc", desc: "Perangkat peretas terminal bank, brankas ATM & enkripsi keamanan kota" },
+            { code: "signal_jammer", name: "Police Radio Jammer", priceBtc: 0.060, priceUsd: 3000, iconRef: "#icon-wifi", desc: "Pengacak frekuensi sinyal dispatch polisi dan kamera tilang ALPR" },
+            { code: "thermite", name: "Thermite Compound", priceBtc: 0.080, priceUsd: 4000, iconRef: "#icon-speed", desc: "Bahan peledak suhu termal ekstrem untuk melelehkan pintu brankas baja" },
+            { code: "armor_vest", name: "Heavy Kevlar Vest", priceBtc: 0.050, priceUsd: 2500, iconRef: "#icon-tdm", desc: "Rompi antipeluru tebal standar taktis militer Grade IV" },
+            { code: "medkit", name: "Trauma Adrenaline Kit", priceBtc: 0.020, priceUsd: 1000, iconRef: "#icon-maps", desc: "Injeksi medis darurat pemulih kondisi kritis di lapangan" },
+            { code: "weapon_parts", name: "Micro SMG Frame Kit", priceBtc: 0.120, priceUsd: 6000, iconRef: "#icon-tdm", desc: "Komponen rahasia untuk merakit senjata api otomatis tak terlacak" },
+            { code: "fake_id", name: "Fake Identity Card", priceBtc: 0.035, priceUsd: 1750, iconRef: "#icon-news", desc: "Identitas KTP palsu terselubung untuk penyamaran status sipil" }
         ];
 
         this.render();
@@ -827,7 +880,7 @@ class DarkwebController {
             <div class="dw-item-card" id="dwItem_${item.code}">
                 <div class="dw-item-top">
                     <div class="dw-item-icon">
-                        <i class="fa-solid ${item.icon}"></i>
+                        <svg viewBox="0 0 24 24" width="22" height="22"><use href="${item.iconRef || '#icon-darkweb'}"></use></svg>
                     </div>
                     <div class="dw-item-info">
                         <h4>${item.name}</h4>
@@ -845,7 +898,7 @@ class DarkwebController {
                         <button class="btn-qty" onclick="DarkwebApp.changeCardQty('${item.code}', 1)">+</button>
                     </div>
                     <button class="btn-add-cart" onclick="DarkwebApp.addToCart('${item.code}')">
-                        <i class="fa-solid fa-cart-plus"></i> Pesan
+                        <svg viewBox="0 0 24 24" width="14" height="14"><use href="#icon-cart"></use></svg> Pesan
                     </button>
                 </div>
             </div>
@@ -939,7 +992,7 @@ class DarkwebController {
         if (totalQty === 0) {
             listEl.innerHTML = `
                 <div class="cart-empty-state">
-                    <i class="fa-solid fa-basket-shopping"></i>
+                    <svg viewBox="0 0 24 24" width="36" height="36"><use href="#icon-cart"></use></svg>
                     <p>Keranjang masih kosong.</p>
                     <span>Pilih item rahasia dari katalog untuk memesan.</span>
                 </div>
@@ -958,7 +1011,7 @@ class DarkwebController {
                     </div>
                     <div class="cri-right">
                         <button class="btn-remove-item" onclick="DarkwebApp.removeFromCart('${item.code}')" title="Hapus">
-                            <i class="fa-solid fa-trash"></i>
+                            <svg viewBox="0 0 24 24" width="14" height="14"><use href="#icon-trash"></use></svg>
                         </button>
                     </div>
                 </div>
@@ -974,7 +1027,6 @@ class DarkwebController {
         let totalCostBtc = 0;
         let totalItems = 0;
         let firstItemCode = "";
-        let firstItemQty = 0;
 
         this.cart.forEach(({ item, qty }) => {
             totalCostUsd += (item.priceUsd * qty);
@@ -982,7 +1034,6 @@ class DarkwebController {
             totalItems += qty;
             if (!firstItemCode) {
                 firstItemCode = item.code;
-                firstItemQty = qty;
             }
         });
 
@@ -1002,11 +1053,10 @@ class DarkwebController {
         const checkoutBtn = document.getElementById('btnCheckout');
         if (checkoutBtn) {
             checkoutBtn.disabled = true;
-            checkoutBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Mengenkripsi Jalur Tor...`;
+            checkoutBtn.innerHTML = `<span>Mengenkripsi Jalur Tor...</span>`;
         }
 
         // Kirim event pembelian ke Server Pawn open.mp
-        // Argumen: itemCode, totalQuantity, totalCostUsd
         TabletApp.emit('tablet:buyDarkweb', String(firstItemCode), parseInt(totalItems, 10), parseInt(totalCostUsd, 10));
 
         // Fallback untuk Standalone Browser Preview jika tidak ada server
@@ -1025,7 +1075,7 @@ class DarkwebController {
         this.isProcessing = false;
         const checkoutBtn = document.getElementById('btnCheckout');
         if (checkoutBtn) {
-            checkoutBtn.innerHTML = `<i class="fa-solid fa-lock"></i> Selesaikan Transaksi Enkripsi`;
+            checkoutBtn.innerHTML = `<svg viewBox="0 0 24 24" width="16" height="16"><use href="#icon-lock"></use></svg> <span>Selesaikan Transaksi Enkripsi</span>`;
         }
 
         if (success) {
@@ -1106,7 +1156,7 @@ class GarageController {
         if (filtered.length === 0) {
             grid.innerHTML = `
                 <div class="garage-empty-state">
-                    <i class="fa-solid fa-warehouse"></i>
+                    <svg viewBox="0 0 24 24" width="48" height="48" style="opacity: 0.4; margin-bottom: 12px;"><use href="#icon-garage"></use></svg>
                     <p>Tidak ada kendaraan dalam kategori ini.</p>
                 </div>
             `;
@@ -1133,21 +1183,21 @@ class GarageController {
                             <span class="veh-plate-badge">${v.plate || 'KKRP-000'}</span>
                         </div>
                         <div class="veh-status-chip ${statusClass}">
-                            <i class="fa-solid ${isSpawned ? 'fa-circle-dot' : 'fa-warehouse'}"></i>
+                            <svg viewBox="0 0 24 24" width="12" height="12"><use href="${isSpawned ? '#icon-speed' : '#icon-garage'}"></use></svg>
                             <span>${statusLabel}</span>
                         </div>
                     </div>
 
                     <div class="veh-meters">
                         <div class="meter-row">
-                            <span><i class="fa-solid fa-gauge-high"></i> Mesin:</span>
+                            <span><svg viewBox="0 0 24 24" width="12" height="12"><use href="#icon-speed"></use></svg> Mesin:</span>
                             <div class="meter-bar-bg">
                                 <div class="${healthClass}" style="width: ${health}%;"></div>
                             </div>
                             <span>${health}%</span>
                         </div>
                         <div class="meter-row">
-                            <span><i class="fa-solid fa-gas-pump"></i> Bensin:</span>
+                            <span><svg viewBox="0 0 24 24" width="12" height="12"><use href="#icon-fuel"></use></svg> Bensin:</span>
                             <div class="meter-bar-bg">
                                 <div class="meter-bar-fill fill-fuel" style="width: ${fuel}%;"></div>
                             </div>
@@ -1157,7 +1207,7 @@ class GarageController {
 
                     <div class="veh-actions">
                         <button class="btn-track-veh" onclick="GarageApp.trackVehicle(${v.id}, '${v.modelName}')">
-                            <i class="fa-solid fa-crosshairs"></i> Lacak Posisi (GPS)
+                            <svg viewBox="0 0 24 24" width="14" height="14"><use href="#icon-crosshairs"></use></svg> Lacak Posisi (GPS)
                         </button>
                     </div>
                 </div>

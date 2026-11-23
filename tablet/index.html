@@ -8,20 +8,134 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-    <!-- Font Awesome 6.5.1 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Base Common & Tablet Styles -->
     <link rel="stylesheet" href="../common/common.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="tablet-viewport" style="display: none;">
 
+    <!-- ==================================================================== -->
+    <!-- EMBEDDED HIGH-PERFORMANCE SVG SYMBOL SPRITES (ZERO FONT DEPENDENCY)  -->
+    <!-- Dijamin 100% muncul tanpa kotak kosong [ ] di semua platform & CEF  -->
+    <!-- ==================================================================== -->
+    <svg style="display: none;" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <!-- 1. TDM / TeamDeathmatch: Crossed Swords & Combat Shield -->
+            <g id="icon-tdm">
+                <path fill="currentColor" d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3zm-1 6.5h2v2h-2v-2zm0 4h2V17h-2v-4.5zM6.8 9.2l1.4-1.4 2.8 2.8-1.4 1.4-2.8-2.8zm10.4 0l-2.8 2.8-1.4-1.4 2.8-2.8 1.4 1.4z"/>
+            </g>
+
+            <!-- 2. Balap Mobil / Race: Crossed Checkered Flags & Speedometer -->
+            <g id="icon-race">
+                <path fill="currentColor" d="M14.4 6L14 4H5v17h2v-7h5.6l.4 2h7V6h-5.6zm3.6 8h-3.3l-.4-2H7V6h5.3l.4 2H18v6z"/>
+                <circle cx="12" cy="15" r="5" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                <path fill="currentColor" d="M12 12l2 2"/>
+            </g>
+
+            <!-- 3. Maps & GPS: Map with Location Marker -->
+            <g id="icon-maps">
+                <path fill="currentColor" d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM15 19l-6-2.11V5l6 2.11V19z"/>
+                <path fill="#ff8c00" d="M12 7c-1.66 0-3 1.34-3 3 0 2.25 3 5.5 3 5.5s3-3.25 3-5.5c0-1.66-1.34-3-3-3zm0 4.2c-.66 0-1.2-.54-1.2-1.2s.54-1.2 1.2-1.2 1.2.54 1.2 1.2-.54 1.2-1.2 1.2z"/>
+            </g>
+
+            <!-- 4. DarkWeb: Onion / Anonymous Hacker Mask -->
+            <g id="icon-darkweb">
+                <path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-5-9c.83 0 1.5-.67 1.5-1.5S7.83 8 7 8s-1.5.67-1.5 1.5S6.17 11 7 11zm10 0c.83 0 1.5-.67 1.5-1.5S17.83 8 17 8s-1.5.67-1.5 1.5.67 1.5 1.5 1.5zm-5 6c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/>
+            </g>
+
+            <!-- 5. Garage: Vehicle & Warehouse -->
+            <g id="icon-garage">
+                <path fill="currentColor" d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.85 7h10.29l1.04 3H5.81l1.04-3zM19 17H5v-4.66l.12-.34h13.77l.11.34V17z"/>
+                <circle cx="7.5" cy="14.5" r="1.5" fill="currentColor"/>
+                <circle cx="16.5" cy="14.5" r="1.5" fill="currentColor"/>
+            </g>
+
+            <!-- 6. Settings: Gear / Cog -->
+            <g id="icon-settings">
+                <path fill="currentColor" d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
+            </g>
+
+            <!-- 7. Calculator -->
+            <g id="icon-calc">
+                <path fill="currentColor" d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 4H6V5h12v2zm-7 4H6v-2h5v2zm7 0h-5v-2h5v2zm-7 4H6v-2h5v2zm7 0h-5v-2h5v2zm-7 4H6v-2h5v2zm7 0h-5v-2h5v2z"/>
+            </g>
+
+            <!-- 8. News / Info -->
+            <g id="icon-news">
+                <path fill="currentColor" d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-5 14H4v-4h11v4zm0-5H4V9h11v4zm5 5h-4V9h4v9z"/>
+            </g>
+
+            <!-- 9. Home -->
+            <g id="icon-home">
+                <path fill="currentColor" d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+            </g>
+
+            <!-- 10. Financial Icons -->
+            <g id="icon-wallet">
+                <path fill="currentColor" d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
+            </g>
+            <g id="icon-bank">
+                <path fill="currentColor" d="M4 10h3v7H4zm6.5 0h3v7h-3zM2 22h19v-3H2zm14.5-12h3v7h-3zM11.5 1L2 6v2h19V6z"/>
+            </g>
+            <g id="icon-bitcoin">
+                <path fill="currentColor" d="M17.06 11.57c.59-.69.94-1.59.94-2.57 0-2.48-2.02-4.5-4.5-4.5H8v15h6c2.48 0 4.5-2.02 4.5-4.5 0-1.39-.71-2.61-1.44-3.43zM10.5 6.5h3c1.38 0 2.5 1.12 2.5 2.5s-1.12 2.5-2.5 2.5h-3v-5zm3.5 11h-3.5v-5H14c1.38 0 2.5 1.12 2.5 2.5s-1.12 2.5-2.5 2.5z"/>
+            </g>
+
+            <!-- 11. Status Bar Vector Icons -->
+            <g id="icon-wifi">
+                <path fill="currentColor" d="M12 4C7.31 4 3.07 5.9 0 8.98L12 21 24 8.98A16.88 16.88 0 0012 4zm0 4.5c3.31 0 6.32 1.34 8.5 3.5L12 20.08 3.5 12A12.01 12.01 0 0112 8.5z"/>
+            </g>
+            <g id="icon-signal">
+                <rect x="2" y="14" width="3" height="6" rx="1" fill="currentColor"/>
+                <rect x="7" y="10" width="3" height="10" rx="1" fill="currentColor"/>
+                <rect x="12" y="6" width="3" height="14" rx="1" fill="currentColor"/>
+                <rect x="17" y="2" width="3" height="18" rx="1" fill="currentColor"/>
+            </g>
+            <g id="icon-close">
+                <path fill="currentColor" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+            </g>
+            <g id="icon-back">
+                <path fill="currentColor" d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+            </g>
+            <g id="icon-search">
+                <path fill="currentColor" d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+            </g>
+            <g id="icon-refresh">
+                <path fill="currentColor" d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+            </g>
+            <g id="icon-cart">
+                <path fill="currentColor" d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
+            </g>
+            <g id="icon-trash">
+                <path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+            </g>
+            <g id="icon-crosshairs">
+                <path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+            </g>
+            <g id="icon-lock">
+                <path fill="currentColor" d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
+            </g>
+            <g id="icon-moon">
+                <path fill="currentColor" d="M12.3 2a10 10 0 00-1.9 19.8 10 10 0 0011.6-11.6A10 10 0 0112.3 2z"/>
+            </g>
+            <g id="icon-user">
+                <path fill="currentColor" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+            </g>
+            <g id="icon-fuel">
+                <path fill="currentColor" d="M19.77 7.23l.01-.01-3.72-3.72L15 4.56l2.11 2.11c-.94.36-1.61 1.26-1.61 2.33a2.5 2.5 0 002.5 2.5c.36 0 .69-.1.98-.28l1.49 1.49a2.502 2.502 0 01-3.47 3.47l-1.06-1.06c-.39-.39-1.02-.39-1.41 0-.39.39-.39 1.02 0 1.41l1.06 1.06A4.502 4.502 0 0021 16.5c0-1.2-.47-2.3-1.23-3.11l-1.48-1.48c.13-.27.21-.57.21-.91 0-.91-.56-1.69-1.36-2.02l2.63-2.63-1-.12zM5.5 10h6v6h-6zM13 2H4c-.55 0-1 .45-1 1v18c0 .55.45 1 1 1h9c.55 0 1-.45 1-1V3c0-.55-.45-1-1-1zm-1 18H5V4h7v16z"/>
+            </g>
+            <g id="icon-speed">
+                <path fill="currentColor" d="M12 4C6.48 4 2 8.48 2 14c0 2.21.72 4.25 1.94 5.92l1.63-1.63A7.95 7.95 0 014 14c0-4.41 3.59-8 8-8s8 3.59 8 8a7.95 7.95 0 01-1.57 4.29l1.63 1.63C21.28 18.25 22 16.21 22 14c0-5.52-4.48-10-10-10zm-1 6v5l4.25 2.52.77-1.28-3.52-2.09V10z"/>
+            </g>
+        </defs>
+    </svg>
+
     <!-- Background Backdrop / Game Dimmer -->
     <div class="tablet-backdrop" id="tabletBackdrop"></div>
 
     <!-- Volume HUD Toast -->
     <div class="volume-hud" id="volumeHud">
-        <i class="fa-solid fa-volume-high volume-icon" id="volumeIcon"></i>
+        <svg class="volume-icon" viewBox="0 0 24 24" width="18" height="18"><use href="#icon-speed"></use></svg>
         <div class="volume-bar-bg">
             <div class="volume-bar-fill" id="volumeBarFill" style="width: 80%;"></div>
         </div>
@@ -60,11 +174,11 @@
                 <!-- Sleep / Lock Overlay -->
                 <div class="tablet-sleep-overlay" id="sleepOverlay">
                     <div class="sleep-content">
-                        <i class="fa-solid fa-lock sleep-lock-icon"></i>
+                        <svg class="sleep-lock-icon" viewBox="0 0 24 24" width="36" height="36"><use href="#icon-lock"></use></svg>
                         <div class="sleep-clock" id="sleepClock">12:00</div>
                         <div class="sleep-date" id="sleepDate">Senin, 23 November 2026</div>
                         <div class="sleep-swipe-hint">
-                            <i class="fa-solid fa-chevron-up bounce-up"></i>
+                            <svg class="bounce-up" viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/></svg>
                             <span>Klik atau tekan Power untuk membuka tablet</span>
                         </div>
                     </div>
@@ -76,21 +190,20 @@
                         <span class="status-clock" id="statusClock">12:00</span>
                         <div class="gps-indicator" id="gpsActiveIndicator" style="display: none;" title="GPS Aktif">
                             <span class="gps-pulse"></span>
-                            <i class="fa-solid fa-location-arrow"></i>
+                            <svg viewBox="0 0 24 24" width="12" height="12"><use href="#icon-crosshairs"></use></svg>
                         </div>
                         <span class="status-operator">KKRP Wireless 5G</span>
-                        <span class="dnd-badge" id="dndBadge" style="display: none;"><i class="fa-solid fa-moon"></i> DND</span>
+                        <span class="dnd-badge" id="dndBadge" style="display: none;">
+                            <svg viewBox="0 0 24 24" width="10" height="10"><use href="#icon-moon"></use></svg> DND
+                        </span>
                     </div>
                     <div class="status-right">
                         <div class="net-signal" title="Sinyal Seluler 5G">
-                            <span class="sig-bar active"></span>
-                            <span class="sig-bar active"></span>
-                            <span class="sig-bar active"></span>
-                            <span class="sig-bar active"></span>
+                            <svg viewBox="0 0 24 24" width="14" height="14"><use href="#icon-signal"></use></svg>
                             <span class="sig-label">5G</span>
                         </div>
                         <div class="wifi-icon" title="Wi-Fi 6 Connected">
-                            <i class="fa-solid fa-wifi"></i>
+                            <svg viewBox="0 0 24 24" width="14" height="14"><use href="#icon-wifi"></use></svg>
                         </div>
                         <div class="battery-group" title="Baterai Tablet 98%">
                             <span class="battery-pct" id="batteryPct">98%</span>
@@ -99,7 +212,7 @@
                             </div>
                         </div>
                         <button class="status-close-btn" id="btnCloseTablet" title="Tutup Tablet (ESC)">
-                            <i class="fa-solid fa-xmark"></i>
+                            <svg viewBox="0 0 24 24" width="14" height="14"><use href="#icon-close"></use></svg>
                         </button>
                     </div>
                 </header>
@@ -118,25 +231,31 @@
                         <div class="profile-widget glass-card">
                             <div class="profile-left">
                                 <div class="profile-avatar">
-                                    <i class="fa-solid fa-user-astronaut"></i>
+                                    <svg viewBox="0 0 24 24" width="30" height="30"><use href="#icon-user"></use></svg>
                                 </div>
                                 <div class="profile-meta">
                                     <div class="citizen-badge">WARGA KOTA KECILKU</div>
                                     <h2 class="citizen-name" id="citizenName">Warga Los Santos</h2>
-                                    <p class="citizen-sub" id="citizenUcp">UCP: Player • No. HP: 0812-0001</p>
+                                    <p class="citizen-sub" id="citizenUcp">UCP: Player • No. HP: 0812-0001 • Level: <span id="citizenLevel">5</span></p>
                                 </div>
                             </div>
                             <div class="profile-right">
                                 <div class="finance-pill">
-                                    <span class="pill-label"><i class="fa-solid fa-wallet"></i> Uang Tunai</span>
+                                    <span class="pill-label">
+                                        <svg viewBox="0 0 24 24" width="12" height="12"><use href="#icon-wallet"></use></svg> Uang Tunai
+                                    </span>
                                     <span class="pill-val text-green" id="homeCash">$0</span>
                                 </div>
                                 <div class="finance-pill">
-                                    <span class="pill-label"><i class="fa-solid fa-building-columns"></i> Fleeca Bank</span>
+                                    <span class="pill-label">
+                                        <svg viewBox="0 0 24 24" width="12" height="12"><use href="#icon-bank"></use></svg> Fleeca Bank
+                                    </span>
                                     <span class="pill-val text-orange" id="homeBank">$0</span>
                                 </div>
                                 <div class="finance-pill crypto-pill">
-                                    <span class="pill-label"><i class="fa-brands fa-bitcoin"></i> QBit Crypto</span>
+                                    <span class="pill-label">
+                                        <svg viewBox="0 0 24 24" width="12" height="12"><use href="#icon-bitcoin"></use></svg> QBit Crypto
+                                    </span>
                                     <span class="pill-val text-amber" id="homeCrypto">0.0500 BTC</span>
                                 </div>
                             </div>
@@ -145,71 +264,203 @@
                         <!-- Active Route Bar (Jika ada GPS berjalan) -->
                         <div class="active-route-bar glass-card" id="homeActiveRouteBar" style="display: none;">
                             <div class="route-info">
-                                <i class="fa-solid fa-compass fa-spin-pulse route-icon"></i>
+                                <svg class="route-icon fa-spin-pulse" viewBox="0 0 24 24" width="22" height="22"><use href="#icon-crosshairs"></use></svg>
                                 <div>
                                     <div class="route-title">Rute GPS Aktif</div>
                                     <div class="route-dest" id="homeActiveRouteName">Bank Central Fleeca</div>
                                 </div>
                             </div>
                             <button class="btn-clear-gps" onclick="TabletApp.clearGPS()">
-                                <i class="fa-solid fa-xmark"></i> Hapus Waypoint
+                                <svg viewBox="0 0 24 24" width="12" height="12"><use href="#icon-close"></use></svg> Hapus Waypoint
                             </button>
                         </div>
 
-                        <!-- App Grid Section -->
+                        <!-- App Grid Section (Lengkap dengan Balap & TeamDeathmatch) -->
                         <div class="app-grid-container">
                             
-                            <!-- App 1: Maps -->
+                            <!-- App 1: TeamDeathmatch (Perang Simulator) -->
+                            <div class="app-icon-item" onclick="TabletApp.openApp('tdm')">
+                                <div class="app-icon-box icon-tdm">
+                                    <svg viewBox="0 0 24 24" width="34" height="34"><use href="#icon-tdm"></use></svg>
+                                    <span class="app-badge badge-red">TDM</span>
+                                </div>
+                                <span class="app-label">TeamDeathmatch</span>
+                            </div>
+
+                            <!-- App 2: Balap Mobil (Street Race) -->
+                            <div class="app-icon-item" onclick="TabletApp.openApp('race')">
+                                <div class="app-icon-box icon-race">
+                                    <svg viewBox="0 0 24 24" width="34" height="34"><use href="#icon-race"></use></svg>
+                                    <span class="app-badge badge-orange">RACE</span>
+                                </div>
+                                <span class="app-label">Balap Mobil</span>
+                            </div>
+
+                            <!-- App 3: Maps & Waypoint -->
                             <div class="app-icon-item" onclick="TabletApp.openApp('maps')">
                                 <div class="app-icon-box icon-maps">
-                                    <i class="fa-solid fa-map-location-dot"></i>
+                                    <svg viewBox="0 0 24 24" width="34" height="34"><use href="#icon-maps"></use></svg>
                                     <span class="app-badge badge-orange">GPS</span>
                                 </div>
                                 <span class="app-label">Maps & Waypoint</span>
                             </div>
 
-                            <!-- App 2: DarkWeb -->
+                            <!-- App 4: DarkWeb -->
                             <div class="app-icon-item" onclick="TabletApp.openApp('darkweb')">
                                 <div class="app-icon-box icon-darkweb">
-                                    <i class="fa-solid fa-user-secret"></i>
+                                    <svg viewBox="0 0 24 24" width="34" height="34"><use href="#icon-darkweb"></use></svg>
                                     <span class="app-badge badge-red">LIVE</span>
                                 </div>
                                 <span class="app-label">DarkWeb</span>
                             </div>
 
-                            <!-- App 3: Garage -->
+                            <!-- App 5: Garasi Mobil -->
                             <div class="app-icon-item" onclick="TabletApp.openApp('garage')">
                                 <div class="app-icon-box icon-garage">
-                                    <i class="fa-solid fa-warehouse"></i>
+                                    <svg viewBox="0 0 24 24" width="34" height="34"><use href="#icon-garage"></use></svg>
                                     <span class="app-badge badge-orange" id="badgeVehCount">0</span>
                                 </div>
                                 <span class="app-label">Garasi Mobil</span>
                             </div>
 
-                            <!-- App 4: Settings -->
+                            <!-- App 6: Pengaturan -->
                             <div class="app-icon-item" onclick="TabletApp.openApp('settings')">
                                 <div class="app-icon-box icon-settings">
-                                    <i class="fa-solid fa-gear"></i>
+                                    <svg viewBox="0 0 24 24" width="34" height="34"><use href="#icon-settings"></use></svg>
                                 </div>
                                 <span class="app-label">Pengaturan</span>
                             </div>
 
-                            <!-- App 5: Calculator -->
+                            <!-- App 7: Kalkulator -->
                             <div class="app-icon-item" onclick="TabletApp.openApp('calc')">
                                 <div class="app-icon-box icon-calc">
-                                    <i class="fa-solid fa-calculator"></i>
+                                    <svg viewBox="0 0 24 24" width="34" height="34"><use href="#icon-calc"></use></svg>
                                 </div>
                                 <span class="app-label">Kalkulator</span>
                             </div>
 
-                            <!-- App 6: News / Info Kota -->
+                            <!-- App 8: Info Kota -->
                             <div class="app-icon-item" onclick="TabletApp.openApp('news')">
                                 <div class="app-icon-box icon-news">
-                                    <i class="fa-solid fa-newspaper"></i>
+                                    <svg viewBox="0 0 24 24" width="34" height="34"><use href="#icon-news"></use></svg>
                                 </div>
                                 <span class="app-label">Info Kota</span>
                             </div>
 
+                        </div>
+                    </section>
+
+                    <!-- ---------------------------------------------------- -->
+                    <!-- APP: TEAMDEATHMATCH (PERANG SIMULATOR)               -->
+                    <!-- ---------------------------------------------------- -->
+                    <section class="screen-view" id="viewTdm">
+                        <div class="app-header">
+                            <button class="btn-app-back" onclick="TabletApp.openApp('home')">
+                                <svg viewBox="0 0 24 24" width="18" height="18"><use href="#icon-back"></use></svg>
+                            </button>
+                            <div class="app-header-title">
+                                <h2>
+                                    <svg viewBox="0 0 24 24" width="22" height="22" class="text-orange"><use href="#icon-tdm"></use></svg>
+                                    TeamDeathmatch
+                                </h2>
+                                <span>Perang Simulator Antar Tim & Arena Latihan Pertempuran</span>
+                            </div>
+                        </div>
+
+                        <div class="special-app-layout">
+                            <div class="hero-feature-card glass-card">
+                                <div class="hero-card-left">
+                                    <div class="hero-tag tag-tdm">SIMULATOR MATCHMAKING</div>
+                                    <h3 class="hero-title">Arena Pertempuran Taktis Kota Kecilku</h3>
+                                    <p class="hero-desc">Buktikan keahlian menembak regu Anda dalam pertempuran tim 5v5 dan 10v10 di berbagai peta legendaris (Red County Woods, San Fierro Docks, Factory Warehouse). Pilihan senjata lengkap Deagle, M4, Shotgun, dan Sniper.</p>
+                                    
+                                    <div class="hero-requirements">
+                                        <div class="req-item">
+                                            <span class="req-k">Syarat Level:</span>
+                                            <span class="req-v text-orange" id="tdmReqLevel">Minimal Level 5</span>
+                                        </div>
+                                        <div class="req-item">
+                                            <span class="req-k">Status Karakter:</span>
+                                            <span class="req-v text-green" id="tdmPlayerStatus">Memenuhi Syarat</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="hero-actions">
+                                        <button class="btn-launch-hero btn-tdm-action" onclick="TabletApp.launchTDM()">
+                                            <svg viewBox="0 0 24 24" width="20" height="20"><use href="#icon-tdm"></use></svg>
+                                            <span>Mulai Pertandingan / Cari Room</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="hero-card-right">
+                                    <div class="arena-preview-badge">
+                                        <div class="arena-icon-big text-orange">
+                                            <svg viewBox="0 0 24 24" width="64" height="64"><use href="#icon-tdm"></use></svg>
+                                        </div>
+                                        <h4>TDM ARENA 2026</h4>
+                                        <span>Ranked & Casual Battle</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- ---------------------------------------------------- -->
+                    <!-- APP: BALAP MOBIL (STREET RACE)                       -->
+                    <!-- ---------------------------------------------------- -->
+                    <section class="screen-view" id="viewRace">
+                        <div class="app-header">
+                            <button class="btn-app-back" onclick="TabletApp.openApp('home')">
+                                <svg viewBox="0 0 24 24" width="18" height="18"><use href="#icon-back"></use></svg>
+                            </button>
+                            <div class="app-header-title">
+                                <h2>
+                                    <svg viewBox="0 0 24 24" width="22" height="22" class="text-orange"><use href="#icon-race"></use></svg>
+                                    Balap Mobil
+                                </h2>
+                                <span>Sirkuit Balapan Jalanan & Tantangan Kecepatan Kota</span>
+                            </div>
+                        </div>
+
+                        <div class="special-app-layout">
+                            <div class="hero-feature-card glass-card">
+                                <div class="hero-card-left">
+                                    <div class="hero-tag tag-race">RACING SYSTEM V2</div>
+                                    <h3 class="hero-title">Sirkuit Balap Los Santos & San Fierro</h3>
+                                    <p class="hero-desc">Ikuti kompetisi balap drag dan sirkuit jalanan bergengsi. Pacu adrenalin mesin Sultan, Elegy, Cheetah, dan Infernus Anda melewati pos-pos checkpoint presisi waktu realtime.</p>
+                                    
+                                    <div class="hero-requirements">
+                                        <div class="req-item">
+                                            <span class="req-k">Status Balapan:</span>
+                                            <span class="req-v text-green">Sirkuit Terbuka</span>
+                                        </div>
+                                        <div class="req-item">
+                                            <span class="req-k">Tipe Kendaraan:</span>
+                                            <span class="req-v text-orange">Mobil Tuner & Supercar</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="hero-actions">
+                                        <button class="btn-launch-hero btn-race-action" onclick="TabletApp.launchRace()">
+                                            <svg viewBox="0 0 24 24" width="20" height="20"><use href="#icon-race"></use></svg>
+                                            <span>Buka Antarmuka Balapan (In-Game)</span>
+                                        </button>
+                                        <button class="btn-sub-action" onclick="TabletApp.setGPS('Sirkuit Drag Airport', 1913.0, -2344.0, 13.5)">
+                                            <svg viewBox="0 0 24 24" width="16" height="16"><use href="#icon-crosshairs"></use></svg>
+                                            <span>Tandai Sirkuit Drag di GPS</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="hero-card-right">
+                                    <div class="arena-preview-badge">
+                                        <div class="arena-icon-big text-orange">
+                                            <svg viewBox="0 0 24 24" width="64" height="64"><use href="#icon-race"></use></svg>
+                                        </div>
+                                        <h4>KKRP SPEEDWAY</h4>
+                                        <span>Sprint, Drag & Circuit</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </section>
 
@@ -219,15 +470,18 @@
                     <section class="screen-view" id="viewMaps">
                         <div class="app-header">
                             <button class="btn-app-back" onclick="TabletApp.openApp('home')">
-                                <i class="fa-solid fa-arrow-left"></i>
+                                <svg viewBox="0 0 24 24" width="18" height="18"><use href="#icon-back"></use></svg>
                             </button>
                             <div class="app-header-title">
-                                <h2><i class="fa-solid fa-map-location-dot text-orange"></i> Maps & Waypoint</h2>
+                                <h2>
+                                    <svg viewBox="0 0 24 24" width="22" height="22" class="text-orange"><use href="#icon-maps"></use></svg>
+                                    Maps & Waypoint
+                                </h2>
                                 <span>Navigasi Kota Los Santos & Set Radar Checkpoint</span>
                             </div>
                             <div class="app-header-actions">
                                 <button class="btn-refresh" onclick="TabletApp.clearGPS()" title="Hapus Checkpoint Saat Ini">
-                                    <i class="fa-solid fa-location-crosshairs"></i> Reset GPS
+                                    <svg viewBox="0 0 24 24" width="14" height="14"><use href="#icon-crosshairs"></use></svg> Reset GPS
                                 </button>
                             </div>
                         </div>
@@ -235,7 +489,7 @@
                         <!-- Maps Search & Filter Category -->
                         <div class="maps-filter-bar">
                             <div class="search-input-wrapper">
-                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <svg class="search-icon-svg" viewBox="0 0 24 24" width="16" height="16"><use href="#icon-search"></use></svg>
                                 <input type="text" id="mapsSearchInput" placeholder="Cari lokasi penting (Bank, Polisi, RS, Samsat, Bengkel)..." oninput="MapsApp.onSearch(this.value)">
                             </div>
                             <div class="category-chips" id="mapsCategoryChips">
@@ -260,19 +514,28 @@
                     <section class="screen-view" id="viewDarkweb">
                         <div class="app-header darkweb-header">
                             <button class="btn-app-back" onclick="TabletApp.openApp('home')">
-                                <i class="fa-solid fa-arrow-left"></i>
+                                <svg viewBox="0 0 24 24" width="18" height="18"><use href="#icon-back"></use></svg>
                             </button>
                             <div class="app-header-title">
-                                <h2><i class="fa-solid fa-mask text-orange"></i> ONION NETWORK // BLACKMARKET</h2>
+                                <h2>
+                                    <svg viewBox="0 0 24 24" width="22" height="22" class="text-orange"><use href="#icon-darkweb"></use></svg>
+                                    ONION NETWORK // BLACKMARKET
+                                </h2>
                                 <span class="text-mono-sub">Encrypted 4096-bit AES • Onion Routing V3 Active</span>
                             </div>
                             <div class="darkweb-header-crypto">
+                                <button class="btn-dweb-legacy" onclick="TabletApp.launchDarkwebMenu()" title="Buka Menu Dialog Pasar Gelap Keluarga">
+                                    <svg viewBox="0 0 24 24" width="14" height="14"><use href="#icon-lock"></use></svg>
+                                    <span>Menu Keluarga</span>
+                                </button>
                                 <div class="crypto-wallet-box">
-                                    <span class="cw-label"><i class="fa-brands fa-bitcoin text-amber"></i> DOMPET BITCOIN:</span>
+                                    <span class="cw-label">
+                                        <svg viewBox="0 0 24 24" width="11" height="11" class="text-amber"><use href="#icon-bitcoin"></use></svg> DOMPET BITCOIN:
+                                    </span>
                                     <span class="cw-balance" id="darkwebCryptoBalance">0.0500 BTC</span>
                                 </div>
                                 <button class="btn-cart-toggle" onclick="DarkwebApp.toggleCart()">
-                                    <i class="fa-solid fa-cart-shopping"></i>
+                                    <svg viewBox="0 0 24 24" width="18" height="18"><use href="#icon-cart"></use></svg>
                                     <span class="cart-count-badge" id="cartCountBadge">0</span>
                                 </button>
                             </div>
@@ -281,8 +544,8 @@
                         <!-- Terminal Security Info Strip -->
                         <div class="dw-terminal-strip">
                             <div class="strip-item"><span class="dot-green"></span> VPN: PROTECTED</div>
-                            <div class="strip-item"><i class="fa-solid fa-network-wired text-orange"></i> HOP: 3 RELAYS</div>
-                            <div class="strip-item"><i class="fa-solid fa-shield-halved text-amber"></i> ANONYMITY: 99.8%</div>
+                            <div class="strip-item"><span class="text-orange">RELAY: 3 HOPS</span></div>
+                            <div class="strip-item"><span class="text-amber">ANONYMITY: 99.8%</span></div>
                             <div class="strip-item text-muted">ID: <span id="dwAnonId">anon_#7f9a21</span></div>
                         </div>
 
@@ -300,12 +563,15 @@
                             <div class="dw-cart-col" id="dwCartCol">
                                 <div class="cart-card glass-card">
                                     <div class="cart-header">
-                                        <h3><i class="fa-solid fa-receipt text-orange"></i> Keranjang Transaksi</h3>
+                                        <h3>
+                                            <svg viewBox="0 0 24 24" width="16" height="16" class="text-orange"><use href="#icon-cart"></use></svg>
+                                            Keranjang Transaksi
+                                        </h3>
                                         <button class="btn-cart-clear" onclick="DarkwebApp.clearCart()">Kosongkan</button>
                                     </div>
                                     <div class="cart-items-list" id="cartItemsList">
                                         <div class="cart-empty-state">
-                                            <i class="fa-solid fa-basket-shopping"></i>
+                                            <svg viewBox="0 0 24 24" width="36" height="36"><use href="#icon-cart"></use></svg>
                                             <p>Keranjang masih kosong.</p>
                                             <span>Pilih item rahasia dari katalog untuk memesan.</span>
                                         </div>
@@ -327,7 +593,8 @@
                                             </div>
                                         </div>
                                         <button class="btn-checkout" id="btnCheckout" onclick="DarkwebApp.checkout()" disabled>
-                                            <i class="fa-solid fa-lock"></i> Selesaikan Transaksi Enkripsi
+                                            <svg viewBox="0 0 24 24" width="16" height="16"><use href="#icon-lock"></use></svg>
+                                            <span>Selesaikan Transaksi Enkripsi</span>
                                         </button>
                                     </div>
                                 </div>
@@ -342,15 +609,18 @@
                     <section class="screen-view" id="viewGarage">
                         <div class="app-header">
                             <button class="btn-app-back" onclick="TabletApp.openApp('home')">
-                                <i class="fa-solid fa-arrow-left"></i>
+                                <svg viewBox="0 0 24 24" width="18" height="18"><use href="#icon-back"></use></svg>
                             </button>
                             <div class="app-header-title">
-                                <h2><i class="fa-solid fa-car-side text-orange"></i> Garasi & Kendaraan</h2>
+                                <h2>
+                                    <svg viewBox="0 0 24 24" width="22" height="22" class="text-orange"><use href="#icon-garage"></use></svg>
+                                    Garasi & Kendaraan
+                                </h2>
                                 <span>Daftar Mobil & Motor Milik Pemain, Status Mesin, Bensin & Lacak GPS</span>
                             </div>
                             <div class="app-header-actions">
                                 <button class="btn-refresh" onclick="GarageApp.requestRefresh()">
-                                    <i class="fa-solid fa-arrows-rotate"></i> Refresh Data
+                                    <svg viewBox="0 0 24 24" width="14" height="14"><use href="#icon-refresh"></use></svg> Refresh Data
                                 </button>
                             </div>
                         </div>
@@ -358,21 +628,21 @@
                         <!-- Fleet Summary Cards -->
                         <div class="garage-summary-row">
                             <div class="summary-pill glass-card">
-                                <i class="fa-solid fa-car text-orange"></i>
+                                <svg viewBox="0 0 24 24" width="26" height="26" class="text-orange"><use href="#icon-garage"></use></svg>
                                 <div>
                                     <span class="s-val" id="garageTotalVehicles">0</span>
                                     <span class="s-lbl">Total Kendaraan</span>
                                 </div>
                             </div>
                             <div class="summary-pill glass-card">
-                                <i class="fa-solid fa-road text-green"></i>
+                                <svg viewBox="0 0 24 24" width="26" height="26" class="text-green"><use href="#icon-speed"></use></svg>
                                 <div>
                                     <span class="s-val text-green" id="garageSpawnedCount">0</span>
                                     <span class="s-lbl">Aktif di Luar</span>
                                 </div>
                             </div>
                             <div class="summary-pill glass-card">
-                                <i class="fa-solid fa-warehouse text-amber"></i>
+                                <svg viewBox="0 0 24 24" width="26" height="26" class="text-amber"><use href="#icon-garage"></use></svg>
                                 <div>
                                     <span class="s-val text-amber" id="garageParkedCount">0</span>
                                     <span class="s-lbl">Tersimpan di Garasi</span>
@@ -399,10 +669,13 @@
                     <section class="screen-view" id="viewSettings">
                         <div class="app-header">
                             <button class="btn-app-back" onclick="TabletApp.openApp('home')">
-                                <i class="fa-solid fa-arrow-left"></i>
+                                <svg viewBox="0 0 24 24" width="18" height="18"><use href="#icon-back"></use></svg>
                             </button>
                             <div class="app-header-title">
-                                <h2><i class="fa-solid fa-gear text-orange"></i> Pengaturan Tablet</h2>
+                                <h2>
+                                    <svg viewBox="0 0 24 24" width="22" height="22" class="text-orange"><use href="#icon-settings"></use></svg>
+                                    Pengaturan Tablet
+                                </h2>
                                 <span>Kustomisasi Tampilan, Skala UI, Suara & Sistem</span>
                             </div>
                         </div>
@@ -412,7 +685,7 @@
                             <!-- Setting Section: Wallpaper -->
                             <div class="settings-card glass-card">
                                 <div class="settings-section-title">
-                                    <i class="fa-solid fa-image text-orange"></i>
+                                    <svg viewBox="0 0 24 24" width="22" height="22" class="text-orange"><use href="#icon-settings"></use></svg>
                                     <div>
                                         <h3>Wallpaper Tema NoPixel Dark-Orange</h3>
                                         <p>Pilih tema latar belakang favorit untuk layar tablet Anda</p>
@@ -441,7 +714,7 @@
                             <!-- Setting Section: UI Scale & Preferences -->
                             <div class="settings-card glass-card">
                                 <div class="settings-section-title">
-                                    <i class="fa-solid fa-sliders text-orange"></i>
+                                    <svg viewBox="0 0 24 24" width="22" height="22" class="text-orange"><use href="#icon-settings"></use></svg>
                                     <div>
                                         <h3>Skala Antarmuka & Preferensi Pengguna</h3>
                                         <p>Sesuaikan ukuran tampilan tablet agar nyaman di resolusi monitor Anda</p>
@@ -457,7 +730,7 @@
                                         <span class="scale-val-badge" id="scaleValBadge">100%</span>
                                         <input type="range" id="uiScaleSlider" min="85" max="115" value="100" step="1" oninput="SettingsApp.onScaleChange(this.value)">
                                         <button class="btn-sm-reset" onclick="SettingsApp.resetScale()" title="Reset Skala 100%">
-                                            <i class="fa-solid fa-rotate-left"></i>
+                                            <svg viewBox="0 0 24 24" width="14" height="14"><use href="#icon-refresh"></use></svg>
                                         </button>
                                     </div>
                                 </div>
@@ -490,7 +763,7 @@
                             <!-- Setting Section: System Info & Actions -->
                             <div class="settings-card glass-card">
                                 <div class="settings-section-title">
-                                    <i class="fa-solid fa-microchip text-orange"></i>
+                                    <svg viewBox="0 0 24 24" width="22" height="22" class="text-orange"><use href="#icon-settings"></use></svg>
                                     <div>
                                         <h3>Informasi Perangkat</h3>
                                         <p>Spesifikasi sistem Kota Kecilku Roleplay CEF Tablet OS</p>
@@ -516,10 +789,12 @@
                                 </div>
                                 <div class="settings-actions-row">
                                     <button class="btn-action-sleep" onclick="TabletApp.sleep()">
-                                        <i class="fa-solid fa-moon"></i> Kunci Layar (Sleep)
+                                        <svg viewBox="0 0 24 24" width="16" height="16"><use href="#icon-moon"></use></svg>
+                                        <span>Kunci Layar (Sleep)</span>
                                     </button>
                                     <button class="btn-action-close" onclick="TabletApp.close()">
-                                        <i class="fa-solid fa-power-off"></i> Tutup Tablet (ESC)
+                                        <svg viewBox="0 0 24 24" width="16" height="16"><use href="#icon-close"></use></svg>
+                                        <span>Tutup Tablet (ESC)</span>
                                     </button>
                                 </div>
                             </div>
@@ -533,10 +808,13 @@
                     <section class="screen-view" id="viewCalc">
                         <div class="app-header">
                             <button class="btn-app-back" onclick="TabletApp.openApp('home')">
-                                <i class="fa-solid fa-arrow-left"></i>
+                                <svg viewBox="0 0 24 24" width="18" height="18"><use href="#icon-back"></use></svg>
                             </button>
                             <div class="app-header-title">
-                                <h2><i class="fa-solid fa-calculator text-orange"></i> Kalkulator Finansial</h2>
+                                <h2>
+                                    <svg viewBox="0 0 24 24" width="22" height="22" class="text-orange"><use href="#icon-calc"></use></svg>
+                                    Kalkulator Finansial
+                                </h2>
                                 <span>Alat Hitung Transaksi Dagang & Konversi Cepat</span>
                             </div>
                         </div>
@@ -548,7 +826,7 @@
                             </div>
                             <div class="calc-pad">
                                 <button class="cbtn cbtn-fn" onclick="CalcApp.clear()">C</button>
-                                <button class="cbtn cbtn-fn" onclick="CalcApp.del()"><i class="fa-solid fa-delete-left"></i></button>
+                                <button class="cbtn cbtn-fn" onclick="CalcApp.del()">DEL</button>
                                 <button class="cbtn cbtn-fn" onclick="CalcApp.op('%')">%</button>
                                 <button class="cbtn cbtn-op" onclick="CalcApp.op('/')">÷</button>
 
@@ -580,10 +858,13 @@
                     <section class="screen-view" id="viewNews">
                         <div class="app-header">
                             <button class="btn-app-back" onclick="TabletApp.openApp('home')">
-                                <i class="fa-solid fa-arrow-left"></i>
+                                <svg viewBox="0 0 24 24" width="18" height="18"><use href="#icon-back"></use></svg>
                             </button>
                             <div class="app-header-title">
-                                <h2><i class="fa-solid fa-newspaper text-orange"></i> Info Kota & Berita KKRP</h2>
+                                <h2>
+                                    <svg viewBox="0 0 24 24" width="22" height="22" class="text-orange"><use href="#icon-news"></use></svg>
+                                    Info Kota & Berita KKRP
+                                </h2>
                                 <span>Informasi Seputar Layanan & Perkembangan Kota Kecilku</span>
                             </div>
                         </div>
@@ -592,10 +873,10 @@
                             <div class="news-card glass-card">
                                 <div class="news-tag tag-update">SERVER UPDATE</div>
                                 <h3 class="news-title">Peluncuran Resmi Tablet Pintar NoPixel 4.0 Kota Kecilku</h3>
-                                <p class="news-desc">Sistem tablet generasi terbaru kini hadir di genggaman warga! Dilengkapi dengan integrasi navigasi GPS realtime, manajemen garasi pribadi, serta fitur rahasia jaringan terenkripsi.</p>
+                                <p class="news-desc">Sistem tablet generasi terbaru kini hadir di genggaman warga! Dilengkapi dengan integrasi TeamDeathmatch (Perang Simulator), Balap Mobil, navigasi GPS realtime, manajemen garasi pribadi, serta jaringan terenkripsi.</p>
                                 <div class="news-footer">
-                                    <span><i class="fa-regular fa-clock"></i> Baru saja</span>
-                                    <span><i class="fa-solid fa-user-shield"></i> Tim Developer KKRP</span>
+                                    <span>Baru saja</span>
+                                    <span>Tim Developer KKRP</span>
                                 </div>
                             </div>
 
@@ -604,8 +885,8 @@
                                 <h3 class="news-title">Pembaruan Titik Layanan Publik & Kantor Samsat</h3>
                                 <p class="news-desc">Gunakan aplikasi Maps & Waypoint pada tablet Anda untuk mempermudah mencari kantor Samsat, Dealer mobil, Kantor Polisi, Rumah Sakit ASGH, dan Workshop mekanik secara presisi.</p>
                                 <div class="news-footer">
-                                    <span><i class="fa-regular fa-clock"></i> Hari ini</span>
-                                    <span><i class="fa-solid fa-landmark"></i> Balai Kota Los Santos</span>
+                                    <span>Hari ini</span>
+                                    <span>Balai Kota Los Santos</span>
                                 </div>
                             </div>
                         </div>
@@ -618,29 +899,39 @@
                     <div class="dock-container glass-card">
                         
                         <button class="dock-item active" id="dockHome" onclick="TabletApp.openApp('home')" title="Home Screen">
-                            <i class="fa-solid fa-house"></i>
+                            <svg viewBox="0 0 24 24" width="22" height="22"><use href="#icon-home"></use></svg>
                             <span class="dock-dot"></span>
                         </button>
                         
+                        <button class="dock-item" id="dockTdm" onclick="TabletApp.openApp('tdm')" title="TeamDeathmatch">
+                            <svg viewBox="0 0 24 24" width="22" height="22"><use href="#icon-tdm"></use></svg>
+                            <span class="dock-dot"></span>
+                        </button>
+
+                        <button class="dock-item" id="dockRace" onclick="TabletApp.openApp('race')" title="Balap Mobil">
+                            <svg viewBox="0 0 24 24" width="22" height="22"><use href="#icon-race"></use></svg>
+                            <span class="dock-dot"></span>
+                        </button>
+
                         <button class="dock-item" id="dockMaps" onclick="TabletApp.openApp('maps')" title="Maps & Waypoint">
-                            <i class="fa-solid fa-map-location-dot"></i>
+                            <svg viewBox="0 0 24 24" width="22" height="22"><use href="#icon-maps"></use></svg>
                             <span class="dock-dot"></span>
                         </button>
                         
                         <button class="dock-item" id="dockDarkweb" onclick="TabletApp.openApp('darkweb')" title="DarkWeb Onion Market">
-                            <i class="fa-solid fa-user-secret"></i>
+                            <svg viewBox="0 0 24 24" width="22" height="22"><use href="#icon-darkweb"></use></svg>
                             <span class="dock-dot"></span>
                         </button>
                         
                         <button class="dock-item" id="dockGarage" onclick="TabletApp.openApp('garage')" title="Garasi Kendaraan">
-                            <i class="fa-solid fa-warehouse"></i>
+                            <svg viewBox="0 0 24 24" width="22" height="22"><use href="#icon-garage"></use></svg>
                             <span class="dock-dot"></span>
                         </button>
 
                         <div class="dock-separator"></div>
                         
                         <button class="dock-item" id="dockSettings" onclick="TabletApp.openApp('settings')" title="Pengaturan">
-                            <i class="fa-solid fa-gear"></i>
+                            <svg viewBox="0 0 24 24" width="22" height="22"><use href="#icon-settings"></use></svg>
                             <span class="dock-dot"></span>
                         </button>
 

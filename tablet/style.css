@@ -863,8 +863,8 @@ body.tablet-viewport {
 /* App Grid Container */
 .app-grid-container {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 22px 16px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px 24px;
     padding: 10px 0;
 }
 
@@ -892,7 +892,6 @@ body.tablet-viewport {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 28px;
     position: relative;
     box-shadow: 0 10px 22px rgba(0, 0, 0, 0.45);
     border: 1px solid rgba(255, 255, 255, 0.12);
@@ -901,6 +900,18 @@ body.tablet-viewport {
 
 .app-icon-item:hover .app-icon-box {
     box-shadow: 0 14px 28px rgba(0, 0, 0, 0.6), 0 0 20px var(--orange-glow);
+}
+
+.icon-tdm {
+    background: linear-gradient(135deg, #ef4444, #b91c1c);
+    color: #ffffff;
+    box-shadow: 0 10px 22px rgba(239, 68, 68, 0.35);
+}
+
+.icon-race {
+    background: linear-gradient(135deg, #ff7a00, #ea580c);
+    color: #ffffff;
+    box-shadow: 0 10px 22px rgba(255, 122, 0, 0.35);
 }
 
 .icon-maps {
@@ -1037,6 +1048,234 @@ body.tablet-viewport {
 }
 
 .btn-refresh:hover {
+    background: var(--orange-primary);
+    color: #ffffff;
+    box-shadow: 0 0 16px var(--orange-glow);
+}
+
+/* Global SVG & Vector Icon Styling */
+svg {
+    display: inline-block;
+    vertical-align: middle;
+    fill: currentColor;
+    flex-shrink: 0;
+}
+
+.search-icon-svg {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-dim);
+}
+
+/* ==========================================================================
+   HERO CARD LAYOUT FOR SPECIAL APPS (TEAMDEATHMATCH & BALAP MOBIL)
+   ========================================================================== */
+.special-app-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.hero-feature-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 26px 30px;
+    gap: 24px;
+    background: var(--bg-card);
+    border: 1px solid var(--glass-border);
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 5px;
+    height: 100%;
+    background: linear-gradient(180deg, var(--orange-soft), var(--orange-primary));
+}
+
+.hero-card-left {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.hero-tag {
+    align-self: flex-start;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+.tag-tdm {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid #ef4444;
+    color: #fca5a5;
+}
+
+.tag-race {
+    background: rgba(255, 140, 0, 0.15);
+    border: 1px solid var(--orange-primary);
+    color: var(--orange-soft);
+}
+
+.hero-title {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--text-pure);
+    letter-spacing: -0.3px;
+}
+
+.hero-desc {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.5;
+    max-width: 580px;
+}
+
+.hero-requirements {
+    display: flex;
+    gap: 24px;
+    background: rgba(11, 14, 20, 0.6);
+    padding: 10px 16px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    width: fit-content;
+}
+
+.req-item {
+    display: flex;
+    gap: 8px;
+    font-size: 12px;
+}
+
+.req-k { color: var(--text-muted); }
+.req-v { font-weight: 700; }
+
+.hero-actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 6px;
+}
+
+.btn-launch-hero {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+    color: #ffffff;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+    transition: all 0.22s ease;
+}
+
+.btn-tdm-action {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    box-shadow: 0 4px 18px rgba(239, 68, 68, 0.4);
+}
+
+.btn-tdm-action:hover {
+    filter: brightness(1.15);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(239, 68, 68, 0.6);
+}
+
+.btn-race-action {
+    background: linear-gradient(135deg, var(--orange-soft), var(--orange-primary));
+    box-shadow: 0 4px 18px var(--orange-glow);
+}
+
+.btn-race-action:hover {
+    filter: brightness(1.15);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px var(--orange-glow);
+}
+
+.btn-sub-action {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: var(--text-pure);
+    padding: 11px 18px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-sub-action:hover {
+    background: var(--orange-dim);
+    border-color: var(--orange-primary);
+    color: var(--orange-soft);
+}
+
+.hero-card-right {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.arena-preview-badge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    background: rgba(11, 14, 20, 0.7);
+    border: 1.5px dashed var(--glass-border);
+    padding: 24px 30px;
+    border-radius: 18px;
+}
+
+.arena-icon-big {
+    margin-bottom: 8px;
+}
+
+.arena-preview-badge h4 {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--text-pure);
+    letter-spacing: 1px;
+}
+
+.arena-preview-badge span {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+/* Button Dialog Darkweb Menu */
+.btn-dweb-legacy {
+    background: rgba(255, 140, 0, 0.15);
+    border: 1px solid var(--orange-primary);
+    color: var(--orange-soft);
+    padding: 8px 14px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+}
+
+.btn-dweb-legacy:hover {
     background: var(--orange-primary);
     color: #ffffff;
     box-shadow: 0 0 16px var(--orange-glow);
