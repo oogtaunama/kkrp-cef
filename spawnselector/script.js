@@ -166,69 +166,47 @@ function registerGameEvent(eventName, callback) {
 const DEFAULT_LOCATIONS = [
     {
         id: 0,
-        title: "Lokasi Terakhir",
-        subtitle: "Titik koordinat logout terakhir Anda",
-        icon: "icon-pin",
-        badge: "[TERAKHIR AKTIF]",
-        badgeType: "neon-orange",
-        enabled: true,
-        isLastLoc: true,
-        extraInfo: "Tersedia 60 Menit"
-    },
-    {
-        id: 1,
-        title: "Bandara Los Santos",
-        subtitle: "Los Santos International (LSIA) - Gerbang Utama Kota",
+        title: "Bandara International",
+        subtitle: "Anda akan spawn di Bandara International LS",
         icon: "icon-plane",
         badge: "[PUBLIK]",
         badgeType: "subtle",
         enabled: true,
         isLastLoc: false,
-        extraInfo: "Pintu Kedatangan Utama"
+        extraInfo: "Bandara LS"
     },
     {
-        id: 2,
-        title: "Kantor Polisi Central",
-        subtitle: "LSPD Central Precinct - Pershing Square",
-        icon: "icon-police",
+        id: 1,
+        title: "Faction",
+        subtitle: "Anda akan spawn di markas Faction",
+        icon: "icon-faction",
         badge: "[FRAKSI]",
         badgeType: "neon-orange",
         enabled: false,
         isLastLoc: false,
-        extraInfo: "Khusus Penegak Hukum"
+        extraInfo: "Markas Faction"
     },
     {
-        id: 3,
-        title: "Rumah Sakit All Saints",
-        subtitle: "All Saints General Hospital - Pusat Kota Market",
-        icon: "icon-hospital",
-        badge: "[PUSAT KOTA]",
-        badgeType: "subtle",
-        enabled: true,
-        isLastLoc: false,
-        extraInfo: "Zona Aman & Medis"
-    },
-    {
-        id: 4,
-        title: "Apartemen Pemula",
-        subtitle: "Motel Idlewood Complex & Warga Baru",
-        icon: "icon-apartment",
-        badge: "[WARGA BARU]",
-        badgeType: "subtle",
-        enabled: true,
-        isLastLoc: false,
-        extraInfo: "Hunian Pemula"
-    },
-    {
-        id: 5,
-        title: "Properti Pribadi",
-        subtitle: "Hunian Terdaftar Milik Karakter",
+        id: 2,
+        title: "Property",
+        subtitle: "Anda akan spawn di Property pribadi",
         icon: "icon-house",
         badge: "[PROPERTI]",
         badgeType: "neon-orange",
         enabled: false,
         isLastLoc: false,
-        extraInfo: "Kepemilikan Rumah"
+        extraInfo: "Property Pribadi"
+    },
+    {
+        id: 3,
+        title: "Last Location",
+        subtitle: "Anda akan spawn di Last Location (< 60 Menit)",
+        icon: "icon-pin",
+        badge: "[TERAKHIR AKTIF]",
+        badgeType: "neon-orange",
+        enabled: false,
+        isLastLoc: true,
+        extraInfo: "Last Position"
     }
 ];
 
