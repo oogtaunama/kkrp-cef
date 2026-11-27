@@ -271,6 +271,40 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    function updateCivilJobHud(rawJob) {
+        const civilJobEl = document.getElementById('hudCivilJob');
+        const civilJobPill = document.getElementById('pillCivilJob');
+        if (!civilJobEl || !civilJobPill) return;
+
+        const cleanJob = rawJob !== undefined && rawJob !== null ? String(rawJob).trim() : '';
+        const isUnemployed = !cleanJob ||
+            cleanJob.toLowerCase() === 'none' ||
+            cleanJob.toLowerCase() === 'pengangguran' ||
+            cleanJob.toLowerCase() === 'belum bekerja' ||
+            cleanJob === '-';
+
+        civilJobEl.innerText = isUnemployed ? 'Belum Bekerja' : cleanJob;
+        civilJobPill.style.display = 'flex';
+        if (isUnemployed) {
+            civilJobPill.classList.add('unemployed');
+        } else {
+            civilJobPill.classList.remove('unemployed');
+        }
+    }
+
+    CefBridge.on('server:updateCivilJob', (payload) => {
+        if (typeof payload === 'object' && payload !== null) {
+            updateCivilJobHud(payload.civilJob ?? payload.job ?? '');
+        } else {
+            const parsed = parseJsonSafe(payload);
+            if (parsed && (parsed.civilJob !== undefined || parsed.job !== undefined)) {
+                updateCivilJobHud(parsed.civilJob ?? parsed.job);
+            } else {
+                updateCivilJobHud(payload);
+            }
+        }
+    });
+
     // ============================================================
     // 2. LISTENER UPDATE SERVER INFO HUD (TOP-RIGHT)
     // ============================================================
@@ -291,7 +325,7 @@ window.addEventListener('DOMContentLoaded', () => {
             const jobPill = document.getElementById('pillJob');
             if (jobEl) {
                 const jobStr = String(data.job).trim();
-                jobEl.innerText = jobStr || 'Pengangguran';
+                jobEl.innerText = jobStr || 'Warga';
             }
             if (jobRankEl) {
                 const rankStr = data.jobRank ? String(data.jobRank).trim() : '';
@@ -310,6 +344,11 @@ window.addEventListener('DOMContentLoaded', () => {
                     jobPill.classList.remove('on-duty');
                 }
             }
+        }
+        if (data.civilJob !== undefined) {
+            updateCivilJobHud(data.civilJob);
+        } else if (data.job !== undefined && !data.jobRank) {
+            updateCivilJobHud(data.job);
         }
         if (data.family !== undefined) {
             const famEl = document.getElementById('hudPlayerFamily');

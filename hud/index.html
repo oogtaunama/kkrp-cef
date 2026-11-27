@@ -59,13 +59,21 @@
                     <span class="pill-id-prefix">ID</span>
                     <span class="pill-id-val" id="hudPlayerId">452</span>
                 </div>
-                <div class="info-pill job-pill" id="pillJob" title="Pekerjaan / Pangkat Aktif">
+                <div class="info-pill job-pill" id="pillJob" title="Fraksi / Pangkat Aktif">
                     <span class="job-status-dot" id="jobStatusDot"></span>
+                    <svg class="pill-icon" viewBox="0 0 24 24" width="12" height="12" fill="currentColor">
+                        <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/>
+                    </svg>
+                    <span class="pill-text" id="hudPlayerJob">Warga</span>
+                    <span class="job-rank-tag" id="hudPlayerJobRank" style="display: none;"></span>
+                </div>
+                <div class="info-pill civil-job-pill" id="pillCivilJob" title="Pekerjaan Sipil Aktif">
+                    <span class="civil-job-dot"></span>
                     <svg class="pill-icon" viewBox="0 0 24 24" width="12" height="12" fill="currentColor">
                         <path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/>
                     </svg>
-                    <span class="pill-text" id="hudPlayerJob">Pengangguran</span>
-                    <span class="job-rank-tag" id="hudPlayerJobRank" style="display: none;"></span>
+                    <span class="civil-job-label">JOB</span>
+                    <span class="pill-text" id="hudCivilJob">Belum Bekerja</span>
                 </div>
                 <div class="info-pill family-pill" id="pillFamily" title="Family / Gang">
                     <svg class="pill-icon" viewBox="0 0 24 24" width="12" height="12" fill="currentColor">
