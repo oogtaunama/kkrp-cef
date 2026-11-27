@@ -149,6 +149,12 @@ body {
     box-shadow: 0 12px 35px rgba(0, 0, 0, 0.6), 0 0 20px var(--glow-orange);
 }
 
+.char-card.selected-card {
+    transform: translateY(-4px);
+    border-color: #ff9e44;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.7), 0 0 24px rgba(255, 122, 24, 0.55);
+}
+
 /* Pola Motif Bintang/Silang "+" untuk Slot Kosong (Sesuai Referensi) */
 .char-card.empty-card {
     border-style: dashed;

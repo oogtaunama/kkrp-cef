@@ -25,6 +25,11 @@ const AuthApp = {
 
         this.bindBridgeListeners();
 
+        // Kirim sinyal handshake CEF segera setelah DOM login siap
+        if (CefBridge.isAvailable()) {
+            CefBridge.emit('cef_onHandshakeAck', 'kkrp-cef-v1');
+        }
+
         // Mode Browser Dev: isi mock UCP name jika tidak berjalan di dalam game
         if (!CefBridge.isAvailable()) {
             this.setUcpName('Arya_Pratama');
@@ -42,6 +47,11 @@ const AuthApp = {
      * Daftarkan listener event dari server (Pawn -> JS)
      */
     bindBridgeListeners() {
+        // 0. Challenge handshake dari server Pawn
+        CefBridge.on('server:handshakeChallenge', (token) => {
+            CefBridge.emit('cef_onHandshakeAck', token || 'kkrp-cef-v1');
+        });
+
         // 1. Data UCP dari Server saat browser pertama kali dibuka
         CefBridge.on('setLoginData', (ucpName) => {
             console.log('[AuthApp] Menerima data UCP dari Pawn:', ucpName);

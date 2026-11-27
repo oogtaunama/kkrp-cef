@@ -381,6 +381,15 @@ class SpawnSelectorManager {
         // Tambahkan efek animasi keluar halus
         document.body.classList.add('spawn-exiting');
 
+        // Lepas fokus & kursor CEF segera sebelum berpindah ke dunia game
+        if (typeof CefBridge !== 'undefined' && CefBridge && typeof CefBridge.setFocus === 'function') {
+            CefBridge.setFocus(false);
+        } else if (typeof cef !== 'undefined' && cef && typeof cef.set_focus === 'function') {
+            cef.set_focus(false);
+        } else if (typeof window.cef !== 'undefined' && window.cef && typeof window.cef.set_focus === 'function') {
+            window.cef.set_focus(false);
+        }
+
         // Kirim event konfirmasi ke server Pawn
         emitToGame('spawn:confirm', this.selectedLocationId);
     }

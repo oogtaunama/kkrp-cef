@@ -9,6 +9,7 @@ const CharApp = {
         maxChars: 3,
         ucpName: '',
         selectedGender: 'Male',
+        selectedSlot: 0,
         targetSlot: 0,
         isLoading: false
     },
@@ -116,11 +117,15 @@ const CharApp = {
         if (!grid) return;
         grid.innerHTML = '';
 
+        let firstValidSlot = -1;
+
         for (let i = 0; i < maxChars; i++) {
             const charName = characters[i];
             const card = document.createElement('div');
+            card.dataset.slot = i;
 
             if (charName && charName.trim() !== '') {
+                if (firstValidSlot === -1) firstValidSlot = i;
                 // KARTU TERISI KARAKTER (HANYA TOMBOL SPAWN, TOMBOL HAPUS SUDAH DIHAPUS)
                 card.className = 'char-card filled-card';
                 card.innerHTML = `
@@ -145,12 +150,17 @@ const CharApp = {
                     </div>
                 `;
 
+                card.addEventListener('click', () => {
+                    this.previewCharacter(i);
+                });
+
                 // Pasang event listener langsung pada tombol Spawn
                 const btnSpawn = card.querySelector('.btn-spawn');
                 if (btnSpawn) {
                     btnSpawn.addEventListener('click', (e) => {
                         e.preventDefault();
                         e.stopPropagation();
+                        this.previewCharacter(i);
                         this.selectCharacter(i, charName);
                     });
                 }
@@ -180,11 +190,16 @@ const CharApp = {
                     </div>
                 `;
 
+                card.addEventListener('click', () => {
+                    this.previewCharacter(i);
+                });
+
                 const btnSelect = card.querySelector('.btn-select');
                 if (btnSelect) {
                     btnSelect.addEventListener('click', (e) => {
                         e.preventDefault();
                         e.stopPropagation();
+                        this.previewCharacter(i);
                         this.openCreateChar(i);
                     });
                 }
@@ -192,6 +207,30 @@ const CharApp = {
 
             grid.appendChild(card);
         }
+
+        const defaultSlot = firstValidSlot !== -1 ? firstValidSlot : 0;
+        this.highlightSelectedCard(defaultSlot);
+    },
+
+    /**
+     * Sorot kartu karakter yang dipilih & arahkan kamera 3D ke slot tersebut
+     */
+    highlightSelectedCard(slotIndex) {
+        this.state.selectedSlot = slotIndex;
+        const cards = document.querySelectorAll('#cardsGrid .char-card');
+        cards.forEach((c) => {
+            const cSlot = parseInt(c.dataset.slot, 10);
+            if (cSlot === slotIndex) {
+                c.classList.add('selected-card');
+            } else {
+                c.classList.remove('selected-card');
+            }
+        });
+    },
+
+    previewCharacter(slotIndex) {
+        this.highlightSelectedCard(slotIndex);
+        CefBridge.emit('cef_onPlayerPreviewChar', slotIndex);
     },
 
     /**

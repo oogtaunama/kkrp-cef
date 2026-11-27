@@ -464,6 +464,10 @@
             clearTimeout(this._peekTimeout);
             this.wrapper.classList.remove('phone-peek');
             this.wrapper.classList.add('phone-visible');
+            this.wrapper.style.pointerEvents = 'auto';
+            if (window.CefBridge) {
+                CefBridge.setFocus(true);
+            }
             PhoneAudio.playClick();
 
             if (unlocked) {
@@ -479,6 +483,10 @@
             clearTimeout(this._peekTimeout);
             this.wrapper.classList.remove('phone-peek');
             this.wrapper.classList.remove('phone-visible');
+            this.wrapper.style.pointerEvents = 'none';
+            if (window.CefBridge) {
+                CefBridge.setFocus(false);
+            }
             PhoneAudio.playClick();
 
             // End active or incoming call if closed

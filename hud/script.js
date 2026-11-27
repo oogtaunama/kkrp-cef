@@ -287,13 +287,28 @@ window.addEventListener('DOMContentLoaded', () => {
         }
         if (data.job !== undefined) {
             const jobEl = document.getElementById('hudPlayerJob');
+            const jobRankEl = document.getElementById('hudPlayerJobRank');
             const jobPill = document.getElementById('pillJob');
             if (jobEl) {
                 const jobStr = String(data.job).trim();
                 jobEl.innerText = jobStr || 'Pengangguran';
             }
+            if (jobRankEl) {
+                const rankStr = data.jobRank ? String(data.jobRank).trim() : '';
+                if (rankStr && rankStr !== 'N/A') {
+                    jobRankEl.innerText = rankStr;
+                    jobRankEl.style.display = 'inline-block';
+                } else {
+                    jobRankEl.style.display = 'none';
+                }
+            }
             if (jobPill) {
                 jobPill.style.display = 'flex';
+                if (data.jobDuty) {
+                    jobPill.classList.add('on-duty');
+                } else {
+                    jobPill.classList.remove('on-duty');
+                }
             }
         }
         if (data.family !== undefined) {
