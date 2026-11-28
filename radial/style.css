@@ -37,6 +37,27 @@ body {
   color: var(--text-primary);
 }
 
+.radial-backdrop {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at center, rgba(12, 14, 18, 0.25) 0%, rgba(0, 0, 0, 0.45) 100%);
+  backdrop-filter: blur(2px);
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.16s ease, visibility 0.16s ease;
+}
+
+.radial-backdrop.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
 .radial-container {
   position: relative;
   width: 520px;
@@ -179,6 +200,37 @@ body {
 .center-back-btn:hover {
   transform: scale(1.05);
   filter: brightness(1.15);
+}
+
+.center-close-btn {
+  margin-top: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 158, 68, 0.35);
+  border-radius: 6px;
+  padding: 4px 10px;
+  color: #e2e6ee;
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: transform 0.15s, background 0.15s, border-color 0.15s;
+}
+
+.center-close-btn svg {
+  width: 11px;
+  height: 11px;
+  color: var(--accent-orange);
+}
+
+.center-close-btn:hover {
+  transform: scale(1.05);
+  background: rgba(255, 122, 24, 0.2);
+  border-color: var(--accent-orange);
+  color: #fff;
 }
 
 /* HTML Overlay for Icons & Labels */

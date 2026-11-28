@@ -287,5 +287,81 @@
         }
     }
 
-    return new CefBridgeService();
+    /**
+     * CefBrowserManager - Manajemen Siklus Hidup Browser / CEF Bertahap
+     * Hanya UI inti yang di-preload di awal; UI lain dibuat secara lazy-create
+     * saat dibutuhkan dan di-destroy otomatis saat ditutup/selesai.
+     */
+    class CefBrowserManager {
+        constructor(bridge) {
+            this.bridge = bridge;
+            this.coreBrowsers = new Set([
+                'hud',
+                'notif',
+                'inventory',
+                'handphone',
+                'radial',
+                'target',
+                'progress_bar'
+            ]);
+            this.activeBrowsers = new Map();
+        }
+
+        isCore(browserName) {
+            return this.coreBrowsers.has(String(browserName || '').toLowerCase());
+        }
+
+        initCoreBrowsers(configs = []) {
+            configs.forEach((cfg) => {
+                const key = String(cfg.name || '').toLowerCase();
+                if (!this.isCore(key)) return;
+                this.acquire(key, cfg.url, { preloadOnly: true, layer: cfg.layer || 10 });
+            });
+        }
+
+        acquire(browserName, url = '', options = {}) {
+            const key = String(browserName || '').toLowerCase();
+            if (!key) return false;
+
+            const existing = this.activeBrowsers.get(key);
+            if (existing && existing.created) {
+                existing.visible = !options.preloadOnly;
+                this.bridge.emit('cef:browserShow', key, !options.preloadOnly);
+                return true;
+            }
+
+            this.activeBrowsers.set(key, {
+                name: key,
+                url,
+                created: true,
+                visible: !options.preloadOnly,
+                isCore: this.isCore(key),
+                createdAt: Date.now()
+            });
+
+            this.bridge.emit('cef:browserCreate', key, url, Boolean(!options.preloadOnly));
+            return true;
+        }
+
+        release(browserName) {
+            const key = String(browserName || '').toLowerCase();
+            const entry = this.activeBrowsers.get(key);
+            if (!entry) return false;
+
+            this.bridge.setFocus(false);
+
+            if (this.isCore(key)) {
+                entry.visible = false;
+                this.bridge.emit('cef:browserHide', key);
+            } else {
+                this.activeBrowsers.delete(key);
+                this.bridge.emit('cef:browserDestroy', key);
+            }
+            return true;
+        }
+    }
+
+    const bridgeInstance = new CefBridgeService();
+    bridgeInstance.browserManager = new CefBrowserManager(bridgeInstance);
+    return bridgeInstance;
 }));

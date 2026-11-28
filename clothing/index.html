@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KKRP - Toko Baju</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="clothingPanel" class="clothing-panel">
+        <div class="panel-header">
+            <div class="header-badge">TOKO BAJU</div>
+            <h1 class="panel-title">Binco &amp; Aksesoris</h1>
+            <button type="button" class="btn-close-x" id="btnCloseShop" title="Tutup (ESC)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+                    <path d="M18 6L6 18M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Pilih Kategori (Kotak Panah Kiri / Kanan) -->
+        <div class="selector-group">
+            <div class="selector-label">KATEGORI</div>
+            <div class="arrow-box">
+                <button type="button" class="arrow-btn" id="btnCatPrev" title="Kategori Sebelumnya">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="M15 18l-6-6 6-6"/>
+                    </svg>
+                </button>
+                <div class="arrow-value">
+                    <span id="catName">Pakaian</span>
+                    <small id="catCounter">1 / 5</small>
+                </div>
+                <button type="button" class="arrow-btn" id="btnCatNext" title="Kategori Berikutnya">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="M9 18l6-6-6-6"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Pilih Item / Model (Kotak Panah Kiri / Kanan) -->
+        <div class="selector-group">
+            <div class="selector-label">PILIH MODEL</div>
+            <div class="arrow-box">
+                <button type="button" class="arrow-btn" id="btnItemPrev" title="Model Sebelumnya (Panah Kiri)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="M15 18l-6-6 6-6"/>
+                    </svg>
+                </button>
+                <div class="arrow-value">
+                    <span id="itemLabel">Model #0</span>
+                    <small id="itemCounter">0 / 150</small>
+                </div>
+                <button type="button" class="arrow-btn" id="btnItemNext" title="Model Berikutnya (Panah Kanan)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="M9 18l6-6-6-6"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Ringkasan Harga & Tombol Aksi -->
+        <div class="price-bar">
+            <span class="price-label">Harga Item</span>
+            <span class="price-value" id="itemPrice">$150</span>
+        </div>
+
+        <div class="action-row">
+            <button type="button" class="btn-secondary" id="btnCancelShop">Batal</button>
+            <button type="button" class="btn-primary" id="btnBuyItem">Beli Sekarang</button>
+        </div>
+
+        <div class="hint-bar">
+            <span>&larr; / &rarr; Ganti Model</span>
+            <span>&bull;</span>
+            <span>ESC Tutup</span>
+        </div>
+    </div>
+
+    <script src="../common/cef-bridge.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

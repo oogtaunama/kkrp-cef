@@ -1467,11 +1467,13 @@ body.browser-preview .phone-device-wrapper {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 8px;
     padding: 8px 12px;
     background: var(--ios-card-glass);
     border-radius: 12px;
     border: 1px solid var(--ios-border-glass);
     cursor: pointer;
+    overflow: hidden;
     transition: background 0.15s ease;
 }
 .contact-row:hover { background: rgba(255, 255, 255, 0.15); }
@@ -1480,11 +1482,21 @@ body.browser-preview .phone-device-wrapper {
     display: flex;
     align-items: center;
     gap: 10px;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.contact-left > div:last-child {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
 }
 
 .contact-avatar {
     width: 36px;
     height: 36px;
+    flex-shrink: 0;
     border-radius: 50%;
     background: #475569;
     display: flex;
@@ -1494,13 +1506,27 @@ body.browser-preview .phone-device-wrapper {
     font-weight: 600;
 }
 
-.contact-name { font-size: 13px; font-weight: 600; }
-.contact-num { font-size: 11px; color: var(--ios-text-sub); }
+.contact-name {
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.contact-num {
+    font-size: 11px;
+    color: var(--ios-text-sub);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 
 .contact-actions {
     display: flex;
     gap: 6px;
     align-items: center;
+    flex-shrink: 0;
 }
 
 .c-act-btn {

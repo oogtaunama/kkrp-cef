@@ -336,6 +336,20 @@
         bankHistory: [],
         recents: [],
 
+        // Submit & Listener Locks (Prevent Double-Post)
+        _eventsBound: false,
+        _locks: {
+            tweet: false,
+            ad: false,
+            note: false
+        },
+        _lastSubmit: {
+            tweetText: '',
+            tweetAt: 0,
+            adText: '',
+            adAt: 0
+        },
+
         // GPS App State & Database
         gpsFilter: 'all',
         gpsSearch: '',
@@ -738,6 +752,9 @@
                     break;
                 case 'twitter':
                     this.renderTwitterFeed();
+                    if (window.CefBridge) {
+                        CefBridge.emit('cef_onPhoneRequestTweets');
+                    }
                     this.switchView('viewAppTwitter');
                     break;
                 case 'garage':
@@ -746,6 +763,9 @@
                     break;
                 case 'yellowpages':
                     this.renderYellowpagesFeed();
+                    if (window.CefBridge) {
+                        CefBridge.emit('cef_onPhoneRequestAds');
+                    }
                     this.switchView('viewAppYellowpages');
                     break;
                 case 'dispatch':
@@ -756,6 +776,9 @@
                     break;
                 case 'photos':
                     this.renderPhotosGrid();
+                    if (window.CefBridge) {
+                        CefBridge.emit('cef_onPhoneRequestGallery');
+                    }
                     this.switchView('viewAppPhotos');
                     break;
                 case 'notes':
@@ -1420,24 +1443,44 @@
         },
 
         postTweet(content) {
-            if (!content || content.trim() === '') return;
+            const clean = (content || '').trim();
+            if (!clean) return false;
+
+            const now = Date.now();
+            if (PhoneState._locks.tweet) return false;
+            if (PhoneState._lastSubmit.tweetText === clean && (now - PhoneState._lastSubmit.tweetAt) < 2500) {
+                return false;
+            }
+
+            PhoneState._locks.tweet = true;
+            PhoneState._lastSubmit.tweetText = clean;
+            PhoneState._lastSubmit.tweetAt = now;
+
             const newChirp = {
-                id: Date.now(),
+                id: now,
                 author: PhoneState.ownerName,
                 handle: PhoneState.ownerName.toLowerCase().replace(/\s+/g, ''),
-                content: content.trim(),
+                content: clean,
                 time: 'Baru saja',
+                timestamp: Math.floor(now / 1000),
                 likes: 0,
                 isLiked: false
             };
+
             PhoneState.twitterFeed.unshift(newChirp);
+            this.saveLocalFallback('twitterFeed', PhoneState.twitterFeed);
             PhoneAudio.playMessageSent();
             this.showNotification('Chirper', 'Kicauan Anda berhasil diposting!');
             this.renderTwitterFeed();
 
             if (window.CefBridge) {
-                CefBridge.emit('cef_onPhonePostTweet', content);
+                CefBridge.emit('cef_onPhonePostTweet', clean);
             }
+
+            setTimeout(() => {
+                PhoneState._locks.tweet = false;
+            }, 800);
+            return true;
         },
 
         // =====================================================================
@@ -1517,22 +1560,60 @@
         },
 
         postAd(category, description) {
-            if (!description || description.trim() === '') return;
+            const cleanCat = (category || 'Umum').trim();
+            const cleanDesc = (description || '').trim();
+            if (!cleanDesc) return false;
+
+            const now = Date.now();
+            if (PhoneState._locks.ad) return false;
+            if (PhoneState._lastSubmit.adText === cleanDesc && (now - PhoneState._lastSubmit.adAt) < 2500) {
+                return false;
+            }
+
+            PhoneState._locks.ad = true;
+            PhoneState._lastSubmit.adText = cleanDesc;
+            PhoneState._lastSubmit.adAt = now;
+
             const newAd = {
-                id: Date.now(),
-                category: category,
-                description: description.trim(),
+                id: now,
+                category: cleanCat,
+                description: cleanDesc,
                 author: PhoneState.ownerName,
                 phone: PhoneState.phoneNumber,
-                time: 'Baru saja'
+                time: 'Baru saja',
+                timestamp: Math.floor(now / 1000)
             };
+
             PhoneState.yellowpages.unshift(newAd);
+            this.saveLocalFallback('yellowpages', PhoneState.yellowpages);
             PhoneAudio.playMessageSent();
             this.showNotification('Iklan Dipasang', 'Iklan Anda berhasil ditayangkan di Yellow Pages!');
             this.renderYellowpagesFeed();
 
             if (window.CefBridge) {
-                CefBridge.emit('cef_onPhonePostAd', category, description);
+                CefBridge.emit('cef_onPhonePostAd', cleanCat, cleanDesc);
+            }
+
+            setTimeout(() => {
+                PhoneState._locks.ad = false;
+            }, 800);
+            return true;
+        },
+
+        saveLocalFallback(key, value) {
+            try {
+                if (!window.CefBridge || window.CefBridge.mockServerEnabled) {
+                    localStorage.setItem(`kkrp_phone_${key}`, JSON.stringify(value));
+                }
+            } catch (e) {}
+        },
+
+        loadLocalFallback(key) {
+            try {
+                const raw = localStorage.getItem(`kkrp_phone_${key}`);
+                return raw ? JSON.parse(raw) : null;
+            } catch (e) {
+                return null;
             }
         },
 
@@ -1615,6 +1696,52 @@
             this.renderPhotosGrid();
         },
 
+        normalizeImageUrl(rawUrl) {
+            const url = (rawUrl || '').trim();
+            if (!/^https?:\/\/.+/i.test(url)) return '';
+
+            // Auto-convert Google Drive share link to direct view link
+            const gdriveMatch = url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/i) ||
+                                url.match(/drive\.google\.com\/open\?id=([a-zA-Z0-9_-]+)/i);
+            if (gdriveMatch && gdriveMatch[1]) {
+                return `https://drive.google.com/uc?export=view&id=${gdriveMatch[1]}`;
+            }
+            return url;
+        },
+
+        addPhotoByUrl(rawUrl, title = '') {
+            const cleanUrl = this.normalizeImageUrl(rawUrl);
+            if (!cleanUrl) {
+                this.showNotification('Link Tidak Valid', 'Masukkan URL gambar http/https yang valid!');
+                return false;
+            }
+
+            const now = new Date();
+            const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+            const newPhoto = {
+                id: Date.now(),
+                url: cleanUrl,
+                title: (title || 'Foto Link').trim(),
+                location: 'Galeri Cloud',
+                time: timeStr,
+                date: 'Hari ini'
+            };
+
+            PhoneState.photos.unshift(newPhoto);
+            try {
+                localStorage.setItem('kkrp_phone_gallery', JSON.stringify(PhoneState.photos.slice(0, 50)));
+            } catch (e) {}
+
+            if (window.CefBridge) {
+                CefBridge.emit('cef_onPhoneAddPhoto', cleanUrl, newPhoto.title);
+            }
+
+            PhoneAudio.playMessageSent();
+            this.renderPhotosGrid();
+            this.showNotification('Galeri HP', 'Gambar berhasil disimpan ke Galeri & Database!');
+            return true;
+        },
+
         renderPhotosGrid() {
             const grid = document.getElementById('photosGridContainer');
             if (!grid) return;
@@ -1675,6 +1802,9 @@
                     try {
                         localStorage.setItem('kkrp_phone_gallery', JSON.stringify(PhoneState.photos));
                     } catch (e) {}
+                    if (window.CefBridge && photo.id) {
+                        CefBridge.emit('cef_onPhoneDeletePhoto', Number(photo.id));
+                    }
                     this.renderPhotosGrid();
                     modal.classList.remove('active');
                     this.showNotification('Galeri', 'Foto telah dihapus dari galeri.', 'trash');
@@ -1901,6 +2031,9 @@
         // 16. BIND USER DOM EVENTS
         // =====================================================================
         bindEvents() {
+            if (PhoneState._eventsBound) return;
+            PhoneState._eventsBound = true;
+
             // Setup Gestures Tarik / Geser Layar Kunci (Swipe Up to Unlock)
             this.setupLockScreenGestures();
 
@@ -2370,30 +2503,54 @@
                 this.clearGpsRoute();
             });
 
-            // Modal: New Tweet
+            // Modal: New Tweet (Prevent double-post on Enter / click)
+            const tweetInput = document.getElementById('newTweetContentInput');
+            const submitTweetForm = (e) => {
+                if (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+                const content = tweetInput?.value?.trim();
+                if (!content) return;
+                if (this.postTweet(content)) {
+                    document.getElementById('modalNewTweet')?.classList.remove('active');
+                    if (tweetInput) tweetInput.value = '';
+                }
+            };
             document.getElementById('newTweetBtn')?.addEventListener('click', () => {
                 document.getElementById('modalNewTweet')?.classList.add('active');
+                setTimeout(() => tweetInput?.focus(), 50);
             });
-            document.getElementById('submitTweetBtn')?.addEventListener('click', () => {
-                const content = document.getElementById('newTweetContentInput')?.value;
-                if (content) {
-                    this.postTweet(content);
-                    document.getElementById('modalNewTweet')?.classList.remove('active');
-                    document.getElementById('newTweetContentInput').value = '';
+            document.getElementById('submitTweetBtn')?.addEventListener('click', submitTweetForm);
+            tweetInput?.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey && !e.repeat) {
+                    submitTweetForm(e);
                 }
             });
 
-            // Modal: Post Ad
+            // Modal: Post Ad (Prevent double-post on Enter / click)
+            const adInput = document.getElementById('adDescriptionInput');
+            const submitAdForm = (e) => {
+                if (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+                const cat = document.getElementById('adCategorySelect')?.value;
+                const desc = adInput?.value?.trim();
+                if (!desc) return;
+                if (this.postAd(cat, desc)) {
+                    document.getElementById('modalPostAd')?.classList.remove('active');
+                    if (adInput) adInput.value = '';
+                }
+            };
             document.getElementById('postAdBtn')?.addEventListener('click', () => {
                 document.getElementById('modalPostAd')?.classList.add('active');
+                setTimeout(() => adInput?.focus(), 50);
             });
-            document.getElementById('submitAdBtn')?.addEventListener('click', () => {
-                const cat = document.getElementById('adCategorySelect')?.value;
-                const desc = document.getElementById('adDescriptionInput')?.value;
-                if (desc) {
-                    this.postAd(cat, desc);
-                    document.getElementById('modalPostAd')?.classList.remove('active');
-                    document.getElementById('adDescriptionInput').value = '';
+            document.getElementById('submitAdBtn')?.addEventListener('click', submitAdForm);
+            adInput?.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey && !e.repeat) {
+                    submitAdForm(e);
                 }
             });
 
@@ -2410,6 +2567,40 @@
                 this.sendEmergencyDispatch(this._currentDispatchService || 'police', msg || 'Bantuan dibutuhkan segera!');
                 document.getElementById('modalDispatchReport')?.classList.remove('active');
                 document.getElementById('dispatchMessageInput').value = '';
+            });
+
+            // Tambah Foto via Link URL (Discord / Google Drive / Direct URL)
+            const photoLinkInput = document.getElementById('photoLinkInput');
+            const photoTitleInput = document.getElementById('photoTitleInput');
+            const photoLinkPreview = document.getElementById('photoLinkPreview');
+
+            document.getElementById('addPhotoLinkBtn')?.addEventListener('click', () => {
+                if (photoLinkInput) photoLinkInput.value = '';
+                if (photoTitleInput) photoTitleInput.value = '';
+                if (photoLinkPreview) {
+                    photoLinkPreview.style.display = 'none';
+                    photoLinkPreview.style.backgroundImage = '';
+                }
+                document.getElementById('modalAddPhotoLink')?.classList.add('active');
+                setTimeout(() => photoLinkInput?.focus(), 50);
+            });
+
+            photoLinkInput?.addEventListener('input', () => {
+                if (!photoLinkPreview) return;
+                const normalized = this.normalizeImageUrl(photoLinkInput.value);
+                if (normalized) {
+                    photoLinkPreview.style.backgroundImage = `url('${normalized}')`;
+                    photoLinkPreview.style.display = 'block';
+                } else {
+                    photoLinkPreview.style.display = 'none';
+                }
+            });
+
+            document.getElementById('savePhotoLinkBtn')?.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (this.addPhotoByUrl(photoLinkInput?.value || '', photoTitleInput?.value || '')) {
+                    document.getElementById('modalAddPhotoLink')?.classList.remove('active');
+                }
             });
 
             // Camera Shutter
@@ -2822,35 +3013,62 @@
             PhoneUI.renderBankView();
         });
 
-        // New Tweet Broadcast
+        // New Tweet Broadcast (deduplicate against optimistic local post)
         CefBridge.on('newTweet', (author, content, time) => {
-            PhoneState.twitterFeed.unshift({
-                id: Date.now(),
-                author: author,
-                content: content,
-                time: time || 'Baru saja',
-                likes: 0,
-                isLiked: false
-            });
-            PhoneUI.showNotification(`Kicauan Baru (@${author})`, content, 'xTwitter', 'twitter');
+            const cleanContent = (content || '').trim();
+            const isDuplicate = PhoneState.twitterFeed.some((t, idx) =>
+                idx < 3 && t.author === author && (t.content || '').trim() === cleanContent
+            );
+            if (!isDuplicate) {
+                PhoneState.twitterFeed.unshift({
+                    id: Date.now(),
+                    author: author,
+                    content: cleanContent,
+                    time: time || 'Baru saja',
+                    likes: 0,
+                    isLiked: false
+                });
+            }
+            PhoneUI.showNotification(`Kicauan Baru (@${author})`, cleanContent, 'xTwitter', 'twitter');
             if (PhoneState.currentView === 'viewAppTwitter') {
                 PhoneUI.renderTwitterFeed();
             }
         });
 
-        // New Yellow Pages Ad Broadcast
+        // New Yellow Pages Ad Broadcast (deduplicate against optimistic local post)
         CefBridge.on('newAd', (category, desc, author, phone) => {
-            PhoneState.yellowpages.unshift({
-                id: Date.now(),
-                category: category,
-                description: desc,
-                author: author,
-                phone: phone,
-                time: 'Baru saja'
-            });
-            PhoneUI.showNotification(`[IKLAN] ${category}`, desc, 'bullhorn', 'yellowpages');
+            const cleanDesc = (desc || '').trim();
+            const isDuplicate = PhoneState.yellowpages.some((a, idx) =>
+                idx < 3 && a.author === author && (a.description || '').trim() === cleanDesc
+            );
+            if (!isDuplicate) {
+                PhoneState.yellowpages.unshift({
+                    id: Date.now(),
+                    category: category,
+                    description: cleanDesc,
+                    author: author,
+                    phone: phone,
+                    time: 'Baru saja'
+                });
+            }
+            PhoneUI.showNotification(`[IKLAN] ${category}`, cleanDesc, 'bullhorn', 'yellowpages');
             if (PhoneState.currentView === 'viewAppYellowpages') {
                 PhoneUI.renderYellowpagesFeed();
+            }
+        });
+
+        // Load Yellow Pages Ads from Pawn (MySQL phone_ads)
+        CefBridge.on('loadAds', (jsonAds) => {
+            try {
+                const ads = typeof jsonAds === 'string' ? JSON.parse(jsonAds) : jsonAds;
+                if (Array.isArray(ads)) {
+                    PhoneState.yellowpages = ads;
+                    if (PhoneState.currentView === 'viewAppYellowpages') {
+                        PhoneUI.renderYellowpagesFeed();
+                    }
+                }
+            } catch (e) {
+                console.error('[CEF Phone] Gagal parse ads:', e);
             }
         });
 
@@ -2932,6 +3150,21 @@
                 }
             } catch (e) {
                 console.error('[CEF Phone] Gagal parse notes:', e);
+            }
+        });
+
+        // Load Gallery Photos from Pawn (MySQL phone_gallery)
+        CefBridge.on('loadPhoneGallery', (jsonGallery) => {
+            try {
+                const photos = typeof jsonGallery === 'string' ? JSON.parse(jsonGallery) : jsonGallery;
+                if (Array.isArray(photos)) {
+                    PhoneState.photos = photos;
+                    if (PhoneState.currentView === 'viewAppPhotos') {
+                        PhoneUI.renderPhotosGrid();
+                    }
+                }
+            } catch (e) {
+                console.error('[CEF Phone] Gagal parse gallery:', e);
             }
         });
 

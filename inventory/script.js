@@ -100,6 +100,8 @@
         weap_gun: `<svg viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="1.8"><path d="M3 8h12l5 4v3h-4l-2 5h-4l1-5H3z"/></svg>`,
         tool_wrench: `<svg viewBox="0 0 24 24" fill="none" stroke="#ff9500" stroke-width="1.8"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>`,
         tool_hoe: `<svg viewBox="0 0 24 24" fill="none" stroke="#eab308" stroke-width="1.8"><path d="M3 4l18 18"/><path d="M14 3h7v5l-4-2z"/></svg>`,
+        tool_bucket: `<svg viewBox="0 0 24 24" fill="none" stroke="#ff9e44" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9h14l-1.5 11a2 2 0 0 1-2 1.8H8.5a2 2 0 0 1-2-1.8L5 9z"/><path d="M4 9h16"/><path d="M7 9a5 5 0 0 1 10 0"/></svg>`,
+        tool_bucket_filled: `<svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9h14l-1.5 11a2 2 0 0 1-2 1.8H8.5a2 2 0 0 1-2-1.8L5 9z" fill="rgba(56,189,248,0.2)"/><path d="M4 9h16"/><path d="M7 9a5 5 0 0 1 10 0"/><path d="M6.2 13c2 1 3.8-1 5.8 0s3.8-1 5.8 0"/></svg>`,
         tool_box: `<svg viewBox="0 0 24 24" fill="none" stroke="#ff7b00" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>`,
         res_wood: `<svg viewBox="0 0 24 24" fill="none" stroke="#b45309" stroke-width="1.8"><circle cx="6" cy="12" r="3"/><path d="M6 9h12a3 3 0 0 1 3 3v0a3 3 0 0 1-3 3H6"/></svg>`,
         res_ore: `<svg viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.8"><polygon points="12 2 2 9 12 22 22 9 12 2"/><line x1="2" y1="9" x2="22" y2="9"/><line x1="12" y1="2" x2="12" y2="22"/></svg>`,
@@ -136,6 +138,8 @@
         if (name.includes('gun') || name.includes('shotgun') || name.includes('pistol') || name.includes('rifle') || name.includes('weapon')) return ItemIcons.weap_gun;
 
         if (name.includes('toolkit') || name.includes('kunci') || name.includes('obeng') || name.includes('linggis')) return ItemIcons.tool_wrench;
+        if (name.includes('ember_terisi') || (name.includes('ember') && name.includes('isi'))) return ItemIcons.tool_bucket_filled;
+        if (name.includes('ember') || name.includes('bucket')) return ItemIcons.tool_bucket;
         if (name.includes('cangkul') || name.includes('pancingan')) return ItemIcons.tool_hoe;
         if (name.includes('komponen') || name.includes('part') || name.includes('jerigen')) return ItemIcons.tool_box;
 
@@ -1520,9 +1524,39 @@
 
             if (window.CefBridge && window.CefBridge.isAvailable()) {
                 window.CefBridge.emit('cef_onInventoryMoveItem', source, slotIndex, targetSource, targetSlotIndex, item.quantity);
+                this.moveItemBetweenContainers(source, slotIndex, targetSource, targetSlotIndex, item.quantity);
+                this.renderAll();
             } else {
                 this.moveItemBetweenContainers(source, slotIndex, targetSource, targetSlotIndex, item.quantity);
                 this.renderAll();
+            }
+
+            if ((source === 'player' && slotIndex < 5) || (targetSource === 'player' && targetSlotIndex >= 0 && targetSlotIndex < 5)) {
+                this.syncHotbarToDatabase('move');
+            }
+        },
+
+        /**
+         * Auto-Save Hotbar (Slot 1-5) ke Database setiap ada perubahan
+         */
+        syncHotbarToDatabase(reason = 'update') {
+            const hotbarPayload = [];
+            for (let i = 0; i < 5; i++) {
+                const slot = this.player.slots[i];
+                hotbarPayload.push({
+                    slot: i,
+                    exists: Boolean(slot && slot.exists),
+                    name: slot && slot.exists ? slot.name : '',
+                    quantity: slot && slot.exists ? Number(slot.quantity) || 0 : 0
+                });
+            }
+
+            try {
+                localStorage.setItem('kkrp_player_hotbar', JSON.stringify(hotbarPayload));
+            } catch (e) {}
+
+            if (window.CefBridge) {
+                window.CefBridge.emit('cef_onInventorySaveHotbar', JSON.stringify(hotbarPayload), reason);
             }
         },
 

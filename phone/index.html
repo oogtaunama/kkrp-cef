@@ -724,11 +724,42 @@
                             <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
                         </button>
                         <h2 class="app-header-title">Galeri Foto</h2>
-                        <div class="app-header-action"></div>
+                        <div class="app-header-action">
+                            <button class="header-icon-btn" id="addPhotoLinkBtn" title="Tambah Link Gambar">
+                                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                            </button>
+                        </div>
                     </header>
 
                     <div class="photos-grid" id="photosGridContainer">
                         <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Modal: Tambah Gambar via Link URL -->
+                <div class="modal-backdrop" id="modalAddPhotoLink">
+                    <div class="modal-card">
+                        <div class="modal-header">
+                            <h3>Tambah Foto via Link</h3>
+                            <button class="modal-close-btn" data-close="modalAddPhotoLink">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label>URL Gambar (Discord / Google Drive / Direct Link)</label>
+                                <input type="url" class="form-input" id="photoLinkInput" placeholder="https://cdn.discordapp.com/..." autocomplete="off">
+                            </div>
+                            <div class="form-group">
+                                <label>Judul / Keterangan (Opsional)</label>
+                                <input type="text" class="form-input" id="photoTitleInput" maxlength="48" placeholder="Misal: Foto Mobil / Pemandangan">
+                            </div>
+                            <div class="photo-link-preview" id="photoLinkPreview" style="display:none; width:100%; height:110px; border-radius:10px; background-size:cover; background-position:center; border:1px solid rgba(255,158,68,0.35); margin-top:8px;"></div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary" data-close="modalAddPhotoLink">Batal</button>
+                            <button class="btn btn-primary" id="savePhotoLinkBtn">Simpan ke Galeri</button>
+                        </div>
                     </div>
                 </div>
 

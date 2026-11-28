@@ -15,6 +15,8 @@
   let currentMenuStack = []; // for submenus
   let activeItems = [];
   let hoveredIndex = -1;
+  let isRadialOpen = true;
+  let closeLock = false;
 
   // Icons SVG definitions
   const ICONS = {
@@ -100,11 +102,15 @@
   ];
 
   // DOM elements
+  const radialBackdrop = document.getElementById('radialBackdrop');
+  const radialRoot = document.getElementById('radialRoot');
+  const radialCenter = document.getElementById('radialCenter');
   const slicesGroup = document.getElementById('slicesGroup');
   const itemsOverlay = document.getElementById('itemsOverlay');
   const centerTitle = document.getElementById('centerTitle');
   const centerSub = document.getElementById('centerSub');
   const btnCenterBack = document.getElementById('btnCenterBack');
+  const btnCenterClose = document.getElementById('btnCenterClose');
 
   /**
    * Helper: Convert polar coordinates to Cartesian
@@ -149,11 +155,13 @@
     centerTitle.textContent = title;
     centerSub.textContent = subtitle;
 
-    // Show/hide back button
+    // Show/hide back & close buttons
     if (currentMenuStack.length > 0) {
       btnCenterBack.style.display = 'flex';
+      if (btnCenterClose) btnCenterClose.style.display = 'none';
     } else {
       btnCenterBack.style.display = 'none';
+      if (btnCenterClose) btnCenterClose.style.display = 'flex';
     }
 
     const count = items.length;
@@ -267,22 +275,72 @@
   }
 
   btnCenterBack.addEventListener('click', (e) => {
+    e.preventDefault();
     e.stopPropagation();
     goBack();
   });
+
+  if (btnCenterClose) {
+    btnCenterClose.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      closeRadial(true);
+    });
+  }
+
+  if (radialCenter) {
+    radialCenter.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (e.target.closest('#btnCenterBack') || e.target.closest('#btnCenterClose')) return;
+      if (currentMenuStack.length > 0) {
+        goBack();
+      } else {
+        closeRadial(true);
+      }
+    });
+  }
+
+  /**
+   * Open radial menu cleanly
+   */
+  function openRadial(menuData, title = "MENU UTAMA") {
+    closeLock = false;
+    isRadialOpen = true;
+    currentMenuStack = [];
+    hoveredIndex = -1;
+
+    if (radialBackdrop) {
+      radialBackdrop.classList.remove('is-hidden');
+    }
+    if (radialRoot) {
+      radialRoot.style.animation = 'none';
+      void radialRoot.offsetWidth;
+      radialRoot.style.animation = '';
+    }
+
+    renderMenu(Array.isArray(menuData) && menuData.length > 0 ? menuData : DEFAULT_MENU, title);
+
+    if (window.CefBridge && typeof window.CefBridge.setFocus === 'function') {
+      window.CefBridge.setFocus(true);
+    } else if (window.cef && typeof window.cef.set_focus === 'function') {
+      window.cef.set_focus(true);
+    }
+  }
 
   /**
    * Execute Action Callback to FiveM / open.mp CEF
    */
   function executeAction(item) {
+    if (!item || closeLock) return;
+
     const actionPayload = {
       id: item.id,
       action: item.action || item.id,
       title: item.title
     };
 
-    // Close UI after selection
-    closeRadial();
+    // Close UI cleanly without double-emitting close after select
+    closeRadial(false);
 
     // Send to FiveM NUI
     if (window.GetParentResourceName) {
@@ -294,7 +352,9 @@
     }
 
     // Send to open.mp / SA-MP CEF
-    if (window.cef && typeof window.cef.emit === 'function') {
+    if (window.CefBridge && typeof window.CefBridge.emit === 'function') {
+      window.CefBridge.emit('cef_onRadialSelect', JSON.stringify(actionPayload));
+    } else if (window.cef && typeof window.cef.emit === 'function') {
       window.cef.emit('cef_onRadialSelect', JSON.stringify(actionPayload));
     }
   }
@@ -302,49 +362,94 @@
   /**
    * Close radial menu
    */
-  function closeRadial() {
-    // Reset state
+  function closeRadial(notifyServer = true) {
+    if (closeLock) return;
+    closeLock = true;
+    isRadialOpen = false;
     currentMenuStack = [];
     hoveredIndex = -1;
+    setHoveredItem(-1);
 
-    // Send close event
-    if (window.GetParentResourceName) {
-      fetch(`https://${window.GetParentResourceName()}/radialClose`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json; charset=UTF-8' },
-        body: JSON.stringify({})
-      }).catch(() => {});
+    if (radialBackdrop) {
+      radialBackdrop.classList.add('is-hidden');
     }
 
-    if (window.cef && typeof window.cef.emit === 'function') {
-      window.cef.emit('cef_onRadialClose', '');
+    if (document.activeElement && typeof document.activeElement.blur === 'function') {
+      document.activeElement.blur();
     }
+
+    if (window.CefBridge && typeof window.CefBridge.setFocus === 'function') {
+      window.CefBridge.setFocus(false);
+    } else if (window.cef && typeof window.cef.set_focus === 'function') {
+      window.cef.set_focus(false);
+    }
+
+    if (notifyServer) {
+      // Send close event
+      if (window.GetParentResourceName) {
+        fetch(`https://${window.GetParentResourceName()}/radialClose`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json; charset=UTF-8' },
+          body: JSON.stringify({})
+        }).catch(() => {});
+      }
+
+      if (window.CefBridge && typeof window.CefBridge.emit === 'function') {
+        window.CefBridge.emit('cef_onRadialClose');
+      } else if (window.cef && typeof window.cef.emit === 'function') {
+        window.cef.emit('cef_onRadialClose');
+      }
+    }
+
+    setTimeout(() => {
+      closeLock = false;
+    }, 150);
   }
 
-  // Keybindings (N or ESC to close / confirm)
+  // Click outside slices/center to close radial menu
+  if (radialBackdrop) {
+    radialBackdrop.addEventListener('click', (e) => {
+      if (!isRadialOpen) return;
+      const clickedSlice = e.target.closest('.radial-slice');
+      const clickedCenter = e.target.closest('.radial-center');
+      if (!clickedSlice && !clickedCenter) {
+        e.preventDefault();
+        e.stopPropagation();
+        closeRadial(true);
+      }
+    });
+  }
+
+  // Keybindings (ESC / N to close, back, or confirm)
   window.addEventListener('keydown', (e) => {
+    if (!isRadialOpen) return;
+
     if (e.key === 'Escape' || e.code === 'Escape') {
+      e.preventDefault();
+      e.stopPropagation();
       if (currentMenuStack.length > 0) {
         goBack();
       } else {
-        closeRadial();
+        closeRadial(true);
       }
     } else if (e.key === 'n' || e.key === 'N' || e.code === 'KeyN') {
-      // If hovering an item, select it on key press/release
+      e.preventDefault();
+      e.stopPropagation();
       if (hoveredIndex >= 0) {
         selectItem(hoveredIndex);
       } else {
-        closeRadial();
+        closeRadial(true);
       }
     }
-  });
+  }, true);
 
   window.addEventListener('contextmenu', (e) => {
     e.preventDefault();
+    if (!isRadialOpen) return;
     if (currentMenuStack.length > 0) {
       goBack();
     } else {
-      closeRadial();
+      closeRadial(true);
     }
   });
 
@@ -354,29 +459,36 @@
     if (!data) return;
 
     if (data.action === 'openRadial') {
-      currentMenuStack = [];
-      const menuData = data.menu || DEFAULT_MENU;
-      renderMenu(menuData, data.title || "MENU UTAMA");
+      openRadial(data.menu || DEFAULT_MENU, data.title || "MENU UTAMA");
     } else if (data.action === 'closeRadial') {
-      closeRadial();
+      closeRadial(false);
     }
   });
 
-  // Open.mp CEF event handler
-  if (window.cef && typeof window.cef.on === 'function') {
-    window.cef.on('cef_openRadial', (payloadStr) => {
-      try {
-        const payload = JSON.parse(payloadStr || '{}');
-        currentMenuStack = [];
-        renderMenu(payload.menu || DEFAULT_MENU, payload.title || "MENU UTAMA");
-      } catch (e) {
-        renderMenu(DEFAULT_MENU, "MENU UTAMA");
-      }
-    });
+  function handleOpenEvent(payloadStr) {
+    try {
+      const payload = typeof payloadStr === 'string' ? JSON.parse(payloadStr || '{}') : (payloadStr || {});
+      openRadial(payload.menu || DEFAULT_MENU, payload.title || "MENU UTAMA");
+    } catch (e) {
+      openRadial(DEFAULT_MENU, "MENU UTAMA");
+    }
+  }
 
-    window.cef.on('cef_closeRadial', () => {
-      closeRadial();
-    });
+  function handleCloseEvent() {
+    closeRadial(false);
+  }
+
+  // Register via CefBridge & direct window.cef (supports both cef: and cef_ prefixes)
+  if (window.CefBridge && typeof window.CefBridge.on === 'function') {
+    window.CefBridge.on('cef:openRadial', handleOpenEvent);
+    window.CefBridge.on('cef_openRadial', handleOpenEvent);
+    window.CefBridge.on('cef:closeRadial', handleCloseEvent);
+    window.CefBridge.on('cef_closeRadial', handleCloseEvent);
+  } else if (window.cef && typeof window.cef.on === 'function') {
+    window.cef.on('cef:openRadial', handleOpenEvent);
+    window.cef.on('cef_openRadial', handleOpenEvent);
+    window.cef.on('cef:closeRadial', handleCloseEvent);
+    window.cef.on('cef_closeRadial', handleCloseEvent);
   }
 
   // Initial render with default menu

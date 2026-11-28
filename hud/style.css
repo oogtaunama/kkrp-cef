@@ -140,23 +140,34 @@ body {
     text-shadow: 0 2px 5px rgba(0, 0, 0, 0.85);
 }
 
-/* Baris 2: Player Identity Pills (Nama, ID, Job) */
+/* Baris 2: Player Identity Pills sejajar di samping Uang / Bank */
+.server-status-money-bar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 8px;
+    max-width: 78vw;
+}
+
 .server-pills-row {
     display: flex;
     align-items: center;
-    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 5px;
 }
 
 .info-pill {
     display: flex;
     align-items: center;
-    gap: 7px;
-    background: rgba(28, 29, 36, 0.88);
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    gap: 6px;
+    background: rgba(20, 22, 28, 0.88);
+    border: 1px solid rgba(255, 255, 255, 0.07);
     border-radius: 8px;
-    padding: 5px 11px;
+    padding: 4px 9px;
     backdrop-filter: blur(8px);
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
 .info-pill .pill-icon {
